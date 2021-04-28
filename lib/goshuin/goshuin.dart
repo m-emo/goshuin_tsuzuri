@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 
-class Jinja extends StatelessWidget {
+class Goshuin extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,15 +11,15 @@ class Jinja extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            '神社名',
+            '御朱印名',
             style: Styles.appBarTextStyle,
           ),
           actions: <Widget>[
             IconButton(
               icon: StylesIcon.editIcon,
+              onPressed: () => Navigator.pushNamed(context, '/editGoshuin'),
             ),
           ],
-
           backgroundColor: Colors.white,
           centerTitle: true,
         ),
@@ -27,11 +27,12 @@ class Jinja extends StatelessWidget {
           children: <Widget>[
             Photo(),
             NameArea(),
-            ListArea(),
+            MemoArea(),
           ],
         ));
   }
 }
+
 //******** 写真Widget -start- ********
 class Photo extends StatelessWidget {
   @override
@@ -172,136 +173,83 @@ class ImagePickerViewState extends State {
  */
 //******** 写真Widget -end- ********
 
-//******** 神社名Widget -start- ********
+//******** 御朱印名Widget -start- ********
 /*
-* 神社名Widget
-* prm :
+* 御朱印名Widget
+* prm : kbn 更新・新規登録区分値
 * return : Widget
  */
 class NameArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-          border: Border(
-              bottom: BorderSide(
-        color: Styles.bordercolor,
-        width: 1.0,
-      ))),
-      child: Container(
-        color: Colors.white,
-        // margin: const EdgeInsets.only(top: 4.0, bottom:4.0),
-        padding: const EdgeInsets.only(
-            top: 15.0, right: 20.0, bottom: 50.0, left: 20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            Container(
-              width: double.infinity,
-              child: Text(
-                "[ 京都府 ]",
-                  style: Styles.subTextStyle,
-                textAlign: TextAlign.right,
-              ),
+      color: Colors.white,
+      // margin: const EdgeInsets.only(top: 4.0, bottom:4.0),
+      padding: const EdgeInsets.only(
+          top: 15.0, right: 20.0, bottom: 20.0, left: 20.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          Container(
+            width: double.infinity,
+            child: Text(
+              "[ 京都府 ]  " + "2020.10.10",
+              style: Styles.subTextStyle,
+              textAlign: TextAlign.right,
             ),
-            Container(
-              padding: const EdgeInsets.only(
-                  top: 15.0),
-              child: Text(
-                "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
-                // 御朱印名
-                style: Styles.mainTextStyleLarge,
-              ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Text(
+              "八坂神社",
+              // 御朱印名
+              style: Styles.mainTextStyleLarge,
             ),
-          ],
-        ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(top: 15.0),
+            child: Text(
+              "通常朱印",
+              // 御朱印名
+              style: Styles.mainTextStyle,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
-//******** 神社名Widget -end- ********
+//******** 御朱印名Widget -end- ********
 
-//******** 御朱印リストWidget -start- ********
+//******** メモWidget -start- ********
 /*
-* 御朱印リストWidget
-* prm :
+* メモWidget
+* prm : kbn 更新・新規登録区分値
 * return : Widget
  */
-class ListArea extends StatelessWidget {
+class MemoArea extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
+    return Container(
+      color: Colors.white,
+      // margin: const EdgeInsets.only(top: 4.0, bottom:4.0),
+      padding: const EdgeInsets.only(right: 20.0, bottom: 30.0, left: 20.0),
+      child: Column(
+        children: <Widget>[
+          // 区切り線
+          Divider(
+            height: 40,
+            thickness: 2,
             color: Styles.bordercolor,
-            width: 1.0,
-          ))),
-        child: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/addGoshuin'),
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
-            height: 100.0,
-            child: Container(
-              /*color: Colors.white,
-              padding: const EdgeInsets.only(
-                  top: 0.0, right: 10.0, bottom: 0.0, left: 2.0),*/
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    height: 90.0,
-                    width: 90.0,
-                    color: Styles.bgImgcolor,
-                    /*
-                      child: bytesImage == null
-                          ? new Text('No image value.')
-                          : Image.memory(
-                        bytesImage,
-                        fit: BoxFit.cover,
-                      )
-                  */
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(right: 10.0),
-                  ),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // 左寄せ
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      // 均等配置
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
-                            // 御朱印名
-                            style: Styles.mainTextStyle,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        ),
-                        Container(
-                          child: Text("2020.10.10",
-                              // 都道府県 日付
-                              style: Styles.subTextStyleSmall),
-                        ),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
           ),
-        ),
-        );
-      },
-      itemCount: 3,
+          // メモ欄
+          Text(
+            "通常朱印○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○",
+            style: Styles.mainTextStyle,
+          ),
+        ],
+      ),
     );
   }
 }
-//******** 御朱印リストWidget -end- ********
+//******** メモWidget -end- ********
