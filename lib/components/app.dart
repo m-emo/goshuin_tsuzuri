@@ -12,7 +12,7 @@ class App extends StatelessWidget {
       home: RootWidget(),
       routes: <String, WidgetBuilder>{
         '/addJinja': (BuildContext context) => new Jinja(),
-        '/addGoshuin': (BuildContext context) => new Goshuin(),
+        '/goshuin': (BuildContext context) => new Goshuin(),
         '/editGoshuin': (BuildContext context) => new GoshuinEdit(),
         '/addGoshuin': (BuildContext context) => new GoshuinEdit(kbn: "0"),
       },

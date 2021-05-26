@@ -185,7 +185,7 @@ class NameArea extends StatelessWidget {
       decoration: BoxDecoration(
           border: Border(
               bottom: BorderSide(
-        color: Styles.bordercolor,
+        color: StylesColor.bordercolor,
         width: 1.0,
       ))),
       child: Container(
@@ -238,11 +238,11 @@ class ListArea extends StatelessWidget {
           decoration: BoxDecoration(
               border: Border(
                   bottom: BorderSide(
-            color: Styles.bordercolor,
+            color: StylesColor.bordercolor,
             width: 1.0,
           ))),
         child: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/addGoshuin'),
+          onTap: () => Navigator.pushNamed(context, '/goshuin'),
           child: Container(
             color: Colors.white,
             padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
@@ -256,7 +256,7 @@ class ListArea extends StatelessWidget {
                   Container(
                     height: 90.0,
                     width: 90.0,
-                    color: Styles.bgImgcolor,
+                    color: StylesColor.bgImgcolor,
                     /*
                       child: bytesImage == null
                           ? new Text('No image value.')
@@ -287,7 +287,7 @@ class ListArea extends StatelessWidget {
                         ),
                         Container(
                           child: Text("2020.10.10",
-                              // 都道府県 日付
+                              // 日付
                               style: Styles.subTextStyleSmall),
                         ),
                       ],

@@ -75,7 +75,7 @@ class PrefecturesList extends StatelessWidget {
             decoration: BoxDecoration(
                 border: Border(
                     bottom: BorderSide(
-              color: Styles.bordercolor,
+              color: StylesColor.bordercolor,
               width: 2.0,
             ))),
             child: InkWell(

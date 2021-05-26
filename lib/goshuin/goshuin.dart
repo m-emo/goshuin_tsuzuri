@@ -240,7 +240,7 @@ class MemoArea extends StatelessWidget {
           Divider(
             height: 40,
             thickness: 2,
-            color: Styles.bordercolor,
+            color: StylesColor.bordercolor,
           ),
           // メモ欄
           Text(

@@ -99,6 +99,7 @@ class ImagePickerView extends StatefulWidget {
 class ImagePickerViewState extends State {
   // 引数
   final String kbn;
+
   ImagePickerViewState({this.kbn});
 
   File imageFile;
@@ -122,6 +123,86 @@ class ImagePickerViewState extends State {
   }
 
   @override
+  Widget build(BuildContext context) {
+    final Size size = MediaQuery.of(context).size;
+    return Container(
+      margin: const EdgeInsets.only(top: 15.0, bottom: 15.0),
+      alignment: Alignment.center,
+      child: Column(
+        children: <Widget>[
+          Container(
+            margin: const EdgeInsets.only(bottom: 15.0),
+            child: bytesImage == null
+                ? Container(
+                    alignment: Alignment.center,
+                    height: size.width - 150,
+                    // width: size.width - 150,
+                    // color: Colors.black26,
+                    child: StylesIcon.insertPhotoRounded,
+                  )
+                : Image.memory(
+                    bytesImage,
+                    height: size.width - 150,
+                    width: size.width - 150,
+                  ),
+          ),
+          Container(
+            color: Colors.white,
+            padding: const EdgeInsets.only(
+                top: 15.0, right: 20.0, bottom: 15.0, left: 20.0),
+            child: InkWell(
+              onTap: () async {
+                var result = await showModalBottomSheet<int>(
+                  context: context,
+                  builder: (BuildContext context) {
+                    return Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                            leading: FaIcon(FontAwesomeIcons.camera),
+                            title: Text('写真を撮る'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _getImageFromDevice(ImageSource.camera);
+                            }),
+                        ListTile(
+                            leading: FaIcon(FontAwesomeIcons.images),
+                            title: Text('ギャラリーから選択'),
+                            onTap: () {
+                              Navigator.pop(context);
+                              _getImageFromDevice(ImageSource.gallery);
+                            }),
+                      ],
+                    );
+                  },
+                );
+              },
+              child: Row(
+                children: <Widget>[
+                  Expanded(
+                    flex: 11,
+                    child: Container(
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: Text(
+                        "写真を選択・追加",
+                        style: Styles.mainTextStyleBold,
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    flex: 1,
+                    child: Icon(Icons.arrow_forward_ios),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  /*
   Widget build(BuildContext context) {
     final Size size = MediaQuery.of(context).size;
     return Container(
@@ -176,11 +257,10 @@ class ImagePickerViewState extends State {
                 ),
               ),
             ),
-
           ]),
     );
   }
-
+*/
 // カメラまたはライブラリから画像を取得
   void _getImageFromDevice(ImageSource source) async {
     // データ登録用変数セット
@@ -212,7 +292,7 @@ class ImagePickerViewState extends State {
     Uint8List bytesImage = Base64Decoder().convert(base64Image);
 
     setState(() {
-     // this.imageFile = imageFile;
+      // this.imageFile = imageFile;
       this.bytesImage = bytesImage;
     });
   }
@@ -623,7 +703,7 @@ class ButtonArea extends StatelessWidget {
                 "登録する",
                 style: Styles.mainButtonTextStyle,
               ),
-        color: Styles.maincolor,
+        color: StylesColor.maincolor,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(5),
         ),
@@ -761,7 +841,7 @@ class ButtonDeleteArea extends StatelessWidget {
         // color: Colors.notnull,
         shape: const OutlineInputBorder(
           borderRadius: BorderRadius.all(Radius.circular(5)),
-          borderSide: BorderSide(color: Styles.maincolor),
+          borderSide: BorderSide(color: StylesColor.maincolor),
         ),
         onPressed: () {},
       ),

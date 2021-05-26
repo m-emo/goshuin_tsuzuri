@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 
 class GoshuinListList extends StatelessWidget {
+  // GoshuinListList({Key key}) : super(key: key);
+
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -13,7 +17,7 @@ class GoshuinListList extends StatelessWidget {
             margin: EdgeInsets.only(bottom: 2),
             height: 100.0,
             child: InkWell(
-              onTap: () => Navigator.pushNamed(context, '/addGoshuin'),
+              onTap: () => Navigator.pushNamed(context, '/goshuin'),
               child: Container(
                 /*color: Colors.white,
               padding: const EdgeInsets.only(
@@ -23,7 +27,7 @@ class GoshuinListList extends StatelessWidget {
                     Container(
                       height: 90.0,
                       width: 90.0,
-                      color: Styles.bgImgcolor,
+                      color: StylesColor.bgImgcolor,
                       /*
                       child: bytesImage == null
                           ? new Text('No image value.')

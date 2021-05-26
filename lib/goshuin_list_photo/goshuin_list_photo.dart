@@ -8,7 +8,7 @@ class GoshuinListPhoto extends StatelessWidget {
         padding: EdgeInsets.only(right: 2.0, left: 2.0),
         color: Color(0xFFFFFFFF),
         child: Scaffold(
-          backgroundColor: Styles.bgImgcolor,
+          backgroundColor: StylesColor.bgImgcolor,
     body: GridView.count(
       crossAxisCount: 3,      // 1行に表示する数
       crossAxisSpacing: 2.0,      // 縦スペース
