@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 
+import '../app_store.dart';
+
 class Goshuin extends StatelessWidget {
+  const Goshuin({Key key, @required this.store}) : super(key: key);
+
+  final AppStore store;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

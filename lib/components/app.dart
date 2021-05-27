@@ -5,16 +5,20 @@ import 'package:goshuintsuzuri/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/jinja/jinja.dart';
 import 'package:goshuintsuzuri/pefectures_list/prefectures_list.dart';
 
+import '../app_store.dart';
+
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final store = AppStore();
+
     return MaterialApp(
       home: RootWidget(),
       routes: <String, WidgetBuilder>{
-        '/addJinja': (BuildContext context) => new Jinja(),
-        '/goshuin': (BuildContext context) => new Goshuin(),
-        '/editGoshuin': (BuildContext context) => new GoshuinEdit(),
-        '/addGoshuin': (BuildContext context) => new GoshuinEdit(kbn: "0"),
+        '/addJinja': (_) => Jinja(store: store),
+        '/goshuin': (_) => Goshuin(store: store),
+        '/editGoshuin': (_) => GoshuinEdit(store: store),
+        '/addGoshuin': (_) => GoshuinEdit(store: store, kbn: '0'),
       },
       // title: 'Flutter Demo',
       // theme: ThemeData(

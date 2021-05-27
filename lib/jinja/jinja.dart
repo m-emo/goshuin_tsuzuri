@@ -1,7 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 
+import '../app_store.dart';
+
 class Jinja extends StatelessWidget {
+  const Jinja({Key key, @required this.store}) : super(key: key);
+
+  final AppStore store;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +25,6 @@ class Jinja extends StatelessWidget {
               icon: StylesIcon.editIcon,
             ),
           ],
-
           backgroundColor: Colors.white,
           centerTitle: true,
         ),
@@ -32,6 +37,7 @@ class Jinja extends StatelessWidget {
         ));
   }
 }
+
 //******** 写真Widget -start- ********
 class Photo extends StatelessWidget {
   @override
@@ -200,13 +206,12 @@ class NameArea extends StatelessWidget {
               width: double.infinity,
               child: Text(
                 "[ 京都府 ]",
-                  style: Styles.subTextStyle,
+                style: Styles.subTextStyle,
                 textAlign: TextAlign.right,
               ),
             ),
             Container(
-              padding: const EdgeInsets.only(
-                  top: 15.0),
+              padding: const EdgeInsets.only(top: 15.0),
               child: Text(
                 "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
                 // 御朱印名
@@ -241,23 +246,24 @@ class ListArea extends StatelessWidget {
             color: StylesColor.bordercolor,
             width: 1.0,
           ))),
-        child: InkWell(
-          onTap: () => Navigator.pushNamed(context, '/goshuin'),
-          child: Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
-            height: 100.0,
+          child: InkWell(
+            onTap: () => Navigator.pushNamed(context, '/goshuin'),
             child: Container(
-              /*color: Colors.white,
+              color: Colors.white,
+              padding:
+                  EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
+              height: 100.0,
+              child: Container(
+                /*color: Colors.white,
               padding: const EdgeInsets.only(
                   top: 0.0, right: 10.0, bottom: 0.0, left: 2.0),*/
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    height: 90.0,
-                    width: 90.0,
-                    color: StylesColor.bgImgcolor,
-                    /*
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      height: 90.0,
+                      width: 90.0,
+                      color: StylesColor.bgImgcolor,
+                      /*
                       child: bytesImage == null
                           ? new Text('No image value.')
                           : Image.memory(
@@ -265,39 +271,39 @@ class ListArea extends StatelessWidget {
                         fit: BoxFit.cover,
                       )
                   */
-                  ),
-                  Container(
-                    padding: const EdgeInsets.only(right: 10.0),
-                  ),
-                  Flexible(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      // 左寄せ
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      // 均等配置
-                      children: <Widget>[
-                        Container(
-                          child: Text(
-                            "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
-                            // 御朱印名
-                            style: Styles.mainTextStyle,
-                            overflow: TextOverflow.ellipsis,
-                            maxLines: 2,
-                          ),
-                        ),
-                        Container(
-                          child: Text("2020.10.10",
-                              // 日付
-                              style: Styles.subTextStyleSmall),
-                        ),
-                      ],
                     ),
-                  ),
-                ],
+                    Container(
+                      padding: const EdgeInsets.only(right: 10.0),
+                    ),
+                    Flexible(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // 左寄せ
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        // 均等配置
+                        children: <Widget>[
+                          Container(
+                            child: Text(
+                              "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
+                              // 御朱印名
+                              style: Styles.mainTextStyle,
+                              overflow: TextOverflow.ellipsis,
+                              maxLines: 2,
+                            ),
+                          ),
+                          Container(
+                            child: Text("2020.10.10",
+                                // 日付
+                                style: Styles.subTextStyleSmall),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
-        ),
         );
       },
       itemCount: 3,

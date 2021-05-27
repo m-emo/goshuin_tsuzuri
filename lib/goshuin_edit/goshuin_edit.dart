@@ -8,11 +8,17 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 
+import '../app_store.dart';
+
 class GoshuinEdit extends StatelessWidget {
+  const GoshuinEdit({Key key, @required this.store, this.kbn})
+      : super(key: key);
+
+  final AppStore store;
+
   // 引数取得
   final String kbn; // // 新規登録＝０、更新＝１
   // final String id; // 御朱印ID
-  GoshuinEdit({Key key, this.kbn}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
