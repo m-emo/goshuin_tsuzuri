@@ -6,6 +6,7 @@ import '../app_store.dart';
 class Jinja extends StatelessWidget {
   const Jinja({Key key, @required this.store}) : super(key: key);
 
+  // 引数取得
   final AppStore store;
 
   @override

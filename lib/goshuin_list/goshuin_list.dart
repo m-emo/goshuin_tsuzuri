@@ -5,6 +5,7 @@ import 'package:goshuintsuzuri/goshuin_list_list/goshuin_list_list.dart';
 import 'package:goshuintsuzuri/jinja_list/jinja_list.dart';
 import 'package:goshuintsuzuri/goshuin_list_photo/goshuin_list_photo.dart';
 import 'package:goshuintsuzuri/goshuin_list_jinja/goshuin_list_jinja.dart';
+import '../app_store.dart';
 
 class TabInfo {
   String label;
@@ -70,13 +71,15 @@ class TabInfo {
 // }
 
 class GoshuinList extends StatelessWidget {
+  GoshuinList({Key key, @required this.store}) : super(key: key);
 
+  final AppStore store;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final List<TabInfo> _tabs = [
     // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
-    TabInfo("一覧", GoshuinListList()),
-    TabInfo("神社・寺院", GoshuinListJija()),
-    TabInfo("写真", GoshuinListPhoto()),
+    TabInfo("一覧", GoshuinListList(store: store)),
+    TabInfo("神社・寺院", GoshuinListJija(store: store)),
+    TabInfo("写真", GoshuinListPhoto(store: store)),
   ];
 
   @override

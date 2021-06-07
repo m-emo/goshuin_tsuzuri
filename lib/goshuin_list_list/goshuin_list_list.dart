@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import '../app_store.dart';
 
 class GoshuinListList extends StatelessWidget {
-  // GoshuinListList({Key key}) : super(key: key);
+  const GoshuinListList({Key key, @required this.store}) : super(key: key);
 
-
+  // 引数取得
+  final AppStore store;
 
   @override
   Widget build(BuildContext context) {

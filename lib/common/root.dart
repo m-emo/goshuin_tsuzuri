@@ -4,15 +4,22 @@ import 'package:goshuintsuzuri/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/jinja_list/jinja_list.dart';
 import 'package:goshuintsuzuri/goshuin_list/goshuin_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import '../app_store.dart';
 
 class RootWidget extends StatefulWidget {
-  RootWidget({Key key}) : super(key: key);
+  const RootWidget({Key key, @required this.store}) : super(key: key);
+
+  // 引数取得
+  final AppStore store;
 
   @override
-  _RootWidgetState createState() => _RootWidgetState();
+  _RootWidgetState createState() => _RootWidgetState(store: store);
 }
 
 class _RootWidgetState extends State<RootWidget> {
+  // 引数取得
+  final AppStore store;
+  _RootWidgetState({this.store});
   int _selectedIndex = 0;
   final _bottomNavigationBarItems = <BottomNavigationBarItem>[];
 
@@ -30,7 +37,7 @@ class _RootWidgetState extends State<RootWidget> {
 
   // === 追加部分 ===
   var _routes = [
-    GoshuinList(),
+    GoshuinList(store: store),
     JinjaList(),
     GoshuinEdit(kbn: "0"),
   ];

@@ -13,7 +13,7 @@ class App extends StatelessWidget {
     final store = AppStore();
 
     return MaterialApp(
-      home: RootWidget(),
+      home: RootWidget(store: store),
       routes: <String, WidgetBuilder>{
         '/addJinja': (_) => Jinja(store: store),
         '/goshuin': (_) => Goshuin(store: store),
