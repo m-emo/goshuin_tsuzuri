@@ -36,11 +36,11 @@ class _RootWidgetState extends State<RootWidget> {
   ];
 
   // === 追加部分 ===
-  var _routes = [
-    GoshuinList(store: store),
-    JinjaList(),
-    GoshuinEdit(kbn: "0"),
-  ];
+  // var _routes = [
+  //   GoshuinList(store: store),
+  //   JinjaList(),
+  //   GoshuinEdit(kbn: "0"),
+  // ];
 
   // ==============
 
@@ -97,6 +97,13 @@ class _RootWidgetState extends State<RootWidget> {
 
   @override
   Widget build(BuildContext context) {
+
+    var _routes = [
+      GoshuinList(store: store),
+      JinjaList(),
+      GoshuinEdit(kbn: "0"),
+    ];
+
     return Scaffold(
       body: _routes.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(

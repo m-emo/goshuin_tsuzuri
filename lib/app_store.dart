@@ -14,11 +14,16 @@ class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
 
+
+
   @observable
   Color primary;
 
   @observable
   Color secondary;
+
+  @observable
+  String name;
 
   // ignore: use_setters_to_change_properties
   @action
@@ -30,6 +35,11 @@ abstract class _AppStore with Store {
   @action
   void setSecondary(Color value) {
     secondary = value;
+  }
+
+  @action
+  void setName(String value){
+    name = value;
   }
 
   @computed

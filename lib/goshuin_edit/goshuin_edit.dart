@@ -45,7 +45,7 @@ class GoshuinEdit extends StatelessWidget {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Area(),
+        child: Area(kbn: kbn, store: store),
       ),
     );
   }
@@ -54,8 +54,9 @@ class GoshuinEdit extends StatelessWidget {
 class Area extends StatelessWidget {
   // 引数
   final String kbn;
+  final AppStore store;
 
-  Area({this.kbn});
+  Area({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -68,7 +69,7 @@ class Area extends StatelessWidget {
           ImagePickerView(kbn: kbn),
           // PlaceArea(kbn: kbn, goshuin: goshuin),
           PlaceArea(),
-          NameArea(),
+          NameArea(store: store),
           // SelectDateArea(kbn: kbn, goshuin: goshuin),
           SelectDateArea(),
           MemoArea(),
@@ -458,8 +459,9 @@ class _PlaceArea extends State<PlaceArea> {
 class NameArea extends StatelessWidget {
   // 引数
   final String kbn;
+  final AppStore store;
 
-  NameArea({this.kbn});
+  NameArea({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -484,6 +486,7 @@ class NameArea extends StatelessWidget {
                 hintText: '通常御朱印',
                 hintStyle: TextStyle(fontSize: 14.0, color: Colors.black12),
               ),
+              onChanged: (changed) => store.setName(changed),
               // onChanged: (changed) => valueChangeNotifier.setName(changed),
             ),
           ),

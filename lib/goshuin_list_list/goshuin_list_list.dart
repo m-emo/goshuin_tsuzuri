@@ -57,11 +57,14 @@ class GoshuinListList extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            child: Text(
-                              "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印", // 御朱印名
+                            child:
+                            Text(
+                              // "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印", // 御朱印名
+                              "${store.name}",
                               style: Styles.mainTextStyle,
                               overflow: TextOverflow.ellipsis,
                             ),
+
                           ),
                           Container(
                             child: Text("[ 北海道 ]  " + "2020.10.10",

@@ -75,15 +75,22 @@ class GoshuinList extends StatelessWidget {
 
   final AppStore store;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final List<TabInfo> _tabs = [
-    // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
-    TabInfo("一覧", GoshuinListList(store: store)),
-    TabInfo("神社・寺院", GoshuinListJija(store: store)),
-    TabInfo("写真", GoshuinListPhoto(store: store)),
-  ];
+  // final List<TabInfo> _tabs = [
+  //   // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
+  //   TabInfo("一覧", GoshuinListList(store: store)),
+  //   TabInfo("神社・寺院", GoshuinListJija(store: store)),
+  //   TabInfo("写真", GoshuinListPhoto(store: store)),
+  // ];
 
   @override
   Widget build(BuildContext context) {
+    final List<TabInfo> _tabs = [
+      // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
+      TabInfo("一覧", GoshuinListList(store: store)),
+      TabInfo("神社・寺院", GoshuinListJija()),
+      TabInfo("写真", GoshuinListPhoto()),
+    ];
+
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
