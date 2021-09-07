@@ -2,8 +2,10 @@ import 'dart:convert';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
@@ -45,7 +47,28 @@ class GoshuinEdit extends StatelessWidget {
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: Area(kbn: kbn, store: store),
+        child: Stack(
+          alignment: Alignment.topCenter,
+          children: [
+            Area(kbn: kbn, store: store),
+            Visibility(
+              visible: store.goshuinErrFlg,
+              child: Container(
+                alignment: Alignment.center,
+                margin: EdgeInsets.only(top: 80),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.0),
+                    color: Colors.black.withOpacity(0.5),
+                ),
+                child: Text('写真を追加してください',style: Styles.mainButtonTextStyle,),
+                width: 300.0,
+                height: 80.0,
+              ),
+            ),
+          ],
+        ),
+
+        // child: Area(kbn: kbn, store: store),
       ),
     );
   }
@@ -66,15 +89,15 @@ class Area extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          ImagePickerView(kbn: kbn),
+          ImagePickerView(kbn: kbn, store: store),
           // PlaceArea(kbn: kbn, goshuin: goshuin),
-          PlaceArea(),
-          NameArea(store: store),
+          PlaceArea(kbn: kbn, store: store),
+          NameArea(kbn: kbn, store: store),
           // SelectDateArea(kbn: kbn, goshuin: goshuin),
-          SelectDateArea(),
+          SelectDateArea(store: store),
           MemoArea(),
           // ButtonArea(kbn: kbn, updateGoshuin: goshuin),
-          ButtonArea(kbn: kbn),
+          ButtonArea(kbn: kbn, store: store),
           kbn == "1" // 更新
               ? ButtonDeleteArea()
               : Container(),
@@ -94,20 +117,22 @@ class Area extends StatelessWidget {
 class ImagePickerView extends StatefulWidget {
   // 引数
   final String kbn;
+  final AppStore store;
 
-  ImagePickerView({this.kbn});
+  ImagePickerView({this.kbn, this.store});
 
   @override
   State createState() {
-    return ImagePickerViewState(kbn: kbn);
+    return ImagePickerViewState(kbn: kbn, store: store);
   }
 }
 
 class ImagePickerViewState extends State {
   // 引数
   final String kbn;
+  final AppStore store;
 
-  ImagePickerViewState({this.kbn});
+  ImagePickerViewState({this.kbn, this.store});
 
   File imageFile;
   Uint8List bytesImage;
@@ -143,8 +168,6 @@ class ImagePickerViewState extends State {
                 ? Container(
                     alignment: Alignment.center,
                     height: size.width - 150,
-                    // width: size.width - 150,
-                    // color: Colors.black26,
                     child: StylesIcon.insertPhotoRounded,
                   )
                 : Image.memory(
@@ -170,14 +193,14 @@ class ImagePickerViewState extends State {
                             title: Text('写真を撮る'),
                             onTap: () {
                               Navigator.pop(context);
-                              _getImageFromDevice(ImageSource.camera);
+                              _getImageFromDevice(ImageSource.camera, store);
                             }),
                         ListTile(
                             leading: FaIcon(FontAwesomeIcons.images),
                             title: Text('ギャラリーから選択'),
                             onTap: () {
                               Navigator.pop(context);
-                              _getImageFromDevice(ImageSource.gallery);
+                              _getImageFromDevice(ImageSource.gallery, store);
                             }),
                       ],
                     );
@@ -209,79 +232,16 @@ class ImagePickerViewState extends State {
     );
   }
 
-  /*
-  Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
-    return Container(
-      alignment: Alignment.center,
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              height: size.width - 100,
-              width: size.width - 100,
-              child: FlatButton(
-                onPressed: () async {
-                  var result = await showModalBottomSheet<int>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.camera),
-                              title: Text('写真を撮る'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.camera);
-                              }),
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.images),
-                              title: Text('ギャラリーから選択'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.gallery);
-                              }),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  child: bytesImage == null
-                      ? Container(
-                    alignment: Alignment.center,
-                    height: size.width - 100,
-                    width: size.width - 100,
-                    color: Colors.black26,
-                    child: FaIcon(FontAwesomeIcons.cameraRetro),
-                  )
-                      : Image.memory(
-                    bytesImage,
-                  ),
-                ),
-              ),
-            ),
-          ]),
-    );
-  }
-*/
 // カメラまたはライブラリから画像を取得
-  void _getImageFromDevice(ImageSource source) async {
-    // データ登録用変数セット
-    // final valueChangeNotifier =
-    // Provider.of<_ValueChangeNotifier>(context, listen: false);
-
-    // 撮影/選択したFileが返ってくる
+  void _getImageFromDevice(ImageSource source, AppStore store) async {
+    // 撮影/選択したFileを取得
     var imageFile = await ImagePicker.pickImage(source: source);
     // Androidで撮影せずに閉じた場合はnullになる
     if (imageFile == null) {
       return;
     }
 
-    // flutter_image_compressで指定サイズ／品質に圧縮
+    // 指定サイズ／品質に圧縮
     List<int> imageBytes = await FlutterImageCompress.compressWithFile(
       imageFile.absolute.path,
       minWidth: 800,
@@ -289,18 +249,15 @@ class ImagePickerViewState extends State {
       quality: 60,
     );
 
-//    List<int> imageBytes = await imageFile.readAsBytesSync();
-
     // BASE64文字列値にエンコード
     String base64Image = base64Encode(imageBytes);
-    // valueChangeNotifier.setBytesImg(base64Image);
 
     // Uint8Listへ変換
     Uint8List bytesImage = Base64Decoder().convert(base64Image);
 
     setState(() {
-      // this.imageFile = imageFile;
       this.bytesImage = bytesImage;
+      store.setBase64Image(base64Image);
     });
   }
 }
@@ -314,44 +271,11 @@ class ImagePickerViewState extends State {
 * return : Widget
  */
 
-class PlaceArea extends StatefulWidget {
-  // 引数
-  // final String kbn;
-  // final GoshuinList goshuin;
-  // PlaceArea({this.kbn, this.goshuin});
-
-  @override
-  State<StatefulWidget> createState() {
-    // return _PlaceArea(kbn: kbn, goshuin: goshuin);
-    return _PlaceArea();
-  }
-}
-
-class _PlaceArea extends State<PlaceArea> {
-  // 引数
-  // final String kbn;
-  // final GoshuinList goshuin;
-  //
-  // _PlaceArea({this.kbn, this.goshuin});
-
-  var _place = ''; // 神社・寺院名
-  var _prefectures = ''; // 都道府県名
-
-  @override
-  // void initState() {
-  //   super.initState();
-  //   // 更新時初期値設定
-  //   setState(() {
-  //     if (kbn == "1") {
-  //       // 更新
-  //       _place = goshuin.shrineName;
-  //       _prefectures = "[ " + goshuin.prefectures + " ]";
-  //     } else {
-  //       // 登録
-  //       _place = '選択してください（必須）';
-  //     }
-  //   });
-  // }
+class PlaceArea extends StatelessWidget {
+// 引数
+  final String kbn;
+  final AppStore store;
+  PlaceArea({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -362,7 +286,7 @@ class _PlaceArea extends State<PlaceArea> {
       child: InkWell(
         onTap: () {
           FocusScope.of(context).unfocus();
-          _navigateAndDisplaySelection(context);
+          Navigator.pushNamed(context, '/selecctJinjaList');
         },
         child: Row(
           children: <Widget>[
@@ -386,14 +310,14 @@ class _PlaceArea extends State<PlaceArea> {
                                   TextSpan(
                                       text: ' *',
                                       style:
-                                          TextStyle(color: Color(0xFFD13833))),
+                                      TextStyle(color: Color(0xFFD13833))),
                                 ],
                               ),
                             ),
                           ),
                           Container(
                             child: Text(
-                              "${_prefectures}", // 都道府県名
+                              "${store.spotPrefectures}", // 都道府県名
                               style: Styles.mainTextStyleSmall,
                             ),
                           ),
@@ -404,7 +328,7 @@ class _PlaceArea extends State<PlaceArea> {
                       padding: const EdgeInsets.only(top: 15.0),
                       child: Text(
                         // 登録
-                        "${_place}", // 神社・寺院名
+                        "${store.spotName}", // 神社・寺院名
                         style: Styles.mainTextStyle,
                       ),
                     ),
@@ -420,32 +344,6 @@ class _PlaceArea extends State<PlaceArea> {
         ),
       ),
     );
-  }
-
-  // 神社・寺院選択値受取
-  void _navigateAndDisplaySelection(BuildContext context) async {
-    // var shrine = Shrine();
-    // shrine = await Navigator.push(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => JinjaList(kbn: "0"),
-    //     ));
-    // var place = shrine.shrineName; // 神社・寺院
-    // var prefectures = "[ " + shrine.prefectures + " ]"; // 都道府県名
-    // var jinjaId = shrine.shrineId; // 神社・寺院ID
-
-    // データ登録用変数セット
-    // final valueChangeNotifier =
-    // Provider.of<_ValueChangeNotifier>(context, listen: false);
-    // print("★神社設定");
-    // print(place + "     " + jinjaId);
-    // valueChangeNotifier.setJinjaId(jinjaId);
-    // print(valueChangeNotifier._jinjaId);
-
-    // setState(() {
-    //   _place = place;
-    //   _prefectures = prefectures;
-    // });
   }
 }
 //******** 神社・寺院Widget -end- ********
@@ -480,7 +378,6 @@ class NameArea extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5.0),
             child: TextField(
               style: Styles.mainTextStyle,
-              // controller: _textEditingController,
               decoration: new InputDecoration.collapsed(
                 border: InputBorder.none,
                 hintText: '通常御朱印',
@@ -495,7 +392,6 @@ class NameArea extends StatelessWidget {
     );
   }
 }
-
 //******** 御朱印名Widget -end- ********
 
 //******** 日付Widget -start- ********
@@ -508,23 +404,29 @@ class NameArea extends StatelessWidget {
 class SelectDateArea extends StatefulWidget {
   // 引数
   // final String kbn;
+  final AppStore store;
+
   // final GoshuinList goshuin;
 
   // SelectDateArea({this.kbn, this.goshuin});
+  SelectDateArea({this.store});
 
   @override
   State<StatefulWidget> createState() {
     // return _SelectDateAreaState(kbn: kbn, goshuin: goshuin);
-    return _SelectDateAreaState();
+    return _SelectDateAreaState(store: store);
   }
 }
 
 class _SelectDateAreaState extends State<SelectDateArea> {
   // 引数
   // final String kbn;
+  final AppStore store;
+
   // final GoshuinList goshuin;
 
   // _SelectDateAreaState({this.kbn, this.goshuin});
+  _SelectDateAreaState({this.store});
 
   var _labelText = '';
   DateTime _date = new DateTime.now();
@@ -558,7 +460,8 @@ class _SelectDateAreaState extends State<SelectDateArea> {
     //   // データ登録用変数セット
     //   valueChangeNotifier.setDate(fmtDate);
     //
-    if (picked != null) setState(() => _labelText = fmtDate);
+    // if (picked != null) setState(() => _labelText = fmtDate);
+    if (picked != null) setState(() => store.setSanpaiDate(fmtDate));
   }
 
   @override
@@ -595,9 +498,13 @@ class _SelectDateAreaState extends State<SelectDateArea> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: <Widget>[
-                    Text(
-                      "${_labelText}",
-                      style: Styles.mainTextStyle,
+                    Observer(
+                      builder: (context) {
+                        return Text(
+                          "${store.sanpaiDate}",
+                          style: Styles.mainTextStyle,
+                        );
+                      },
                     ),
                     Container(
                       padding: const EdgeInsets.only(left: 20.0),
@@ -660,48 +567,55 @@ class MemoArea extends StatelessWidget {
 /*
 * ボタンWidget
 * prm : kbn 更新・新規登録区分値
+*       store
 * return : Widget
  */
 class ButtonArea extends StatelessWidget {
-//   var goshuin = Goshuin();
+  var goshuin = Goshuin();
 
   // 引数
   final String kbn;
+  final AppStore store;
 
 //   final GoshuinList updateGoshuin;
 //
 //   ButtonArea({this.kbn, this.updateGoshuin});
-  ButtonArea({this.kbn});
+  ButtonArea({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
-//     // エラーチェックダイアログ
-//     void _pushDialog(BuildContext context, String msg) {
-//       showDialog<int>(
-//         context: context,
-//         barrierDismissible: false,
-//         builder: (BuildContext context) {
-//           return AlertDialog(
-//             title: Text(''),
-//             content: Text(msg),
-//             actions: <Widget>[
-//               FlatButton(
-//                 child: Text('OK'),
-//                 onPressed: () => Navigator.of(context).pop(0),
-//               ),
-//             ],
-//           );
-//         },
-//       );
-//     }
-//
-//     final valueChangeNotifier = Provider.of<_ValueChangeNotifier>(context);
-//
+    /*エラーチェックダイアログ*/
+    void _pushDialog(BuildContext context, String msg) {
+      showDialog<int>(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return AlertDialog(
+            title: Text(''),
+            content: Text(msg),
+            actions: <Widget>[
+              TextButton(
+                child: Text('OK'),
+                onPressed: () => Navigator.of(context).pop(0),
+              ),
+            ],
+          );
+        },
+      );
+    }
+
+    /*ボタン処理*/
     return Container(
       margin: const EdgeInsets.only(
           top: 20.0, right: 20.0, left: 20.0, bottom: 30.0),
-      child: RaisedButton(
-        padding: EdgeInsets.all(15.0),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          primary: StylesColor.maincolor,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+          ),
+          padding: EdgeInsets.all(15.0),
+        ),
         child: kbn == "1" // 更新
             ? new Text(
                 "更新する",
@@ -712,11 +626,81 @@ class ButtonArea extends StatelessWidget {
                 "登録する",
                 style: Styles.mainButtonTextStyle,
               ),
-        color: StylesColor.maincolor,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5),
-        ),
-        onPressed: () {},
+
+        onPressed: () {
+          /*登録*/
+          void insert() {
+            // 最大ID取得
+            // GoshuinList max = await DbGoshuinData().getMaxIdGoshuin();
+            // var maxId = max.id;
+            var maxId = store.goshuinName;
+            var id = "";
+            if (maxId == null || maxId == "") {
+              // 初回登録
+              id = "GSI000001";
+            } else {
+              var prefix = maxId.substring(0, 3); // プレフィックス
+              int num = int.parse(maxId.substring(3, 9)); // 連番
+              num = num + 1;
+              id = prefix + num.toString().padLeft(6, "0");
+            }
+            // 最大ID登録
+            store.setGoshuinMaxId(id);
+
+            // insert
+            goshuin = Goshuin(
+              id: id,
+              img: store.base64Image,
+              spotId: store.spotId,
+              goshuinName: store.goshuinName,
+              date: id,
+              memo: id,
+              createData: id,
+            );
+            // DbGoshuinData().insertGoshuin(goshuin);
+          }
+
+          /*更新*/
+          void update() {}
+
+          /*入力チェック*/
+          String inputCheck() {
+            bool isVisible = store.goshuinErrFlg;
+            print(isVisible);
+            print("★isVisible");
+            isVisible = !isVisible;
+            store.setGoshuinErrFlg(isVisible);
+
+            var text = "";
+            var check = true;
+            if (store.base64Image == "") {
+              return "写真を追加してください";
+            }
+            if (store.spotId == "") {
+              return "神社・寺院を選択してください";
+            }
+            if (store.sanpaiDate == "") {
+              return "参拝日を選択してください";
+            }
+          }
+
+          // データを登録・更新する
+          var msg = "";
+          msg = inputCheck(); // 入力チェック
+          if (msg != "") {
+            // チェックNG
+            // _pushDialog(context, msg);
+          } else {
+            // チェックOK
+            if (kbn == "1") {
+              update(); // 更新
+            } else {
+              insert(); // 登録
+            }
+            // 戻る
+            Navigator.of(context).pop();
+          }
+        },
 
         // child: FlatButton(
         //   padding: EdgeInsets.all(15.0),

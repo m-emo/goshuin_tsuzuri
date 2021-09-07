@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import '../app_store.dart';
 
@@ -30,6 +31,18 @@ class GoshuinListList extends StatelessWidget {
                       height: 90.0,
                       width: 90.0,
                       color: StylesColor.bgImgcolor,
+                      child: Observer(
+                        builder: (context) {
+                          return Container(
+                              child: "${store.bytesImage}" == null
+                                  ? new Text('No image value.')
+                                  : Image.memory(
+                                store.bytesImage,
+                                fit: BoxFit.cover,
+                              ),
+                          );
+                        },
+                      ),
                       /*
                       child: bytesImage == null
                           ? new Text('No image value.')
@@ -51,25 +64,30 @@ class GoshuinListList extends StatelessWidget {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社", // 神社・寺院名
+                              "${(store.goshuinArray)[index].spotName}", // 神社・寺院名
                               style: Styles.mainTextStyleBold,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Container(
-                            child:
-                            Text(
-                              // "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印", // 御朱印名
-                              "${store.name}",
-                              style: Styles.mainTextStyle,
-                              overflow: TextOverflow.ellipsis,
+                            child: Observer(
+                              builder: (context) {
+                                return Text(
+                                  "${(store.goshuinArray)[index].goshuinName}",// 御朱印名
+                                  style: Styles.mainTextStyle,
+                                  overflow: TextOverflow.ellipsis,
+                                );
+                              },
                             ),
-
                           ),
                           Container(
-                            child: Text("[ 北海道 ]  " + "2020.10.10",
-                                // 都道府県 日付
-                                style: Styles.subTextStyleSmall),
+                            child: Observer(
+                              builder: (context) {
+                                return Text("[ " + "${(store.goshuinArray)[index].spotPrefectures}" + " ]  " + "${(store.goshuinArray)[index].date}",
+                                    // 都道府県 日付
+                                    style: Styles.subTextStyleSmall);
+                              },
+                            ),
                           ),
                         ],
                       ),
@@ -80,7 +98,7 @@ class GoshuinListList extends StatelessWidget {
             ),
           );
         },
-        itemCount: 10,
+        itemCount: (store.goshuinArray).length,
       ),
     );
   }

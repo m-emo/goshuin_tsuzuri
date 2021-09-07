@@ -1,12 +1,29 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/header.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import '../../app_store.dart';
 
-class Jinja extends StatelessWidget {
+class SelectJinjaList extends StatelessWidget {
+  const SelectJinjaList({Key key, @required this.store})
+      : super(key: key);
+
+  final AppStore store;
+
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      appBar: AppBar(
+        leading: new IconButton(
+          icon: StylesIcon.backIcon,
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text('神社・寺院選択',
+          style: Styles.appBarTextStyle,
+        ),
+        backgroundColor: Colors.white,
+        centerTitle: true,
+      ),
       persistentFooterButtons: <Widget>[
         FlatButton(
           color: Colors.white,
@@ -27,7 +44,12 @@ class Jinja extends StatelessWidget {
                       width: 1.0,
                     ))),
             child: InkWell(
-              onTap: () => Navigator.pop(context, "テスト神社名"), //前の画面に戻る
+              onTap: (){
+                store.setSpotId("testid");
+                store.setSpotName("あああああああああああああああああああああああああああああ");
+                store.setSpotPrefectures("北海道");
+                Navigator.pop(context); //前の画面に戻る
+              } ,
               child: Container(
                 color: Colors.white,
                 padding:
@@ -50,8 +72,6 @@ class Jinja extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        color: Colors.green,
-                        width: 60,
                         child: Text("[ " + "北海道" + " ]  ",
                             style: Styles.mainTextStyleSmall),
                       ),

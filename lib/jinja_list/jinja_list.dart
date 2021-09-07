@@ -68,7 +68,7 @@ class JinjaList extends StatelessWidget {
                       ),
                       Container(
                         color: Colors.green,
-                        width: 60,
+                        // width: 60,
                         child: Text("[ " + "北海道" + " ]  ",
                             style: Styles.mainTextStyleSmall),
                       ),
