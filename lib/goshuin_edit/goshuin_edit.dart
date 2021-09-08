@@ -570,39 +570,45 @@ class MemoArea extends StatelessWidget {
 *       store
 * return : Widget
  */
-class ButtonArea extends StatelessWidget {
+class ButtonArea extends StatefulWidget {
+  // 引数
+  final String kbn;
+  final AppStore store;
+  ButtonArea({this.kbn, this.store});
+
+  @override
+  _ButtonAreaState createState() => _ButtonAreaState(kbn: kbn, store: store);
+}
+
+class _ButtonAreaState extends State<ButtonArea> {
   var goshuin = Goshuin();
 
   // 引数
   final String kbn;
   final AppStore store;
-
-//   final GoshuinList updateGoshuin;
-//
-//   ButtonArea({this.kbn, this.updateGoshuin});
-  ButtonArea({this.kbn, this.store});
+  _ButtonAreaState({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
     /*エラーチェックダイアログ*/
-    void _pushDialog(BuildContext context, String msg) {
-      showDialog<int>(
-        context: context,
-        barrierDismissible: false,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text(''),
-            content: Text(msg),
-            actions: <Widget>[
-              TextButton(
-                child: Text('OK'),
-                onPressed: () => Navigator.of(context).pop(0),
-              ),
-            ],
-          );
-        },
-      );
-    }
+    // void _pushDialog(BuildContext context, String msg) {
+    //   showDialog<int>(
+    //     context: context,
+    //     barrierDismissible: false,
+    //     builder: (BuildContext context) {
+    //       return AlertDialog(
+    //         title: Text(''),
+    //         content: Text(msg),
+    //         actions: <Widget>[
+    //           TextButton(
+    //             child: Text('OK'),
+    //             onPressed: () => Navigator.of(context).pop(0),
+    //           ),
+    //         ],
+    //       );
+    //     },
+    //   );
+    // }
 
     /*ボタン処理*/
     return Container(
@@ -665,23 +671,25 @@ class ButtonArea extends StatelessWidget {
 
           /*入力チェック*/
           String inputCheck() {
-            bool isVisible = store.goshuinErrFlg;
-            print(isVisible);
-            print("★isVisible");
-            isVisible = !isVisible;
-            store.setGoshuinErrFlg(isVisible);
+            setState(() {
+              bool isVisible = store.goshuinErrFlg;
+              print(isVisible);
+              print("★isVisible");
+              isVisible = !isVisible;
+              store.setGoshuinErrFlg(isVisible);
 
-            var text = "";
-            var check = true;
-            if (store.base64Image == "") {
-              return "写真を追加してください";
-            }
-            if (store.spotId == "") {
-              return "神社・寺院を選択してください";
-            }
-            if (store.sanpaiDate == "") {
-              return "参拝日を選択してください";
-            }
+              var text = "";
+              var check = true;
+              if (store.base64Image == "") {
+                return "写真を追加してください";
+              }
+              if (store.spotId == "") {
+                return "神社・寺院を選択してください";
+              }
+              if (store.sanpaiDate == "") {
+                return "参拝日を選択してください";
+              }
+            });
           }
 
           // データを登録・更新する
