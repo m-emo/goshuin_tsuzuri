@@ -10,7 +10,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 
-import '../app_store.dart';
+import '../../app_store.dart';
+
 
 class GoshuinEdit extends StatelessWidget {
   const GoshuinEdit({Key key, @required this.store, this.kbn})
@@ -581,7 +582,7 @@ class ButtonArea extends StatefulWidget {
 }
 
 class _ButtonAreaState extends State<ButtonArea> {
-  var goshuin = Goshuin();
+  var goshuin = GoshuinData();
 
   // 引数
   final String kbn;
@@ -654,7 +655,7 @@ class _ButtonAreaState extends State<ButtonArea> {
             store.setGoshuinMaxId(id);
 
             // insert
-            goshuin = Goshuin(
+            goshuin = GoshuinData(
               id: id,
               img: store.base64Image,
               spotId: store.spotId,
@@ -664,6 +665,19 @@ class _ButtonAreaState extends State<ButtonArea> {
               createData: id,
             );
             // DbGoshuinData().insertGoshuin(goshuin);
+
+            // リストの先頭にデータセット
+            //★テスト用に固定値設定
+            GoshuinListData setListData = GoshuinListData(id: "GSI000003",
+              img: "",
+              spotId: "26-00001",
+              spotName: "清水寺①",
+              spotPrefectures: "京都府",
+              goshuinName: "限定御朱印①",
+              date: "2021.10.30",
+              memo: "テストテスト",
+              createData: "2021.10.20",);
+            store.setGoshuinArrayOneData(setListData);
           }
 
           /*更新*/
@@ -694,7 +708,8 @@ class _ButtonAreaState extends State<ButtonArea> {
 
           // データを登録・更新する
           var msg = "";
-          msg = inputCheck(); // 入力チェック
+          //★確認のために外す
+          // msg = inputCheck(); // 入力チェック
           if (msg != "") {
             // チェックNG
             // _pushDialog(context, msg);

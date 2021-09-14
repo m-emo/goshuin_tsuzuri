@@ -20,7 +20,7 @@ class DbGoshuinData extends DBProvider {
   }
 
   /* データ登録*/
-  Future<void> insertGoshuin(Goshuin goshuin) async {
+  Future<void> insertGoshuin(GoshuinData goshuin) async {
     final Database db = await database;
     await db.insert(
       tableName,
@@ -30,7 +30,7 @@ class DbGoshuinData extends DBProvider {
   }
 }
 
-class Goshuin {
+class GoshuinData {
   final String id; // [GSI+連番6桁（GSI000001）]
   final String img; // 画像(base64)
   final String spotId; // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
@@ -39,7 +39,7 @@ class Goshuin {
   final String memo; // メモ
   final String createData; // 登録日
 
-  Goshuin(
+  GoshuinData(
       {this.id,
         this.img,
         this.spotId,
@@ -62,11 +62,11 @@ class Goshuin {
 
   @override
   String toString() {
-    return 'Goshuin{id: $id, img: $img, spotId: $spotId, goshuinName: $goshuinName, date: $date, memo: $memo, createData: $createData}';
+    return 'GoshuinData{id: $id, img: $img, spotId: $spotId, goshuinName: $goshuinName, date: $date, memo: $memo, createData: $createData}';
   }
 }
 
-class GoshuinList {
+class GoshuinListData {
   final String id; // [GSI+連番6桁（GSI000001）]
   final String img; // 画像(base64)
   final String spotId; // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
@@ -77,7 +77,7 @@ class GoshuinList {
   final String memo; // メモ
   final String createData; // 登録日
 
-  GoshuinList(
+  GoshuinListData(
       {this.id,
         this.img,
         this.spotId,
@@ -104,6 +104,6 @@ class GoshuinList {
 
   @override
   String toString() {
-    return 'GoshuinList{id: $id, img: $img, spotId: $spotId, spotName: $spotName, spotPrefectures: $spotPrefectures, goshuinName: $goshuinName, date: $date, memo: $memo, createData: $createData}';
+    return 'GoshuinListData{id: $id, img: $img, spotId: $spotId, spotName: $spotName, spotPrefectures: $spotPrefectures, goshuinName: $goshuinName, date: $date, memo: $memo, createData: $createData}';
   }
 }

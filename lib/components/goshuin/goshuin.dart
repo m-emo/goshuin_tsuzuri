@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 
-import '../app_store.dart';
+import '../../app_store.dart';
+
+
 
 class Goshuin extends StatelessWidget {
-  const Goshuin({Key key, @required this.store}) : super(key: key);
+  const Goshuin({Key key, @required this.store, @required this.goshuinData})
+      : super(key: key);
 
+  // 引数
   final AppStore store;
+  final GoshuinListData goshuinData;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +23,7 @@ class Goshuin extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            '御朱印名',
+            goshuinData.spotName,
             style: Styles.appBarTextStyle,
           ),
           actions: <Widget>[
@@ -32,8 +38,8 @@ class Goshuin extends StatelessWidget {
         body: ListView(
           children: <Widget>[
             Photo(),
-            NameArea(),
-            MemoArea(),
+            NameArea(goshuinData: goshuinData),
+            MemoArea(goshuinData: goshuinData),
           ],
         ));
   }
@@ -182,10 +188,15 @@ class ImagePickerViewState extends State {
 //******** 御朱印名Widget -start- ********
 /*
 * 御朱印名Widget
-* prm : kbn 更新・新規登録区分値
+* prm : goshuinData 御朱印データ
 * return : Widget
  */
 class NameArea extends StatelessWidget {
+  // 引数
+  final GoshuinListData goshuinData;
+
+  NameArea({@required this.goshuinData});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -199,7 +210,7 @@ class NameArea extends StatelessWidget {
           Container(
             width: double.infinity,
             child: Text(
-              "[ 京都府 ]  " + "2020.10.10",
+              "[ " + goshuinData.spotPrefectures + " ]  " + goshuinData.date,
               style: Styles.subTextStyle,
               textAlign: TextAlign.right,
             ),
@@ -207,15 +218,15 @@ class NameArea extends StatelessWidget {
           Container(
             padding: const EdgeInsets.only(top: 15.0),
             child: Text(
-              "八坂神社",
-              // 御朱印名
+              goshuinData.spotName,
+              // 神社名
               style: Styles.mainTextStyleLarge,
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 15.0),
             child: Text(
-              "通常朱印",
+              goshuinData.goshuinName,
               // 御朱印名
               style: Styles.mainTextStyle,
             ),
@@ -230,10 +241,15 @@ class NameArea extends StatelessWidget {
 //******** メモWidget -start- ********
 /*
 * メモWidget
-* prm : kbn 更新・新規登録区分値
+* prm : goshuinData 御朱印データ
 * return : Widget
  */
 class MemoArea extends StatelessWidget {
+  // 引数
+  final GoshuinListData goshuinData;
+
+  MemoArea({@required this.goshuinData});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -250,7 +266,7 @@ class MemoArea extends StatelessWidget {
           ),
           // メモ欄
           Text(
-            "通常朱印○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○○",
+            goshuinData.memo,
             style: Styles.mainTextStyle,
           ),
         ],

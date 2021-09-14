@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:mobx/mobx.dart';
 
 import 'dao/db_goshuin_data.dart';
+import 'dao/db_spot_data.dart';
 
 part 'app_store.g.dart';
 
@@ -70,35 +71,11 @@ abstract class _AppStore with Store {
 
   // 御朱印一覧
   @observable
-  List<GoshuinList> goshuinArray = [
-    GoshuinList(id: "GSI000001",
-      img: "",
-      spotId: "03-00001",
-      spotName: "八坂神社",
-      spotPrefectures: "京都",
-      goshuinName: "限定御朱印",
-      date: "2021.10.10",
-      memo: "テストテスト",
-      createData: "2021.10.20",),
-    GoshuinList(id: "GSI000002",
-      img: "",
-      spotId: "03-00001",
-      spotName: "最上稲荷",
-      spotPrefectures: "岡山",
-      goshuinName: "通常御朱印",
-      date: "2021.10.20",
-      memo: "テストテスト",
-      createData: "2021.10.20",),
-    GoshuinList(id: "GSI000003",
-      img: "",
-      spotId: "03-00001",
-      spotName: "清水寺",
-      spotPrefectures: "京都",
-      goshuinName: "限定御朱印",
-      date: "2021.10.30",
-      memo: "テストテスト",
-      createData: "2021.10.20",),
-  ];
+  List<GoshuinListData> goshuinArray;
+  // 神社・寺院一覧
+  @observable
+  List<SpotData> spotArray;
+
 
   @action
   void setBase64Image(String value){
@@ -132,8 +109,20 @@ abstract class _AppStore with Store {
   void setGoshuinErrFlg(bool value){
     goshuinErrFlg = value;
   }
+  @action
+  void setGoshuinArray(List<GoshuinListData> value){
+    goshuinArray = value;
+  }
+  @action
+  void setSpotArray(List<SpotData> value){
+    spotArray = value;
+  }
 
-
+  // リストの先頭に御朱印データ設定
+  @action
+  void setGoshuinArrayOneData(GoshuinListData value){
+    goshuinArray.insert(0, value);
+  }
 
 
   // ignore: use_setters_to_change_properties

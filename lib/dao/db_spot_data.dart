@@ -20,7 +20,7 @@ class DbSpotData extends DBProvider {
   }
 
   /* データ登録*/
-  Future<void> insertSpot(Spot spot) async {
+  Future<void> insertSpot(SpotData spot) async {
     final Database db = await database;
     await db.insert(
       tableName,
@@ -30,7 +30,7 @@ class DbSpotData extends DBProvider {
   }
 }
 
-class Spot {
+class SpotData {
   final String id; // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
   final String spotName; // 神社・寺名
   final String prefectures; // 都道府県名
@@ -38,7 +38,7 @@ class Spot {
   final String img; // 画像(base64)
   final String createData; // 登録日
 
-  Spot(
+  SpotData(
       {this.id,
         this.spotName,
         this.prefectures,
@@ -59,6 +59,6 @@ class Spot {
 
   @override
   String toString() {
-    return 'Spot{id: $id, spotName: $spotName, prefectures: $prefectures, prefecturesNo: $prefecturesNo, img: $img, createData: $createData}';
+    return 'SpotData{id: $id, spotName: $spotName, prefectures: $prefectures, prefecturesNo: $prefecturesNo, img: $img, createData: $createData}';
   }
 }

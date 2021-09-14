@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:goshuintsuzuri/goshuin_edit/goshuin_edit.dart';
-import 'package:goshuintsuzuri/jinja_list/jinja_list.dart';
+import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
+import 'package:goshuintsuzuri/components/jinja_list/jinja_list.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
+import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:goshuintsuzuri/goshuin_list/goshuin_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_store.dart';
@@ -47,10 +49,77 @@ class _RootWidgetState extends State<RootWidget> {
   @override
   void initState() {
     super.initState();
+    // 画面下のタブ表示
     _bottomNavigationBarItems.add(_UpdateActiveState(0));
     for (var i = 1; i < _footerItemNames.length; i++) {
       _bottomNavigationBarItems.add(_UpdateDeactiveState(i));
     }
+
+    // DBからデータ取得
+    List<GoshuinListData> value = [
+      GoshuinListData(id: "GSI000001",
+        img: "",
+        spotId: "26-00002",
+        spotName: "八坂神社",
+        spotPrefectures: "京都府",
+        goshuinName: "限定御朱印",
+        date: "2021.10.10",
+        memo: "テストテスト",
+        createData: "2021.10.20",),
+      GoshuinListData(id: "GSI000002",
+        img: "",
+        spotId: "33-00001",
+        spotName: "最上稲荷",
+        spotPrefectures: "岡山県",
+        goshuinName: "通常御朱印",
+        date: "2021.10.20",
+        memo: "テストテスト",
+        createData: "2021.10.20",),
+       GoshuinListData(id: "GSI000003",
+        img: "",
+        spotId: "26-00001",
+        spotName: "清水寺",
+        spotPrefectures: "京都府",
+        goshuinName: "限定御朱印",
+        date: "2021.10.30",
+        memo: "テストテスト",
+        createData: "2021.10.20",),
+        GoshuinListData(id: "GSI000004",
+          img: "",
+          spotId: "26-00002",
+          spotName: "八坂神社",
+          spotPrefectures: "京都府",
+          goshuinName: "限定御朱印",
+          date: "2021.10.10",
+          memo: "テストテスト",
+          createData: "2021.10.20",),
+    ];
+    store.setGoshuinArray(value);
+    // DBからデータ取得
+    List<SpotData> value2 = [
+      SpotData(
+          id: "26-00001",
+          spotName: "清水寺",
+          prefectures: "京都府",
+          prefecturesNo: "26",
+          img: "",
+          createData: "2021.10.20",),
+      SpotData(
+        id: "33-00001",
+        spotName: "最上稲荷",
+        prefectures: "岡山県",
+        prefecturesNo: "33",
+        img: "",
+        createData: "2021.10.20",),
+      SpotData(
+        id: "26-00002",
+        spotName: "八坂神社",
+        prefectures: "京都府",
+        prefecturesNo: "26",
+        img: "",
+        createData: "2021.10.20",),
+    ];
+    store.setSpotArray(value2);
   }
 
   /// インデックスのアイテムをアクティベートする
@@ -85,7 +154,13 @@ class _RootWidgetState extends State<RootWidget> {
   void _onItemTapped(int index) {
     setState(() {
       if (index == 2) {
-        Navigator.pushNamed(context, '/addGoshuin');
+        // Navigator.pushNamed(context, '/addGoshuin');
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => GoshuinEdit(store: store)),
+        );
+
+
       } else {
         _bottomNavigationBarItems[_selectedIndex] =
             _UpdateDeactiveState(_selectedIndex);
@@ -100,7 +175,7 @@ class _RootWidgetState extends State<RootWidget> {
 
     var _routes = [
       GoshuinList(store: store),
-      JinjaList(),
+      JinjaList(store: store),
       GoshuinEdit(kbn: "0"),
     ];
 

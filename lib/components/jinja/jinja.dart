@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
+import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 
-import '../app_store.dart';
+import '../../app_store.dart';
 
 class Jinja extends StatelessWidget {
-  const Jinja({Key key, @required this.store}) : super(key: key);
+  const Jinja(
+      {Key key,
+      @required this.store,
+      @required this.spotData,
+      @required this.goshuinArray})
+      : super(key: key);
 
-  // 引数取得
+  // 引数
   final AppStore store;
+  final SpotData spotData;
+  final List<GoshuinListData> goshuinArray;
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +28,7 @@ class Jinja extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            '神社名',
+            spotData.spotName,
             style: Styles.appBarTextStyle,
           ),
           actions: <Widget>[
@@ -32,8 +42,8 @@ class Jinja extends StatelessWidget {
         body: ListView(
           children: <Widget>[
             Photo(),
-            NameArea(),
-            ListArea(),
+            NameArea(spotData: spotData),
+            ListArea(goshuinArray: goshuinArray, store: store),
           ],
         ));
   }
@@ -186,6 +196,11 @@ class ImagePickerViewState extends State {
 * return : Widget
  */
 class NameArea extends StatelessWidget {
+  // 引数
+  final SpotData spotData;
+
+  NameArea({@required this.spotData});
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -206,7 +221,7 @@ class NameArea extends StatelessWidget {
             Container(
               width: double.infinity,
               child: Text(
-                "[ 京都府 ]",
+                "[ " + spotData.prefectures + " ]",
                 style: Styles.subTextStyle,
                 textAlign: TextAlign.right,
               ),
@@ -214,7 +229,7 @@ class NameArea extends StatelessWidget {
             Container(
               padding: const EdgeInsets.only(top: 15.0),
               child: Text(
-                "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
+                spotData.spotName,
                 // 御朱印名
                 style: Styles.mainTextStyleLarge,
               ),
@@ -230,10 +245,17 @@ class NameArea extends StatelessWidget {
 //******** 御朱印リストWidget -start- ********
 /*
 * 御朱印リストWidget
-* prm :
+* prm : goshuinArray 神社・寺院別の御朱印一覧データ
+*       store 利用データ
 * return : Widget
  */
 class ListArea extends StatelessWidget {
+  // 引数
+  final List<GoshuinListData> goshuinArray;
+  final AppStore store;
+
+  ListArea({@required this.goshuinArray, @required this.store});
+
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
@@ -248,7 +270,13 @@ class ListArea extends StatelessWidget {
             width: 1.0,
           ))),
           child: InkWell(
-            onTap: () => Navigator.pushNamed(context, '/goshuin'),
+            onTap: () {
+              GoshuinListData goshuinData = goshuinArray[index];
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => Goshuin(store: store, goshuinData: goshuinData)),
+              );
+            },
             child: Container(
               color: Colors.white,
               padding:
@@ -285,15 +313,14 @@ class ListArea extends StatelessWidget {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
-                              // 御朱印名
+                              goshuinArray[index].goshuinName, // 御朱印名
                               style: Styles.mainTextStyle,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
                             ),
                           ),
                           Container(
-                            child: Text("2020.10.10",
+                            child: Text(goshuinArray[index].date,
                                 // 日付
                                 style: Styles.subTextStyleSmall),
                           ),
@@ -307,7 +334,7 @@ class ListArea extends StatelessWidget {
           ),
         );
       },
-      itemCount: 3,
+      itemCount: goshuinArray.length,
     );
   }
 }

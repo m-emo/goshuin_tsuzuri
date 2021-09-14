@@ -1,8 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/common/header.dart';
+import 'package:goshuintsuzuri/components/jinja/jinja.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
+import 'package:goshuintsuzuri/dao/db_spot_data.dart';
+import '../../app_store.dart';
 
 class JinjaList extends StatelessWidget {
+  JinjaList({Key key, @required this.store}) : super(key: key);
+
+  // 引数取得
+  final AppStore store; // 引数
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +37,24 @@ class JinjaList extends StatelessWidget {
               width: 1.0,
             ))),
             child: InkWell(
-              onTap: () => Navigator.pushNamed(context, '/addJinja'),
+              // onTap: () => Navigator.pushNamed(context, '/addJinja'),
+              onTap: () {
+                // 神社・寺院別の御朱印一覧取得
+                List<GoshuinListData> goshuinArray = [];
+                for (var getgoshuin in store.goshuinArray) {
+                  // 神社・寺院別のIDが一致する場合、リストに設定
+                  if(getgoshuin.spotId == (store.spotArray)[index].id){
+                    goshuinArray.add(getgoshuin);
+                  }
+                }
+
+                // 画面表示用のデータ設定
+                SpotData spotData = (store.spotArray)[index];
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => Jinja(store: store, spotData: spotData, goshuinArray:goshuinArray)),
+                );
+              },
               child: Container(
                 color: Colors.white,
                 padding:
@@ -59,7 +85,7 @@ class JinjaList extends StatelessWidget {
                       Expanded(
                         child: Container(
                           child: Text(
-                            "あああああああああああああああああああああああああああああ", // 神社・寺院名
+                            "${(store.spotArray)[index].spotName}", // 神社・寺院名
                             style: Styles.mainTextStyleBold,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
@@ -67,9 +93,8 @@ class JinjaList extends StatelessWidget {
                         ),
                       ),
                       Container(
-                        color: Colors.green,
                         // width: 60,
-                        child: Text("[ " + "北海道" + " ]  ",
+                        child: Text("[ " + "${(store.spotArray)[index].prefectures}" + " ]  ",
                             style: Styles.mainTextStyleSmall),
                       ),
                     ],
@@ -79,7 +104,7 @@ class JinjaList extends StatelessWidget {
             ),
           );
         },
-        itemCount: 10,
+        itemCount: (store.spotArray).length,
       ),
     );
   }

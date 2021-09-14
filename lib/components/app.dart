@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/root.dart';
 import 'package:goshuintsuzuri/components/select_jinja_list/select_jinja_list.dart';
-import 'package:goshuintsuzuri/goshuin/goshuin.dart';
-import 'package:goshuintsuzuri/goshuin_edit/goshuin_edit.dart';
-import 'package:goshuintsuzuri/jinja/jinja.dart';
+
 import 'package:goshuintsuzuri/components/pefectures_list/prefectures_list.dart';
 
 import '../app_store.dart';
+import 'goshuin_edit/goshuin_edit.dart';
 
 class App extends StatelessWidget {
   @override
@@ -16,10 +15,10 @@ class App extends StatelessWidget {
     return MaterialApp(
       home: RootWidget(store: store),
       routes: <String, WidgetBuilder>{
-        '/addJinja': (_) => Jinja(store: store),
-        '/goshuin': (_) => Goshuin(store: store),
+        // '/addJinja': (_) => Jinja(store: store),
+        // '/goshuin': (_) => Goshuin(store: store),
         '/editGoshuin': (_) => GoshuinEdit(store: store),
-        '/addGoshuin': (_) => GoshuinEdit(store: store, kbn: '0'),
+        // '/addGoshuin': (_) => GoshuinEdit(store: store, kbn: '0'),
         '/selecctJinjaList': (_) => SelectJinjaList(store: store),
       },
       // title: 'Flutter Demo',
