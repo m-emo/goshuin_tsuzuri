@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
+import 'package:goshuintsuzuri/components/goshuin_list/goshuin_list.dart';
 import 'package:goshuintsuzuri/components/jinja_list/jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
-import 'package:goshuintsuzuri/goshuin_list/goshuin_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_store.dart';
 
@@ -57,7 +57,7 @@ class _RootWidgetState extends State<RootWidget> {
 
     // DBからデータ取得
     List<GoshuinListData> value = [
-      GoshuinListData(id: "GSI000001",
+GoshuinListData(id: "GSI000001",
         img: "",
         spotId: "26-00002",
         spotName: "八坂神社",
@@ -100,6 +100,7 @@ class _RootWidgetState extends State<RootWidget> {
       SpotData(
           id: "26-00001",
           spotName: "清水寺",
+          kbn: "2",
           prefectures: "京都府",
           prefecturesNo: "26",
           img: "",
@@ -107,6 +108,7 @@ class _RootWidgetState extends State<RootWidget> {
       SpotData(
         id: "33-00001",
         spotName: "最上稲荷",
+        kbn: "3",
         prefectures: "岡山県",
         prefecturesNo: "33",
         img: "",
@@ -114,6 +116,7 @@ class _RootWidgetState extends State<RootWidget> {
       SpotData(
         id: "26-00002",
         spotName: "八坂神社",
+        kbn: "1",
         prefectures: "京都府",
         prefecturesNo: "26",
         img: "",

@@ -17,9 +17,9 @@ class App extends StatelessWidget {
       routes: <String, WidgetBuilder>{
         // '/addJinja': (_) => Jinja(store: store),
         // '/goshuin': (_) => Goshuin(store: store),
-        '/editGoshuin': (_) => GoshuinEdit(store: store),
+        // '/editGoshuin': (_) => GoshuinEdit(store: store),
         // '/addGoshuin': (_) => GoshuinEdit(store: store, kbn: '0'),
-        '/selecctJinjaList': (_) => SelectJinjaList(store: store),
+        // '/selecctJinjaList': (_) => SelectJinjaList(store: store),
       },
       // title: 'Flutter Demo',
       // theme: ThemeData(

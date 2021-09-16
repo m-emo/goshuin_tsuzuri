@@ -15,7 +15,7 @@ class DbSpotData extends DBProvider {
   @override
   createDatabase(Database db, int version) async {
     db.execute(
-      "CREATE TABLE $tableName(id TEXT PRIMARY KEY, spotName TEXT,  prefectures TEXT,  prefecturesNo TEXT, img TEXT, createData TEXT)",
+      "CREATE TABLE $tableName(id TEXT PRIMARY KEY, spotName TEXT,  kbn TEXT, prefectures TEXT,  prefecturesNo TEXT, img TEXT, createData TEXT)",
     );
   }
 
@@ -33,6 +33,7 @@ class DbSpotData extends DBProvider {
 class SpotData {
   final String id; // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
   final String spotName; // 神社・寺名
+  final String kbn; // 区分（1:神社, 2:寺 ,0:その他）
   final String prefectures; // 都道府県名
   final String prefecturesNo; // 都道府県No
   final String img; // 画像(base64)
@@ -41,6 +42,7 @@ class SpotData {
   SpotData(
       {this.id,
         this.spotName,
+        this.kbn,
         this.prefectures,
         this.prefecturesNo,
         this.img,
@@ -50,6 +52,7 @@ class SpotData {
     return {
       'id': id,
       'spotName': spotName,
+      'kbn': kbn,
       'prefectures': prefectures,
       'prefecturesNo': prefecturesNo,
       'img': img,
@@ -59,6 +62,6 @@ class SpotData {
 
   @override
   String toString() {
-    return 'SpotData{id: $id, spotName: $spotName, prefectures: $prefectures, prefecturesNo: $prefecturesNo, img: $img, createData: $createData}';
+    return 'SpotData{id: $id, spotName: $spotName, kbn: $kbn, prefectures: $prefectures, prefecturesNo: $prefecturesNo, img: $img, createData: $createData}';
   }
 }

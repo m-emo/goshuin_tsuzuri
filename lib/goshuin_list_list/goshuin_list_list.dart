@@ -26,15 +26,11 @@ class GoshuinListList extends StatelessWidget {
                 GoshuinListData goshuinData = (store.goshuinArray)[index];
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Goshuin(store: store, goshuinData: goshuinData)),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Goshuin(store: store, goshuinData: goshuinData)),
                 );
               },
-              // onTap: () => Navigator.push(
-              //     context,
-              //     MaterialPageRoute(
-              //       builder: (context) =>
-              //           Goshuin(store: store),
-              //     )),
               child: Container(
                 /*color: Colors.white,
               padding: const EdgeInsets.only(
@@ -48,23 +44,10 @@ class GoshuinListList extends StatelessWidget {
                       child: Observer(
                         builder: (context) {
                           return Container(
-                            child: "${store.bytesImage}" == null
-                                ? new Text('No image value.')
-                                : Image.memory(
-                                    store.bytesImage,
-                                    fit: BoxFit.cover,
-                                  ),
+                            child: showImg((store.goshuinArray)[index].img),
                           );
                         },
                       ),
-                      /*
-                      child: bytesImage == null
-                          ? new Text('No image value.')
-                          : Image.memory(
-                        bytesImage,
-                        fit: BoxFit.cover,
-                      )
-                  */
                     ),
                     Container(
                       padding: const EdgeInsets.only(right: 10.0),
@@ -88,7 +71,8 @@ class GoshuinListList extends StatelessWidget {
                             child: Observer(
                               builder: (context) {
                                 return Text(
-                                  "${(store.goshuinArray)[index].goshuinName}", // 御朱印名
+                                  "${(store.goshuinArray)[index].goshuinName}",
+                                  // 御朱印名
                                   style: Styles.mainTextStyle,
                                   overflow: TextOverflow.ellipsis,
                                 );
@@ -120,5 +104,23 @@ class GoshuinListList extends StatelessWidget {
         itemCount: (store.goshuinArray).length,
       ),
     );
+  }
+
+  /*画像がない場合は初期画像を表示*/
+  Image showImg(bytesImage) {
+    if (null == bytesImage || "" == bytesImage) {
+      // 画像なし
+      return Image(
+        image: AssetImage(
+          'assets/img/logo.png',
+        ),
+      );
+    } else {
+      // 画像あり
+      return Image.memory(
+        store.bytesImage,
+        fit: BoxFit.cover,
+      );
+    }
   }
 }

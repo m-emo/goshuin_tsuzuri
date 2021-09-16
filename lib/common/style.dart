@@ -79,6 +79,9 @@ class StylesColor {
 
   // サブテキストカラー
   static const subTextColor = Color(0xFF707070);
+
+  // サブテキストカラー(薄め）
+  static const subTextColor2 = Color(0xFFB9B9B9);
 }
 
 class StylesIcon {
@@ -99,4 +102,15 @@ class StylesIcon {
   // 画像アイコン
   static const insertPhotoRounded =
       Icon(Icons.insert_photo_rounded, color: Color(0xFFB9B9B9), size: 100);
+
+  // 神社・寺院選択リスト用アイコン
+  // 神社
+  static const jinjaIcon =
+      Icon(FontAwesomeIcons.toriiGate, color: Color(0xFFB9B9B9), size: 20);
+  // 神社
+  static const teraIcon =
+  Icon(FontAwesomeIcons.home, color: Color(0xFFB9B9B9), size: 20);
+  // その他
+  static const sonotaIcon =
+  Icon(FontAwesomeIcons.key, color: Color(0xFFB9B9B9), size: 20);
 }

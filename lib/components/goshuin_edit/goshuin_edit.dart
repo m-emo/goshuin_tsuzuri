@@ -5,13 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/select_jinja_list/select_jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
+import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
 
 import '../../app_store.dart';
-
 
 class GoshuinEdit extends StatelessWidget {
   const GoshuinEdit({Key key, @required this.store, this.kbn})
@@ -58,10 +59,13 @@ class GoshuinEdit extends StatelessWidget {
                 alignment: Alignment.center,
                 margin: EdgeInsets.only(top: 80),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8.0),
-                    color: Colors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(8.0),
+                  color: Colors.black.withOpacity(0.5),
                 ),
-                child: Text('写真を追加してください',style: Styles.mainButtonTextStyle,),
+                child: Text(
+                  '写真を追加してください',
+                  style: Styles.mainButtonTextStyle,
+                ),
                 width: 300.0,
                 height: 80.0,
               ),
@@ -100,7 +104,7 @@ class Area extends StatelessWidget {
           // ButtonArea(kbn: kbn, updateGoshuin: goshuin),
           ButtonArea(kbn: kbn, store: store),
           kbn == "1" // 更新
-              ? ButtonDeleteArea()
+              ? ButtonDeleteArea(store: store)
               : Container(),
         ],
       ),
@@ -119,7 +123,6 @@ class ImagePickerView extends StatefulWidget {
   // 引数
   final String kbn;
   final AppStore store;
-
   ImagePickerView({this.kbn, this.store});
 
   @override
@@ -276,6 +279,7 @@ class PlaceArea extends StatelessWidget {
 // 引数
   final String kbn;
   final AppStore store;
+
   PlaceArea({this.kbn, this.store});
 
   @override
@@ -287,7 +291,11 @@ class PlaceArea extends StatelessWidget {
       child: InkWell(
         onTap: () {
           FocusScope.of(context).unfocus();
-          Navigator.pushNamed(context, '/selecctJinjaList');
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => SelectJinjaList(store: store)),
+          );
         },
         child: Row(
           children: <Widget>[
@@ -311,7 +319,7 @@ class PlaceArea extends StatelessWidget {
                                   TextSpan(
                                       text: ' *',
                                       style:
-                                      TextStyle(color: Color(0xFFD13833))),
+                                          TextStyle(color: Color(0xFFD13833))),
                                 ],
                               ),
                             ),
@@ -384,7 +392,7 @@ class NameArea extends StatelessWidget {
                 hintText: '通常御朱印',
                 hintStyle: TextStyle(fontSize: 14.0, color: Colors.black12),
               ),
-              onChanged: (changed) => store.setName(changed),
+              onChanged: (changed) => store.setGoshuinName(changed),
               // onChanged: (changed) => valueChangeNotifier.setName(changed),
             ),
           ),
@@ -575,6 +583,7 @@ class ButtonArea extends StatefulWidget {
   // 引数
   final String kbn;
   final AppStore store;
+
   ButtonArea({this.kbn, this.store});
 
   @override
@@ -587,6 +596,7 @@ class _ButtonAreaState extends State<ButtonArea> {
   // 引数
   final String kbn;
   final AppStore store;
+
   _ButtonAreaState({this.kbn, this.store});
 
   @override
@@ -640,7 +650,7 @@ class _ButtonAreaState extends State<ButtonArea> {
             // 最大ID取得
             // GoshuinList max = await DbGoshuinData().getMaxIdGoshuin();
             // var maxId = max.id;
-            var maxId = store.goshuinName;
+            var maxId = store.goshuinMaxId;
             var id = "";
             if (maxId == null || maxId == "") {
               // 初回登録
@@ -660,15 +670,16 @@ class _ButtonAreaState extends State<ButtonArea> {
               img: store.base64Image,
               spotId: store.spotId,
               goshuinName: store.goshuinName,
-              date: id,
-              memo: id,
+              date: store.sanpaiDate,
+              memo: store.memo,
               createData: id,
             );
-            // DbGoshuinData().insertGoshuin(goshuin);
+            // DbGoshuinData().insertGoshuin(goshuin); // ★　戻す
 
-            // リストの先頭にデータセット
+            // 御朱印一覧保持リストの先頭にデータセット
             //★テスト用に固定値設定
-            GoshuinListData setListData = GoshuinListData(id: "GSI000003",
+            GoshuinListData setListData = GoshuinListData(
+              id: "GSI000003",
               img: "",
               spotId: "26-00001",
               spotName: "清水寺①",
@@ -676,14 +687,46 @@ class _ButtonAreaState extends State<ButtonArea> {
               goshuinName: "限定御朱印①",
               date: "2021.10.30",
               memo: "テストテスト",
-              createData: "2021.10.20",);
+              createData: "2021.10.20",
+            );
             store.setGoshuinArrayOneData(setListData);
+
+            //神社・寺院一覧保持リストの先頭にデータセット
+            //★テスト用に固定値設定
+            SpotData setSpotData = SpotData(
+              id: "44-00001",
+              spotName: "大分清水寺①",
+              prefectures: "大分県",
+              prefecturesNo: "44",
+              img: "",
+              createData: "2021.10.20",
+            );
+            store.setSpotArrayOneData(setSpotData);
           }
 
-          /*更新*/
-          void update() {}
+          /*
+          更新
+          */
+          void update() {
+            //神社・寺院一覧保持リストの先頭にデータセット
+            GoshuinListData setListData = GoshuinListData(
+              id: store.goshuinId,
+              img: store.base64Image,
+              spotId: store.spotId,
+              spotName: store.spotName,
+              spotPrefectures: store.spotPrefectures,
+              goshuinName: store.goshuinName,
+              date: store.sanpaiDate,
+              memo: store.memo,
+              createData: store.createData,
+            );
+            store.updateGoshuinArrayOneData(setListData);
+            //update
+          }
 
-          /*入力チェック*/
+          /*
+          入力チェック
+          */
           String inputCheck() {
             setState(() {
               bool isVisible = store.goshuinErrFlg;
@@ -783,83 +826,41 @@ class _ButtonAreaState extends State<ButtonArea> {
 //             print("add.dart ★更新した" + updateGoshuin.id);
 //             print(valueChangeNotifier._jinjaId);
 //           }
-//
-//           /*入力チェック*/
-//           String checkInsert() {
-//             var text = "";
-//             var check = true;
-//             if (valueChangeNotifier._img == "") {
-//               text = "御朱印画像を追加してください";
-//               return text;
-//             }
-//             if (valueChangeNotifier._jinjaId == "") {
-//               if (text != "") {
-//                 text = text + "、神社・寺院";
-//               } else {
-//                 text = "神社・寺院";
-//               }
-//               check = false;
-//             }
-//             if (valueChangeNotifier._date == "") {
-//               if (text != "") {
-//                 text = text + "、参拝日";
-//               } else {
-//                 text = "参拝日";
-//               }
-//               check = false;
-//             }
-//
-//             if (check == false) {
-//               text = text + "は必須です。\n入力してください。";
-//             }
-//             return text;
-//           }
-//
-//           // 更新
-//           var msg = "";
-//           if (kbn == "1") {
-//             await update();
-//             // 戻る
-//             Navigator.of(context).pop();
-//           }
-//           // 登録
-//           else {
-//             msg = checkInsert();
-//             if (msg != "") {
-//               _pushDialog(context, msg);
-//             } else {
-//               await insert();
-//               // 戻る
-//               Navigator.of(context).pop();
-//             }
-//           }
 //         },
       ),
     );
   }
 }
-
 //******** ボタンWidget -end- ********
 
 //******** 削除ボタンWidget -start- ********
 /*
 * 削除ボタンWidget
+* prm : store データ
 * return : Widget
  */
 class ButtonDeleteArea extends StatelessWidget {
+  // 引数
+  final AppStore store;
+  ButtonDeleteArea({this.store});
+  
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(right: 20.0, left: 20.0),
-      child: RaisedButton(
-        padding: EdgeInsets.all(15.0),
-        child: Text('御朱印を削除する', style: Styles.mainButtonTextStyleRed),
-        // color: Colors.notnull,
-        shape: const OutlineInputBorder(
-          borderRadius: BorderRadius.all(Radius.circular(5)),
-          borderSide: BorderSide(color: StylesColor.maincolor),
+      margin: const EdgeInsets.only(right: 20.0, bottom: 50.0, left: 20.0),
+      child: OutlinedButton(
+        style: OutlinedButton.styleFrom(
+          primary: Colors.black,
+          side: const BorderSide(color: StylesColor.maincolor),
+          padding: EdgeInsets.all(15.0),
         ),
-        onPressed: () {},
+        child: Text('御朱印を削除する', style: Styles.mainButtonTextStyleRed),
+        onPressed: () {
+          // ★DB削除
+
+          // リストから削除
+          store.deleteGoshuinArrayOneData(store.goshuinId);
+        },
       ),
     );
   }

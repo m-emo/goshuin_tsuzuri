@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 
 import '../../app_store.dart';
-
 
 
 class Goshuin extends StatelessWidget {
@@ -28,8 +28,24 @@ class Goshuin extends StatelessWidget {
           ),
           actions: <Widget>[
             IconButton(
+              // 編集画面へ移動
               icon: StylesIcon.editIcon,
-              onPressed: () => Navigator.pushNamed(context, '/editGoshuin'),
+              onPressed: () {
+                store.setGoshuinId(goshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
+                store.setBase64Image(goshuinData.img); // 御朱印画像(base64)
+                store.setSpotId(goshuinData.spotId); // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
+                store.setSpotName(goshuinData.spotName); // 神社・寺院名
+                store.setSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
+                store.setGoshuinName(goshuinData.goshuinName); // 御朱印名
+                store.setSanpaiDate(goshuinData.date); // 参拝日
+                store.setMemo(goshuinData.memo); // メモ
+                store.setCreateData(goshuinData.createData); // 登録日
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      GoshuinEdit(store: store, kbn: "1")),
+                );
+              },
             ),
           ],
           backgroundColor: Colors.white,
