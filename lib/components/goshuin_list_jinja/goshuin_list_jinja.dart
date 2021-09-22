@@ -1,8 +1,18 @@
 import 'package:configurable_expansion_tile/configurable_expansion_tile.dart';
 import 'package:flutter/material.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
+import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
+
+import '../../app_store.dart';
 
 class GoshuinListJija extends StatelessWidget {
+  const GoshuinListJija({Key key, @required this.store}) : super(key: key);
+
+  // 引数取得
+  final AppStore store; // 引数
+
   @override
   Widget build(BuildContext context) {
     return SingleChildScrollView(
@@ -10,33 +20,60 @@ class GoshuinListJija extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.max,
-        children: <Widget>[ListContents(), ListContents()],
+        children: <Widget>[ListContents(store: store)],
       ),
     );
   }
 }
 
 class ListContents extends StatelessWidget {
+  // 引数
+  final AppStore store;
+
+  ListContents({this.store});
+
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        Midashi(),
-        GoshuinListJija2(),
-        GoshuinListJija2(),
-        GoshuinListJija2()
-      ],
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return Column(
+          children: <Widget>[
+            _Midashi(
+                spotPrefectures: (store.goshuinArrayPef)[index]
+                    .value[0]
+                    .value[0]
+                    .spotPrefectures),
+            // GoshuinListJija2(),
+            // GoshuinListJija2(),
+            // GoshuinListJija2(),
+            _SpotList(store: store, spotList: (store.goshuinArrayPef)[index].value)
+          ],
+        );
+      },
+      itemCount: (store.goshuinArrayPef).length,
     );
   }
 }
 
-//******** 都道府県見出しWidget ********
-class Midashi extends StatelessWidget {
+//******** 都道府県見出しWidget -start- ********
+/*
+* 都道府県見出しWidget
+* prm : spotPrefectures 都道府県名
+* return : Widget
+ */
+class _Midashi extends StatelessWidget {
+  // 引数
+  final String spotPrefectures;
+
+  _Midashi({this.spotPrefectures});
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      height: 40.0,
+      height: 45.0,
       child: Row(
         children: <Widget>[
           Container(
@@ -49,7 +86,7 @@ class Midashi extends StatelessWidget {
               padding: const EdgeInsets.only(
                   top: 10, bottom: 10, left: 10.0, right: 10),
               child: Text(
-                "京都府", // 都道府県名
+                spotPrefectures, // 都道府県名
                 style: Styles.subTextStyle,
               ),
             ),
@@ -59,112 +96,148 @@ class Midashi extends StatelessWidget {
     );
   }
 }
+//******** 都道府県見出しWidget -end- ********
 
-class GoshuinListJija2 extends StatelessWidget {
+//******** 神社・寺院リストWidget -start- ********
+/*
+* 神社・寺院リストWidget
+* prm : spotList 都道府県別の神社・寺院リスト
+* return : Widget
+ */
+class _SpotList extends StatelessWidget {
+  // 引数
+  final AppStore store;
+  final List<MapEntry<String, List<GoshuinListData>>> spotList;
+
+  _SpotList({this.store, this.spotList});
+
   @override
   Widget build(BuildContext context) {
-    return ConfigurableExpansionTile(
-      header: Flexible(
-        child: Container(
-          padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 16),
-          height: 40.0,
-          child: Container(
-            /*color: Colors.white,
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return ConfigurableExpansionTile(
+          header: Flexible(
+            child: Container(
+              padding:
+                  EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 16),
+              height: 45.0,
+              child: Container(
+                /*color: Colors.white,
               padding: const EdgeInsets.only(
                   top: 0.0, right: 10.0, bottom: 0.0, left: 2.0),*/
-            child: Row(
-              children: <Widget>[
-                Expanded(
-                  child: Container(
-                    child: Text(
-                      "八坂神社", // 神社・寺院名
-                      style: Styles.mainTextStyleBold,
+                child: Row(
+                  children: <Widget>[
+                    Expanded(
+                      child: Container(
+                        child: Text(
+                          spotList[index].value[0].spotId + spotList[index].value[0].spotName, // 神社・寺院名
+                          style: Styles.mainTextStyleBold,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
-        ),
-      ),
-      // ヘッダー背景色
-      headerBackgroundColorStart: Colors.white,
-      // ヘッダー背景色
-      headerBackgroundColorEnd: Colors.white,
-      // 子要素の背景色
-      expandedBackgroundColor: Colors.white,
-      animatedWidgetFollowingHeader: StylesIcon.openIcon,
-      children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            for (int i = 0; i < 4; i++)
-              Container(
-                decoration: BoxDecoration(
-                    border: Border(
-                        bottom: BorderSide(
-                  color: StylesColor.bordercolor,
-                  width: 1.0,
-                ))),
-                child: InkWell(
-                  onTap: () => Navigator.pushNamed(context, '/goshuin'),
-                  child: Container(
-                    padding: EdgeInsets.only(
-                        top: 5, right: 10, bottom: 5, left: 10),
-                    child: Row(
+          // ヘッダー背景色
+          headerBackgroundColorStart: Colors.white,
+          // ヘッダー背景色
+          headerBackgroundColorEnd: Colors.white,
+          // 子要素の背景色
+          expandedBackgroundColor: Colors.white,
+          animatedWidgetFollowingHeader: StylesIcon.openIcon,
+          children: [
+            _GoshuinList(store:store, goshuinList: spotList[index].value),
+          ],
+        );
+      },
+      itemCount: (spotList).length,
+    );
+  }
+}
+
+//******** 神社・寺院リストWidget -end- ********
+
+//******** 御朱印リストWidget -start- ********
+/*
+* 御朱印リストWidget
+* prm : goshuinList 神社・寺院別の御朱印リスト
+* return : Widget
+ */
+class _GoshuinList extends StatelessWidget {
+// 引数
+  final AppStore store;
+  final List<GoshuinListData> goshuinList;
+  _GoshuinList({this.store, this.goshuinList});
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.builder(
+      shrinkWrap: true,
+      physics: NeverScrollableScrollPhysics(),
+      itemBuilder: (BuildContext context, int index) {
+        return Container(
+          decoration: BoxDecoration(
+              border: Border(
+                  bottom: BorderSide(
+            color: StylesColor.bordercolor,
+            width: 1.0,
+          ))),
+          child: InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) =>
+                        Goshuin(store: store, goshuinData: goshuinList[index])),
+              );
+            },
+            child: Container(
+              padding: EdgeInsets.only(top: 5, right: 10, bottom: 5, left: 10),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    height: 75.0,
+                    width: 75.0,
+                    color: StylesColor.bgImgcolor,
+                    child: showImg(goshuinList[index].img),
+                  ),
+                  Container(
+                    padding: const EdgeInsets.only(right: 10.0),
+                  ),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start, // 左寄せ
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 均等配置
                       children: <Widget>[
                         Container(
-                          height: 75.0,
-                          width: 75.0,
-                          color: StylesColor.bgImgcolor,
-                          /*
-                      child: bytesImage == null
-                          ? new Text('No image value.')
-                          : Image.memory(
-                        bytesImage,
-                        fit: BoxFit.cover,
-                      )
-                  */
+                          child: Text(
+                            goshuinList[index].id+goshuinList[index].goshuinName, // 御朱印名
+                            style: Styles.mainTextStyle,
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 2,
+                          ),
                         ),
                         Container(
-                          padding: const EdgeInsets.only(right: 10.0),
-                        ),
-                        Flexible(
-                          child: Column(
-                            // 左寄せ
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            // 均等配置
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: <Widget>[
-                              Container(
-                                child: Text(
-                                  // 御朱印名
-                                  "八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印八坂神社朱印",
-                                  style: Styles.mainTextStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                  maxLines: 2,
-                                ),
-                              ),
-                              Container(
-                                padding: const EdgeInsets.only(top: 5.0),
-                                child: Text(
-                                    // 日付
-                                    "2020.10.10",
-                                    style: Styles.subTextStyleSmall),
-                              ),
-                            ],
-                          ),
+                          padding: const EdgeInsets.only(top: 5.0),
+                          child: Text(goshuinList[index].date, // 日付
+                              style: Styles.subTextStyleSmall),
                         ),
                       ],
                     ),
                   ),
-                ),
+                ],
               ),
-          ],
-        ),
-        // + more params, see example !!
-      ],
+            ),
+          ),
+        );
+      },
+      itemCount: (goshuinList).length,
     );
   }
 }
+//******** 御朱印リストWidget -end- ********

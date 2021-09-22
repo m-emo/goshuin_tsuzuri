@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/common/header.dart';
 import 'package:goshuintsuzuri/components/jinja/jinja.dart';
@@ -71,12 +72,8 @@ class JinjaList extends StatelessWidget {
                         height: 65.0,
                         width: 95.0,
                         color: StylesColor.bgImgcolor,
-                        child: Observer(
-                          builder: (context) {
-                            return Container(
-                              child: showImg((store.spotArray)[index].img),
-                            );
-                          },
+                        child: Container(
+                            child: showImg((store.spotArray)[index].img),
                         ),
                       ),
                       Container(
@@ -107,23 +104,5 @@ class JinjaList extends StatelessWidget {
         itemCount: (store.spotArray).length,
       ),
     );
-  }
-
-/*画像がない場合は初期画像を表示*/
-  Image showImg(bytesImage) {
-    if (null == bytesImage || "" == bytesImage) {
-      // 画像なし
-      return Image(
-        image: AssetImage(
-          'assets/img/logo.png',
-        ),
-      );
-    } else {
-      // 画像あり
-      return Image.memory(
-        store.bytesImage,
-        fit: BoxFit.cover,
-      );
-    }
   }
 }

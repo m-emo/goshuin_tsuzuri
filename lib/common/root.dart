@@ -57,12 +57,12 @@ class _RootWidgetState extends State<RootWidget> {
 
     // DBからデータ取得
     List<GoshuinListData> value = [
-GoshuinListData(id: "GSI000001",
+GoshuinListData(id: "GSI000005",
         img: "",
         spotId: "26-00002",
-        spotName: "八坂神社",
+        spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
         spotPrefectures: "京都府",
-        goshuinName: "限定御朱印",
+        goshuinName: "限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印",
         date: "2021.10.10",
         memo: "テストテスト",
         createData: "2021.10.20",),
@@ -87,7 +87,7 @@ GoshuinListData(id: "GSI000001",
         GoshuinListData(id: "GSI000004",
           img: "",
           spotId: "26-00002",
-          spotName: "八坂神社",
+          spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
           spotPrefectures: "京都府",
           goshuinName: "限定御朱印",
           date: "2021.10.10",
@@ -115,7 +115,7 @@ GoshuinListData(id: "GSI000001",
         createData: "2021.10.20",),
       SpotData(
         id: "26-00002",
-        spotName: "八坂神社",
+        spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
         kbn: "1",
         prefectures: "京都府",
         prefecturesNo: "26",
@@ -123,6 +123,10 @@ GoshuinListData(id: "GSI000001",
         createData: "2021.10.20",),
     ];
     store.setSpotArray(value2);
+    // DBのデータから都道府県別の御朱印データ一覧を作成
+    store.setGoshuinArrayPef();
+// ★あとで削除
+    print(store.goshuinArrayPef);
   }
 
   /// インデックスのアイテムをアクティベートする

@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/common/header.dart';
 import 'package:goshuintsuzuri/components/goshuin_list_jinja/goshuin_list_jinja.dart';
+import 'package:goshuintsuzuri/components/goshuin_list_photo/goshuin_list_photo.dart';
 import 'package:goshuintsuzuri/goshuin_list_list/goshuin_list_list.dart';
-import 'package:goshuintsuzuri/goshuin_list_photo/goshuin_list_photo.dart';
 
 import '../../app_store.dart';
 
@@ -32,8 +32,8 @@ class GoshuinList extends StatelessWidget {
     final List<TabInfo> _tabs = [
       // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
       TabInfo("一覧", GoshuinListList(store: store)),
-      TabInfo("神社・寺院", GoshuinListJija()),
-      TabInfo("写真", GoshuinListPhoto()),
+      TabInfo("神社・寺院", GoshuinListJija(store: store)),
+      TabInfo("写真", GoshuinListPhoto(store: store)),
     ];
 
     return DefaultTabController(

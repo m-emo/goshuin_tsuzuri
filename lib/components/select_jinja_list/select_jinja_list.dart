@@ -45,16 +45,17 @@ class SelectJinjaList extends StatelessWidget {
             ))),
             child: InkWell(
               onTap: () {
-                store.setSpotId((store.spotArray)[index].id);
-                store.setSpotName((store.spotArray)[index].spotName);
-                store.setSpotPrefectures((store.spotArray)[index].prefectures);
+                store.setEditSpotId((store.spotArray)[index].id); // 神社・寺院ID
+                store.setEditSpotName(
+                    (store.spotArray)[index].spotName); // 神社・寺院名
+                store.setEditSpotPrefectures(
+                    (store.spotArray)[index].prefectures); // 神社・寺院 都道府県
                 Navigator.pop(context); //前の画面に戻る
               },
               child: Container(
                 color: Colors.white,
-                padding:
-                    EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
-                height: 60.0,
+                padding: EdgeInsets.only(right: 10, left: 10),
+                height: 70.0,
                 child: Container(
                   child: Row(
                     children: <Widget>[
@@ -64,6 +65,7 @@ class SelectJinjaList extends StatelessWidget {
                       ),
                       Expanded(
                         child: Container(
+                          padding: EdgeInsets.only(right: 10),
                           child: Text(
                             "${(store.spotArray)[index].spotName}", // 神社・寺院名
                             style: Styles.mainTextStyleBold,

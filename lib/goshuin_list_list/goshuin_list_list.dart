@@ -1,17 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import '../app_store.dart';
 
-class GoshuinListList extends StatelessWidget {
+class GoshuinListList extends StatefulWidget {
   const GoshuinListList({Key key, @required this.store}) : super(key: key);
 
   // 引数取得
   final AppStore store; // 引数
 
   @override
+  State<StatefulWidget> createState() {
+    return GoshuinListListState(store: store);
+  }
+}
+
+class GoshuinListListState extends State {
+  // 引数
+  final AppStore store;
+  GoshuinListListState({this.store});
+
   Widget build(BuildContext context) {
     return Scaffold(
       body: ListView.builder(
@@ -41,12 +52,8 @@ class GoshuinListList extends StatelessWidget {
                       height: 90.0,
                       width: 90.0,
                       color: StylesColor.bgImgcolor,
-                      child: Observer(
-                        builder: (context) {
-                          return Container(
-                            child: showImg((store.goshuinArray)[index].img),
-                          );
-                        },
+                      child: Container(
+                        child: showImg((store.goshuinArray)[index].img),
                       ),
                     ),
                     Container(
@@ -54,10 +61,8 @@ class GoshuinListList extends StatelessWidget {
                     ),
                     Flexible(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // 左寄せ
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        // 均等配置
+                        crossAxisAlignment: CrossAxisAlignment.start, // 左寄せ
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 均等配置
                         children: <Widget>[
                           Container(
                             child: Text(
@@ -68,29 +73,21 @@ class GoshuinListList extends StatelessWidget {
                             ),
                           ),
                           Container(
-                            child: Observer(
-                              builder: (context) {
-                                return Text(
-                                  "${(store.goshuinArray)[index].goshuinName}",
-                                  // 御朱印名
-                                  style: Styles.mainTextStyle,
-                                  overflow: TextOverflow.ellipsis,
-                                );
-                              },
+                            child: Text(
+                              "${(store.goshuinArray)[index].goshuinName}",
+                              // 御朱印名
+                              style: Styles.mainTextStyle,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           Container(
-                            child: Observer(
-                              builder: (context) {
-                                return Text(
-                                    "[ " +
-                                        "${(store.goshuinArray)[index].spotPrefectures}" +
-                                        " ]  " +
-                                        "${(store.goshuinArray)[index].date}",
-                                    // 都道府県 日付
-                                    style: Styles.subTextStyleSmall);
-                              },
-                            ),
+                            child: Text(
+                                "[ " +
+                                    "${(store.goshuinArray)[index].spotPrefectures}" +
+                                    " ]  " +
+                                    "${(store.goshuinArray)[index].date}",
+                                // 都道府県 日付
+                                style: Styles.subTextStyleSmall),
                           ),
                         ],
                       ),
@@ -106,21 +103,4 @@ class GoshuinListList extends StatelessWidget {
     );
   }
 
-  /*画像がない場合は初期画像を表示*/
-  Image showImg(bytesImage) {
-    if (null == bytesImage || "" == bytesImage) {
-      // 画像なし
-      return Image(
-        image: AssetImage(
-          'assets/img/logo.png',
-        ),
-      );
-    } else {
-      // 画像あり
-      return Image.memory(
-        store.bytesImage,
-        fit: BoxFit.cover,
-      );
-    }
-  }
 }

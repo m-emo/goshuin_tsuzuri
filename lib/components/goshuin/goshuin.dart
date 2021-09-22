@@ -31,15 +31,14 @@ class Goshuin extends StatelessWidget {
               // 編集画面へ移動
               icon: StylesIcon.editIcon,
               onPressed: () {
-                store.setGoshuinId(goshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
-                store.setBase64Image(goshuinData.img); // 御朱印画像(base64)
-                store.setSpotId(goshuinData.spotId); // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
-                store.setSpotName(goshuinData.spotName); // 神社・寺院名
-                store.setSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
-                store.setGoshuinName(goshuinData.goshuinName); // 御朱印名
-                store.setSanpaiDate(goshuinData.date); // 参拝日
-                store.setMemo(goshuinData.memo); // メモ
-                store.setCreateData(goshuinData.createData); // 登録日
+                store.setEditGoshuinId(goshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
+                store.setEditBase64Image(goshuinData.img); // 御朱印画像(base64)
+                store.setEditSpotId(goshuinData.spotId); // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
+                store.setEditSpotName(goshuinData.spotName); // 神社・寺院名
+                store.setEditSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
+                store.setEditGoshuinName(goshuinData.goshuinName); // 御朱印名
+                store.setEditSanpaiDate(goshuinData.date); // 参拝日
+                store.setEditMemo(goshuinData.memo); // メモ
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>
