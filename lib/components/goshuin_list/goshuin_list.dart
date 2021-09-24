@@ -19,7 +19,7 @@ class GoshuinList extends StatelessWidget {
   GoshuinList({Key key, @required this.store}) : super(key: key);
 
   final AppStore store;
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  // final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   // final List<TabInfo> _tabs = [
   //   // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
   //   TabInfo("一覧", GoshuinListList(store: store)),
@@ -30,7 +30,6 @@ class GoshuinList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<TabInfo> _tabs = [
-      // TabInfo("一覧", GoshuinListList(key: PageStorageKey<String>("key_GoshuinListList"))),
       TabInfo("一覧", GoshuinListList(store: store)),
       TabInfo("神社・寺院", GoshuinListJija(store: store)),
       TabInfo("写真", GoshuinListPhoto(store: store)),
@@ -39,24 +38,11 @@ class GoshuinList extends StatelessWidget {
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
-        key: _scaffoldKey,
+        // key: _scaffoldKey,
 
         appBar: PreferredSize(
-          preferredSize: Size.fromHeight(80.0),
+          preferredSize: Size.fromHeight(40.0),
           child: AppBar(
-            title: Image(// Imageウィジェット
-              image: AssetImage('assets/img/logo.png',),
-              height: 18,
-            ),
-            leading: IconButton(
-              icon: Icon(Icons.dehaze),
-              color: StylesColor.subTextColor,
-              padding: new EdgeInsets.all(15.0),
-              onPressed: () {
-                _scaffoldKey.currentState.openDrawer();
-              },
-            ),
-            centerTitle: true,
             backgroundColor: Colors.white,
             bottom: TabBar(
               indicatorColor: Color(0xFFE75331),

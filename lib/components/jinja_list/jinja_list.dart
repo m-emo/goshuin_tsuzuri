@@ -17,7 +17,7 @@ class JinjaList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: Header(),
+      // appBar: Header(),
       backgroundColor: Colors.white,
       persistentFooterButtons: <Widget>[
         TextButton.icon(

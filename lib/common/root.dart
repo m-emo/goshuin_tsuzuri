@@ -7,6 +7,7 @@ import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../app_store.dart';
+import 'header.dart';
 
 class RootWidget extends StatefulWidget {
   const RootWidget({Key key, @required this.store}) : super(key: key);
@@ -21,7 +22,9 @@ class RootWidget extends StatefulWidget {
 class _RootWidgetState extends State<RootWidget> {
   // 引数取得
   final AppStore store;
+
   _RootWidgetState({this.store});
+
   int _selectedIndex = 0;
   final _bottomNavigationBarItems = <BottomNavigationBarItem>[];
 
@@ -57,7 +60,8 @@ class _RootWidgetState extends State<RootWidget> {
 
     // DBからデータ取得
     List<GoshuinListData> value = [
-GoshuinListData(id: "GSI000005",
+      GoshuinListData(
+        id: "GSI000005",
         img: "",
         spotId: "26-00002",
         spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
@@ -65,8 +69,10 @@ GoshuinListData(id: "GSI000005",
         goshuinName: "限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印限定御朱印",
         date: "2021.10.10",
         memo: "テストテスト",
-        createData: "2021.10.20",),
-      GoshuinListData(id: "GSI000002",
+        createData: "2021.10.20",
+      ),
+      GoshuinListData(
+        id: "GSI000002",
         img: "",
         spotId: "33-00001",
         spotName: "最上稲荷",
@@ -74,8 +80,10 @@ GoshuinListData(id: "GSI000005",
         goshuinName: "通常御朱印",
         date: "2021.10.20",
         memo: "テストテスト",
-        createData: "2021.10.20",),
-       GoshuinListData(id: "GSI000003",
+        createData: "2021.10.20",
+      ),
+      GoshuinListData(
+        id: "GSI000003",
         img: "",
         spotId: "26-00001",
         spotName: "清水寺",
@@ -83,28 +91,32 @@ GoshuinListData(id: "GSI000005",
         goshuinName: "限定御朱印",
         date: "2021.10.30",
         memo: "テストテスト",
-        createData: "2021.10.20",),
-        GoshuinListData(id: "GSI000004",
-          img: "",
-          spotId: "26-00002",
-          spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
-          spotPrefectures: "京都府",
-          goshuinName: "限定御朱印",
-          date: "2021.10.10",
-          memo: "テストテスト",
-          createData: "2021.10.20",),
+        createData: "2021.10.20",
+      ),
+      GoshuinListData(
+        id: "GSI000004",
+        img: "",
+        spotId: "26-00002",
+        spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
+        spotPrefectures: "京都府",
+        goshuinName: "限定御朱印",
+        date: "2021.10.10",
+        memo: "テストテスト",
+        createData: "2021.10.20",
+      ),
     ];
     store.setGoshuinArray(value);
     // DBからデータ取得
     List<SpotData> value2 = [
       SpotData(
-          id: "26-00001",
-          spotName: "清水寺",
-          kbn: "2",
-          prefectures: "京都府",
-          prefecturesNo: "26",
-          img: "",
-          createData: "2021.10.20",),
+        id: "26-00001",
+        spotName: "清水寺",
+        kbn: "2",
+        prefectures: "京都府",
+        prefecturesNo: "26",
+        img: "",
+        createData: "2021.10.20",
+      ),
       SpotData(
         id: "33-00001",
         spotName: "最上稲荷",
@@ -112,7 +124,8 @@ GoshuinListData(id: "GSI000005",
         prefectures: "岡山県",
         prefecturesNo: "33",
         img: "",
-        createData: "2021.10.20",),
+        createData: "2021.10.20",
+      ),
       SpotData(
         id: "26-00002",
         spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
@@ -120,7 +133,8 @@ GoshuinListData(id: "GSI000005",
         prefectures: "京都府",
         prefecturesNo: "26",
         img: "",
-        createData: "2021.10.20",),
+        createData: "2021.10.20",
+      ),
     ];
     store.setSpotArray(value2);
     // DBのデータから都道府県別の御朱印データ一覧を作成
@@ -166,8 +180,6 @@ GoshuinListData(id: "GSI000005",
           context,
           MaterialPageRoute(builder: (context) => GoshuinEdit(store: store)),
         );
-
-
       } else {
         _bottomNavigationBarItems[_selectedIndex] =
             _UpdateDeactiveState(_selectedIndex);
@@ -179,14 +191,55 @@ GoshuinListData(id: "GSI000005",
 
   @override
   Widget build(BuildContext context) {
-
     var _routes = [
       GoshuinList(store: store),
       JinjaList(store: store),
       GoshuinEdit(kbn: "0"),
     ];
+    final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
     return Scaffold(
+      key: _key,
+      // appBar: Header(key:_key),
+      appBar: AppBar(
+            elevation: 0.0, // 影
+            title: Image(
+              image: AssetImage(
+                'assets/img/logo.png',
+              ),
+              height: 18,
+            ),
+            leading: IconButton(
+              icon: Icon(Icons.dehaze),
+              color: Color(0xFF707070),
+              padding: new EdgeInsets.all(15.0),
+              onPressed: () {
+                _key.currentState.openDrawer();
+              },
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.white,
+          ),
+      drawer: Drawer(
+        child: ListView(
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Drawer Header'),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text("Item 1"),
+              trailing: Icon(Icons.arrow_forward),
+            ),
+            ListTile(
+              title: Text("Item 2"),
+              trailing: Icon(Icons.arrow_forward),
+            ),
+          ],
+        ),
+      ),
       body: _routes.elementAt(_selectedIndex),
       bottomNavigationBar: BottomNavigationBar(
         type: BottomNavigationBarType.fixed,
@@ -195,6 +248,7 @@ GoshuinListData(id: "GSI000005",
         onTap: _onItemTapped,
         selectedFontSize: 12.0,
       ),
+
     );
   }
 }

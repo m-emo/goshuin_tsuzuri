@@ -250,7 +250,7 @@ abstract class _AppStore with Store {
       }
     }
 
-    // 都道府県順にマップを並び替え
+    // 都道府県順に並び替え
     for(var prefectures in prefecturesListdata){
       // 都道府県番号と一致するデータがあるかチェック
       if(goshuinMap.containsKey(prefectures.key)){
@@ -291,9 +291,6 @@ abstract class _AppStore with Store {
     }
     // データを格納
     goshuinArrayPef = goshuinDataList;
-
-    // ★後で消す
-    print(goshuinArrayPef);
   }
 
 
