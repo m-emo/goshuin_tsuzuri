@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:goshuintsuzuri/common/common.dart';
+import 'package:goshuintsuzuri/common/property.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/select_jinja_list/select_jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
@@ -25,38 +26,56 @@ class GoshuinEdit extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: new IconButton(
-          icon: StylesIcon.backIcon,
-          onPressed: () {
-            Navigator.of(context).pop();
-          },
-          // onPressed: () => Navigator.of(context).pop(),
+    return WillPopScope(
+      onWillPop: () {
+        // backキー
+        // 編集中かチェック
+        bool check = checkEdit(store);
+        if (!check) {
+          Navigator.of(context).pop();
+        } else {
+          myShowDialog(context, Msglist.edit_cancel);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: new IconButton(
+            icon: StylesIcon.backIcon,
+            onPressed: () {
+              // 編集中かチェック
+              bool check = checkEdit(store);
+              if (!check) {
+                Navigator.of(context).pop();
+              } else {
+                myShowDialog(context, Msglist.edit_cancel);
+              }
+            },
+            // onPressed: () => Navigator.of(context).pop(),
+          ),
+          title: kbn == "1" // 更新
+              ? new Text(
+                  "編集中",
+                  style: Styles.appBarTextStyle,
+                )
+              : Text(
+                  // 登録
+                  '御朱印登録',
+                  style: Styles.appBarTextStyle,
+                ),
+          backgroundColor: Colors.white,
+          centerTitle: true,
         ),
-        title: kbn == "1" // 更新
-            ? new Text(
-                "編集中",
-                style: Styles.appBarTextStyle,
-              )
-            : Text(
-                // 登録
-                '御朱印登録',
-                style: Styles.appBarTextStyle,
-              ),
-        backgroundColor: Colors.white,
-        centerTitle: true,
-      ),
-      body: GestureDetector(
-        onTap: () {
-          FocusScope.of(context).unfocus();
-        },
-        child: Stack(
-          alignment: Alignment.topCenter,
-          children: [
-            Area(kbn: kbn, store: store),
-            MsgArea(store: store),
-          ],
+        body: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).unfocus();
+          },
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Area(kbn: kbn, store: store),
+              MsgArea(store: store),
+            ],
+          ),
         ),
       ),
     );
@@ -611,7 +630,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
     return Container(
       margin: const EdgeInsets.only(
           top: 20.0, right: 20.0, left: 20.0, bottom: 30.0),
-      child: ElevatedButton(
+      child: TextButton(
         style: ElevatedButton.styleFrom(
           primary: StylesColor.maincolor,
           shape: RoundedRectangleBorder(

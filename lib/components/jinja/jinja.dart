@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
@@ -41,7 +42,7 @@ class Jinja extends StatelessWidget {
         ),
         body: ListView(
           children: <Widget>[
-            Photo(),
+            Photo(spotData: spotData),
             NameArea(spotData: spotData),
             ListArea(goshuinArray: goshuinArray, store: store),
           ],
@@ -51,142 +52,20 @@ class Jinja extends StatelessWidget {
 
 //******** 写真Widget -start- ********
 class Photo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.blueAccent),
-      height: 300,
-    );
-  }
-}
-/*
-class ImagePickerViewState extends State {
   // 引数
-  final String kbn;
-
-  ImagePickerViewState({this.kbn});
-
-  File imageFile;
-  Uint8List bytesImage;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final valueChangeNotifier =
-    Provider.of<_ValueChangeNotifier>(context, listen: false);
-    // 画像に戻す
-    Uint8List bytesImg = Base64Decoder().convert(valueChangeNotifier._img);
-    // 更新時初期値設定
-    setState(() {
-      if (kbn == "1") {
-        // 更新
-        bytesImage = bytesImg;
-      }
-    });
-  }
+  final SpotData spotData;
+  Photo({@required this.spotData});
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return Container(
-      alignment: Alignment.center,
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              height: size.width - 100,
-              width: size.width - 100,
-              /*
-              child: FlatButton(
-                onPressed: () async {
-                  var result = await showModalBottomSheet<int>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.camera),
-                              title: Text('写真を撮る'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.camera);
-                              }),
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.images),
-                              title: Text('ギャラリーから選択'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.gallery);
-                              }),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  child: bytesImage == null
-                      ? Container(
-                    alignment: Alignment.center,
-                    height: size.width - 100,
-                    width: size.width - 100,
-                    color: Colors.black26,
-                    child: FaIcon(FontAwesomeIcons.cameraRetro),
-                  )
-                      : Image.memory(
-                    bytesImage,
-                  ),
-                ),
-              ),
-              */
-            ),
-          ]),
+      color: StylesColor.bgImgcolor,
+      child: Container(
+        child: showImg(spotData.img, 1),
+      ),
     );
   }
-
-// カメラまたはライブラリから画像を取得
-/*
-  void _getImageFromDevice(ImageSource source) async {
-    // データ登録用変数セット
-    final valueChangeNotifier =
-    Provider.of<_ValueChangeNotifier>(context, listen: false);
-
-    // 撮影/選択したFileが返ってくる
-    var imageFile = await ImagePicker.pickImage(source: source);
-    // Androidで撮影せずに閉じた場合はnullになる
-    if (imageFile == null) {
-      return;
-    }
-
-    // flutter_image_compressで指定サイズ／品質に圧縮
-    List<int> imageBytes = await FlutterImageCompress.compressWithFile(
-      // ②
-      imageFile.absolute.path,
-      minWidth: 800,
-      minHeight: 800,
-      quality: 60,
-    );
-
-//    List<int> imageBytes = await imageFile.readAsBytesSync();
-
-    // BASE64文字列値にエンコード
-    String base64Image = base64Encode(imageBytes);
-    valueChangeNotifier.setBytesImg(base64Image);
-
-    // Uint8Listへ変換
-    Uint8List bytesImage = Base64Decoder().convert(base64Image);
-
-    setState(() {
-//      this.imageFile = imageFile;
-      this.bytesImage = bytesImage;
-    });
-  }
- */
 }
- */
 //******** 写真Widget -end- ********
 
 //******** 神社名Widget -start- ********
@@ -198,7 +77,6 @@ class ImagePickerViewState extends State {
 class NameArea extends StatelessWidget {
   // 引数
   final SpotData spotData;
-
   NameArea({@required this.spotData});
 
   @override
@@ -283,23 +161,15 @@ class ListArea extends StatelessWidget {
                   EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
               height: 100.0,
               child: Container(
-                /*color: Colors.white,
-              padding: const EdgeInsets.only(
-                  top: 0.0, right: 10.0, bottom: 0.0, left: 2.0),*/
                 child: Row(
                   children: <Widget>[
                     Container(
                       height: 90.0,
                       width: 90.0,
                       color: StylesColor.bgImgcolor,
-                      /*
-                      child: bytesImage == null
-                          ? new Text('No image value.')
-                          : Image.memory(
-                        bytesImage,
-                        fit: BoxFit.cover,
-                      )
-                  */
+                      child: Container(
+                        child: showImg((store.goshuinArray)[index].img, 1),
+                      ),
                     ),
                     Container(
                       padding: const EdgeInsets.only(right: 10.0),

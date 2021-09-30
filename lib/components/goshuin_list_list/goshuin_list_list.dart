@@ -4,7 +4,8 @@ import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
-import '../app_store.dart';
+
+import '../../app_store.dart';
 
 class GoshuinListList extends StatefulWidget {
   const GoshuinListList({Key key, @required this.store}) : super(key: key);
@@ -21,6 +22,7 @@ class GoshuinListList extends StatefulWidget {
 class GoshuinListListState extends State {
   // 引数
   final AppStore store;
+
   GoshuinListListState({this.store});
 
   Widget build(BuildContext context) {
@@ -28,10 +30,12 @@ class GoshuinListListState extends State {
       body: ListView.builder(
         itemBuilder: (BuildContext context, int index) {
           return Container(
-            color: Colors.white,
-            padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
-            margin: EdgeInsets.only(bottom: 2),
-            height: 100.0,
+            decoration: BoxDecoration(
+                border: Border(
+                    bottom: BorderSide(
+              color: StylesColor.bordercolor,
+              width: 1.0,
+            ))),
             child: InkWell(
               onTap: () {
                 GoshuinListData goshuinData = (store.goshuinArray)[index];
@@ -43,9 +47,9 @@ class GoshuinListListState extends State {
                 );
               },
               child: Container(
-                /*color: Colors.white,
-              padding: const EdgeInsets.only(
-                  top: 0.0, right: 10.0, bottom: 0.0, left: 2.0),*/
+                padding:
+                    EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
+                height: 100.0,
                 child: Row(
                   children: <Widget>[
                     Container(
@@ -53,7 +57,7 @@ class GoshuinListListState extends State {
                       width: 90.0,
                       color: StylesColor.bgImgcolor,
                       child: Container(
-                        child: showImg((store.goshuinArray)[index].img),
+                        child: showImg((store.goshuinArray)[index].img, 1),
                       ),
                     ),
                     Container(
@@ -61,8 +65,10 @@ class GoshuinListListState extends State {
                     ),
                     Flexible(
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start, // 左寄せ
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly, // 均等配置
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        // 左寄せ
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        // 均等配置
                         children: <Widget>[
                           Container(
                             child: Text(
@@ -102,5 +108,4 @@ class GoshuinListListState extends State {
       ),
     );
   }
-
 }

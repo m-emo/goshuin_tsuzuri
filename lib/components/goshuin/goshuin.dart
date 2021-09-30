@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
@@ -39,6 +40,10 @@ class Goshuin extends StatelessWidget {
                 store.setEditGoshuinName(goshuinData.goshuinName); // 御朱印名
                 store.setEditSanpaiDate(goshuinData.date); // 参拝日
                 store.setEditMemo(goshuinData.memo); // メモ
+
+                // 更新前のデータを保持（比較チェック用）
+                store.setBeforeGoshuinData(goshuinData);
+
                 Navigator.push(
                   context,
                   MaterialPageRoute(builder: (context) =>
@@ -52,7 +57,7 @@ class Goshuin extends StatelessWidget {
         ),
         body: ListView(
           children: <Widget>[
-            Photo(),
+            Photo(goshuinData: goshuinData),
             NameArea(goshuinData: goshuinData),
             MemoArea(goshuinData: goshuinData),
           ],
@@ -62,142 +67,20 @@ class Goshuin extends StatelessWidget {
 
 //******** 写真Widget -start- ********
 class Photo extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(color: Colors.blueAccent),
-      height: 300,
-    );
-  }
-}
-/*
-class ImagePickerViewState extends State {
   // 引数
-  final String kbn;
-
-  ImagePickerViewState({this.kbn});
-
-  File imageFile;
-  Uint8List bytesImage;
-
-  @override
-  void initState() {
-    super.initState();
-
-    final valueChangeNotifier =
-    Provider.of<_ValueChangeNotifier>(context, listen: false);
-    // 画像に戻す
-    Uint8List bytesImg = Base64Decoder().convert(valueChangeNotifier._img);
-    // 更新時初期値設定
-    setState(() {
-      if (kbn == "1") {
-        // 更新
-        bytesImage = bytesImg;
-      }
-    });
-  }
+  final GoshuinListData goshuinData;
+  Photo({@required this.goshuinData});
 
   @override
   Widget build(BuildContext context) {
-    final Size size = MediaQuery.of(context).size;
     return Container(
-      alignment: Alignment.center,
-      child: Row(
-          crossAxisAlignment: CrossAxisAlignment.center,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              margin: EdgeInsets.only(top: 10.0, bottom: 10.0),
-              height: size.width - 100,
-              width: size.width - 100,
-              /*
-              child: FlatButton(
-                onPressed: () async {
-                  var result = await showModalBottomSheet<int>(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: <Widget>[
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.camera),
-                              title: Text('写真を撮る'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.camera);
-                              }),
-                          ListTile(
-                              leading: FaIcon(FontAwesomeIcons.images),
-                              title: Text('ギャラリーから選択'),
-                              onTap: () {
-                                Navigator.pop(context);
-                                _getImageFromDevice(ImageSource.gallery);
-                              }),
-                        ],
-                      );
-                    },
-                  );
-                },
-                child: Container(
-                  child: bytesImage == null
-                      ? Container(
-                    alignment: Alignment.center,
-                    height: size.width - 100,
-                    width: size.width - 100,
-                    color: Colors.black26,
-                    child: FaIcon(FontAwesomeIcons.cameraRetro),
-                  )
-                      : Image.memory(
-                    bytesImage,
-                  ),
-                ),
-              ),
-              */
-            ),
-          ]),
+      color: StylesColor.bgImgcolor,
+      child: Container(
+        child: showImg(goshuinData.img, 1),
+      ),
     );
   }
-
-// カメラまたはライブラリから画像を取得
-/*
-  void _getImageFromDevice(ImageSource source) async {
-    // データ登録用変数セット
-    final valueChangeNotifier =
-    Provider.of<_ValueChangeNotifier>(context, listen: false);
-
-    // 撮影/選択したFileが返ってくる
-    var imageFile = await ImagePicker.pickImage(source: source);
-    // Androidで撮影せずに閉じた場合はnullになる
-    if (imageFile == null) {
-      return;
-    }
-
-    // flutter_image_compressで指定サイズ／品質に圧縮
-    List<int> imageBytes = await FlutterImageCompress.compressWithFile(
-      // ②
-      imageFile.absolute.path,
-      minWidth: 800,
-      minHeight: 800,
-      quality: 60,
-    );
-
-//    List<int> imageBytes = await imageFile.readAsBytesSync();
-
-    // BASE64文字列値にエンコード
-    String base64Image = base64Encode(imageBytes);
-    valueChangeNotifier.setBytesImg(base64Image);
-
-    // Uint8Listへ変換
-    Uint8List bytesImage = Base64Decoder().convert(base64Image);
-
-    setState(() {
-//      this.imageFile = imageFile;
-      this.bytesImage = bytesImage;
-    });
-  }
- */
 }
- */
 //******** 写真Widget -end- ********
 
 //******** 御朱印名Widget -start- ********
@@ -209,7 +92,6 @@ class ImagePickerViewState extends State {
 class NameArea extends StatelessWidget {
   // 引数
   final GoshuinListData goshuinData;
-
   NameArea({@required this.goshuinData});
 
   @override
@@ -262,7 +144,6 @@ class NameArea extends StatelessWidget {
 class MemoArea extends StatelessWidget {
   // 引数
   final GoshuinListData goshuinData;
-
   MemoArea({@required this.goshuinData});
 
   @override
@@ -280,9 +161,13 @@ class MemoArea extends StatelessWidget {
             color: StylesColor.bordercolor,
           ),
           // メモ欄
-          Text(
-            goshuinData.memo,
-            style: Styles.mainTextStyle,
+          Container(
+            width: double.infinity,
+            child: Text(
+              goshuinData.memo,
+              textAlign: TextAlign.left,
+              style: Styles.mainTextStyle,
+            ),
           ),
         ],
       ),

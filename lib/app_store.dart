@@ -25,10 +25,6 @@ abstract class _AppStore with Store {
   @observable
   Color secondary;
 
-  // 写真//たぶん消す★
-  @observable
-  Uint8List bytesImage;
-
   // 御朱印ID[GSI+連番6桁（GSI000001）]
   @observable
   String editGoshuinId;
@@ -61,6 +57,8 @@ abstract class _AppStore with Store {
   @observable
   String editMemo;
 
+  // 編集前の御朱印データ
+  GoshuinListData beforeGoshuinData;
 
   // 御朱印最大ID
   @observable
@@ -133,6 +131,11 @@ abstract class _AppStore with Store {
   void setEditMemo(String value) {
     editMemo = value;
   }
+  @action
+  void setBeforeGoshuinData(GoshuinListData value) {
+    beforeGoshuinData = value;
+  }
+
   @action
   void setGoshuinMaxId(String value) {
     goshuinMaxId = value;

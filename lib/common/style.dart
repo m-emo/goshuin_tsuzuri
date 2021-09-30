@@ -68,8 +68,11 @@ class Styles {
 
 // 色のスタイル
 class StylesColor {
+  // 画面全ての背景色
+  static const bgcolor = Color(0xFFFFFFFF);
+
   // 写真画像の背景色
-  static const bgImgcolor = Color(0xFFFBFBFB);
+  static const bgImgcolor = Color(0xFFFFFFFF);
 
 // ボーダーカラー
   static const bordercolor = Color(0xFFEAEAEA);
@@ -107,10 +110,12 @@ class StylesIcon {
   // 神社
   static const jinjaIcon =
       Icon(FontAwesomeIcons.toriiGate, color: Color(0xFFB9B9B9), size: 20);
+
   // 神社
   static const teraIcon =
-  Icon(FontAwesomeIcons.home, color: Color(0xFFB9B9B9), size: 20);
+      Icon(FontAwesomeIcons.home, color: Color(0xFFB9B9B9), size: 20);
+
   // その他
   static const sonotaIcon =
-  Icon(FontAwesomeIcons.key, color: Color(0xFFB9B9B9), size: 20);
+      Icon(FontAwesomeIcons.key, color: Color(0xFFB9B9B9), size: 20);
 }

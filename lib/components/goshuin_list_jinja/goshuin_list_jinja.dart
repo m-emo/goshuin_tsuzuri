@@ -45,10 +45,8 @@ class ListContents extends StatelessWidget {
                     .value[0]
                     .value[0]
                     .spotPrefectures),
-            // GoshuinListJija2(),
-            // GoshuinListJija2(),
-            // GoshuinListJija2(),
-            _SpotList(store: store, spotList: (store.goshuinArrayPef)[index].value)
+            _SpotList(
+                store: store, spotList: (store.goshuinArrayPef)[index].value)
           ],
         );
       },
@@ -72,26 +70,34 @@ class _Midashi extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
-      height: 45.0,
-      child: Row(
-        children: <Widget>[
-          Container(
-            width: 6.0,
-            padding: const EdgeInsets.only(right: 10.0),
-            color: StylesColor.maincolor,
-          ),
-          Expanded(
-            child: Container(
-              padding: const EdgeInsets.only(
-                  top: 10, bottom: 10, left: 10.0, right: 10),
-              child: Text(
-                spotPrefectures, // 都道府県名
-                style: Styles.subTextStyle,
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
+        color: StylesColor.bordercolor,
+        width: 2.0,
+      ))),
+      child: Container(
+        color: Colors.white,
+        height: 45.0,
+        child: Row(
+          children: <Widget>[
+            Container(
+              width: 6.0,
+              padding: const EdgeInsets.only(right: 10.0),
+              color: StylesColor.maincolor,
+            ),
+            Expanded(
+              child: Container(
+                padding: const EdgeInsets.only(
+                    top: 10, bottom: 10, left: 10.0, right: 10),
+                child: Text(
+                  spotPrefectures, // 都道府県名
+                  style: Styles.subTextStyle,
+                ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -132,7 +138,8 @@ class _SpotList extends StatelessWidget {
                     Expanded(
                       child: Container(
                         child: Text(
-                          spotList[index].value[0].spotId + spotList[index].value[0].spotName, // 神社・寺院名
+                          spotList[index].value[0].spotId +
+                              spotList[index].value[0].spotName, // 神社・寺院名
                           style: Styles.mainTextStyleBold,
                           overflow: TextOverflow.ellipsis,
                         ),
@@ -143,15 +150,16 @@ class _SpotList extends StatelessWidget {
               ),
             ),
           ),
-          // ヘッダー背景色
-          headerBackgroundColorStart: Colors.white,
-          // ヘッダー背景色
-          headerBackgroundColorEnd: Colors.white,
+          // リストが展開される前の境界線の開始色
+          borderColorStart: StylesColor.bordercolor,
+          //   // リストが展開された後のアニメーション終了時の境界線の色
+          borderColorEnd: StylesColor.bordercolor,
+          topBorderOn:false,
           // 子要素の背景色
           expandedBackgroundColor: Colors.white,
           animatedWidgetFollowingHeader: StylesIcon.openIcon,
           children: [
-            _GoshuinList(store:store, goshuinList: spotList[index].value),
+            _GoshuinList(store: store, goshuinList: spotList[index].value),
           ],
         );
       },
@@ -172,6 +180,7 @@ class _GoshuinList extends StatelessWidget {
 // 引数
   final AppStore store;
   final List<GoshuinListData> goshuinList;
+
   _GoshuinList({this.store, this.goshuinList});
 
   @override
@@ -183,7 +192,7 @@ class _GoshuinList extends StatelessWidget {
         return Container(
           decoration: BoxDecoration(
               border: Border(
-                  bottom: BorderSide(
+                  top: BorderSide(
             color: StylesColor.bordercolor,
             width: 1.0,
           ))),
@@ -204,7 +213,7 @@ class _GoshuinList extends StatelessWidget {
                     height: 75.0,
                     width: 75.0,
                     color: StylesColor.bgImgcolor,
-                    child: showImg(goshuinList[index].img),
+                    child: showImg(goshuinList[index].img, 1),
                   ),
                   Container(
                     padding: const EdgeInsets.only(right: 10.0),
@@ -216,7 +225,8 @@ class _GoshuinList extends StatelessWidget {
                       children: <Widget>[
                         Container(
                           child: Text(
-                            goshuinList[index].id+goshuinList[index].goshuinName, // 御朱印名
+                            goshuinList[index].id +
+                                goshuinList[index].goshuinName, // 御朱印名
                             style: Styles.mainTextStyle,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,
