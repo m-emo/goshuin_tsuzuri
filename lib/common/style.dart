@@ -13,6 +13,7 @@ class Styles {
     color: Color(0xFF3B3B3B),
     letterSpacing: 0.5,
     fontSize: 14.0,
+    decoration: TextDecoration.none,
   );
 
   // メインテキストスタイルの太字

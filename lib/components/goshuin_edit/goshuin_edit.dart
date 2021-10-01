@@ -34,7 +34,7 @@ class GoshuinEdit extends StatelessWidget {
         if (!check) {
           Navigator.of(context).pop();
         } else {
-          myShowDialog(context, Msglist.edit_cancel);
+          myShowDialog(context, Msglist.edit_cancel, store);
         }
       },
       child: Scaffold(
@@ -47,7 +47,7 @@ class GoshuinEdit extends StatelessWidget {
               if (!check) {
                 Navigator.of(context).pop();
               } else {
-                myShowDialog(context, Msglist.edit_cancel);
+                myShowDialog(context, Msglist.edit_cancel, store);
               }
             },
             // onPressed: () => Navigator.of(context).pop(),
@@ -770,7 +770,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
               insert(); // 登録
             }
             // insert,update終わった後で、editデータを初期化
-            editReset(store);
+            editResetGoshuin(store);
             // 戻る
             // ★もどす
             // Navigator.of(context).pop();
@@ -812,7 +812,7 @@ class ButtonDeleteArea extends StatelessWidget {
           // リストから削除
           store.deleteGoshuinArrayOneData(store.editGoshuinId);
           // editデータを初期化
-          editReset(store);
+          editResetGoshuin(store);
         },
       ),
     );

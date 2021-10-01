@@ -10,52 +10,116 @@ import '../app_store.dart';
 * prm : store 表示用データ
 * return : Widget
  */
-Future<bool> myShowDialog(BuildContext context, String msg) {
+Future<bool> myShowDialog(BuildContext context, String msg, AppStore store) {
   return showDialog(
     barrierDismissible: false,
     context: context,
     builder: (BuildContext context) {
-      return AlertDialog(
-        content: Text(msg),
-        actions: [
-          SizedBox(
-            width: double.infinity,
-            child: Container(
-              margin:
-                  const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 8.0),
-              child: TextButton(
-                style: ElevatedButton.styleFrom(
-                  primary: StylesColor.maincolor,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+      return Column(
+        mainAxisAlignment: MainAxisAlignment.end,
+        children: <Widget>[
+          Container(
+            padding: const EdgeInsets.all(20.0),
+            margin:
+                const EdgeInsets.only(left: 15.0, right: 15.0, bottom: 20.0),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: Colors.white,
+            ),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  margin: const EdgeInsets.only(bottom: 30.0),
+                  child: Text(
+                    msg,
+                    style: Styles.mainTextStyle,
                   ),
-                  padding: EdgeInsets.all(10.0),
                 ),
-                child: Text('閉じる', style: Styles.mainButtonTextStyle),
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Navigator.of(context).pop();
-                },
-              ),
-            ),
-          ),
-          SizedBox(
-            width: double.infinity,
-            child: Container(
-              margin:
-                  const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 20.0),
-              child: OutlinedButton(
-                  style: OutlinedButton.styleFrom(
-                    primary: Colors.black,
-                    side: const BorderSide(color: StylesColor.maincolor),
-                    padding: EdgeInsets.all(10.0),
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 8.0),
+                    child: TextButton(
+                      style: ElevatedButton.styleFrom(
+                        primary: StylesColor.maincolor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.all(10.0),
+                      ),
+                      child: Text('閉じる', style: Styles.mainButtonTextStyle),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                        Navigator.of(context).pop();
+                        editResetGoshuin(store);
+                      },
+                    ),
                   ),
-                  child: Text('編集を続ける', style: Styles.mainButtonTextStyleRed),
-                  onPressed: () => Navigator.of(context).pop()),
+                ),
+                SizedBox(
+                  width: double.infinity,
+                  child: Container(
+                    margin: const EdgeInsets.only(bottom: 10.0),
+                    child: OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                          // primary: Colors.black,
+                          side: const BorderSide(color: StylesColor.maincolor),
+                          padding: EdgeInsets.all(10.0),
+                        ),
+                        child: Text('編集を続ける',
+                            style: Styles.mainButtonTextStyleRed),
+                        onPressed: () => Navigator.of(context).pop()),
+                  ),
+                ),
+              ],
             ),
           ),
+          // )
         ],
       );
+      // return AlertDialog(
+      //   content: Text(msg),
+      //   actions: [
+      //     SizedBox(
+      //       width: double.infinity,
+      //       child: Container(
+      //         margin:
+      //             const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 8.0),
+      //         child: TextButton(
+      //           style: ElevatedButton.styleFrom(
+      //             primary: StylesColor.maincolor,
+      //             shape: RoundedRectangleBorder(
+      //               borderRadius: BorderRadius.circular(5),
+      //             ),
+      //             padding: EdgeInsets.all(10.0),
+      //           ),
+      //           child: Text('閉じる', style: Styles.mainButtonTextStyle),
+      //           onPressed: () {
+      //             Navigator.of(context).pop();
+      //             Navigator.of(context).pop();
+      //             editResetGoshuin(store);
+      //           },
+      //         ),
+      //       ),
+      //     ),
+      //     SizedBox(
+      //       width: double.infinity,
+      //       child: Container(
+      //         margin:
+      //             const EdgeInsets.only(right: 20.0, left: 20.0, bottom: 20.0),
+      //         child: OutlinedButton(
+      //             style: OutlinedButton.styleFrom(
+      //               primary: Colors.black,
+      //               side: const BorderSide(color: StylesColor.maincolor),
+      //               padding: EdgeInsets.all(10.0),
+      //             ),
+      //             child: Text('編集を続ける', style: Styles.mainButtonTextStyleRed),
+      //             onPressed: () => Navigator.of(context).pop()),
+      //       ),
+      //     ),
+      //   ],
+      // );
     },
   );
 }
@@ -98,8 +162,13 @@ Image showImg(String base64Image, int boxFitNum) {
   }
 }
 
-/*editのリセット*/
-void editReset(AppStore store) {
+/*
+* editのリセット
+* prm : store 表示用データ
+* return : なし
+ */
+void editResetGoshuin(AppStore store) {
+  // 編集対象のデータをクリア
   store.setEditGoshuinId(""); // 御朱印ID[GSI+連番6桁（GSI000001）]
   store.setEditBase64Image(""); // 御朱印画像(base64)
   store.setEditSpotId(""); // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
@@ -108,14 +177,31 @@ void editReset(AppStore store) {
   store.setEditGoshuinName(""); // 御朱印名
   store.setEditSanpaiDate(""); // 参拝日
   store.setEditMemo(""); // メモ
+
+  // 更新前のデータをクリア
+  GoshuinListData data = GoshuinListData(
+    id: "",
+    img: "",
+    spotId: "",
+    spotName: "",
+    spotPrefectures: "",
+    goshuinName: "",
+    date: "",
+    memo: "",
+    createData: "",
+  );
+  store.setBeforeGoshuinData(data);
 }
 
-/*編集中となっているかチェック*/
+/*
+* 御朱印を新規登録、変更時に既存データから変更しているかチェック
+* prm : store 表示用データ
+* return : flg (true:編集中、false：データを変更していない）
+ */
 bool checkEdit(AppStore store) {
-  print("★よんだ");
   // 更新前のデータ
   GoshuinListData beforeGoshuinData = store.beforeGoshuinData;
-
+  // 編集状態判定
   bool flg = false;
 
   if (beforeGoshuinData.img != store.editBase64Image) flg = true; // 画像チェック
