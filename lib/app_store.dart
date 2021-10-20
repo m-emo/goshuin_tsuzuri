@@ -19,52 +19,81 @@ part 'app_store.g.dart';
 class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
+
   @observable
   Color primary;
 
   @observable
   Color secondary;
-
+//******** 御朱印登録に利用 -start- ********
   // 御朱印ID[GSI+連番6桁（GSI000001）]
   @observable
   String editGoshuinId;
-
   // 御朱印画像(base64)
   @observable
-  String editBase64Image;
-
-  // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
+  String editGoshuinBase64Image;
+  // 神社・寺院ID [SPT+連番6桁（SPT000001）]
   @observable
-  String editSpotId;
-
+  String editGoshuinSpotId;
   // 神社・寺院名
   @observable
-  String editSpotName = "";
-
+  String editGoshuinSpotName = "";
+  // 神社・寺院 都道府県番号
+  @observable
+  String editGoshuinSpotPrefecturesNo = "";
   // 神社・寺院 都道府県
   @observable
-  String editSpotPrefectures = "";
-
+  String editGoshuinSpotPrefectures = "";
   // 御朱印名
   @observable
   String editGoshuinName;
-
   // 参拝日
   @observable
-  String editSanpaiDate = "";
-
+  String editGoshuinSanpaiDate = "";
   // メモ
   @observable
-  String editMemo;
+  String editGoshuinMemo;
+//******** 御朱印登録に利用 -end- ********
+
+//******** 神社・寺院登録に利用 -start- ********
+  // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  @observable
+  String editSpotid;
+  // 神社・寺名
+  @observable
+  String editSpotName;
+  // 区分（1:神社, 2:寺 ,0:その他）
+  @observable
+  String editSpotkbn;
+  // 都道府県名
+  @observable
+  String editSpotprefectures;
+  // 都道府県No
+  @observable
+  String editSpotprefecturesNo;
+  // 神社・寺院画像(base64)
+  @observable
+  String editSpotBase64Image;
+  // 登録日
+  @observable
+  String editSpotcreateData;
+//******** 神社・寺院登録に利用 -end- ********
 
   // 編集前の御朱印データ
   GoshuinListData beforeGoshuinData;
+
+  // 編集前の神社・寺院データ
+  SpotData beforeSpotData;
 
   // 御朱印最大ID
   @observable
   String goshuinMaxId;
 
-  // 御朱印登録エラーフラグ
+  // 神社・寺院最大ID
+  @observable
+  String spotMaxId;
+
+  // 御朱印登録・変更チェックエラーフラグ
   @observable
   bool goshuinErrFlg = true;
 
@@ -98,23 +127,28 @@ abstract class _AppStore with Store {
   }
 
   @action
-  void setEditBase64Image(String value) {
-    editBase64Image = value;
+  void setEditGoshuinBase64Image(String value) {
+    editGoshuinBase64Image = value;
   }
 
   @action
-  void setEditSpotId(String value) {
-    editSpotId = value;
+  void setEditGoshuinSpotId(String value) {
+    editGoshuinSpotId = value;
   }
 
   @action
-  void setEditSpotName(String value) {
-    editSpotName = value;
+  void setEditGoshuinSpotName(String value) {
+    editGoshuinSpotName = value;
   }
 
   @action
-  void setEditSpotPrefectures(String value) {
-    editSpotPrefectures = value;
+  void setEditGoshuinSpotPrefecturesNo(String value) {
+    editGoshuinSpotPrefecturesNo = value;
+  }
+
+  @action
+  void setEditGoshuinSpotPrefectures(String value) {
+    editGoshuinSpotPrefectures = value;
   }
 
   @action
@@ -123,22 +157,68 @@ abstract class _AppStore with Store {
   }
 
   @action
-  void setEditSanpaiDate(String value) {
-    editSanpaiDate = value;
+  void setEditGoshuinSanpaiDate(String value) {
+    editGoshuinSanpaiDate = value;
   }
 
   @action
-  void setEditMemo(String value) {
-    editMemo = value;
+  void setEditGoshuinMemo(String value) {
+    editGoshuinMemo = value;
   }
+
+  @action
+  void setEditSpotid(String value) {
+    editSpotid = value;
+  }
+
+  @action
+  void setEditSpotName(String value) {
+    editSpotName = value;
+  }
+
+  @action
+  void setEditSpotkbn(String value) {
+    editSpotkbn = value;
+  }
+
+  @action
+  void setEditSpotprefectures(String value) {
+    editSpotprefectures = value;
+  }
+
+  @action
+  void setEditSpotprefecturesNo(String value) {
+    editSpotprefecturesNo = value;
+  }
+
+  @action
+  void setEditSpotBase64Image(String value) {
+    editSpotBase64Image = value;
+  }
+
+  @action
+  void setEditSpotcreateData(String value) {
+    editSpotcreateData = value;
+  }
+
   @action
   void setBeforeGoshuinData(GoshuinListData value) {
     beforeGoshuinData = value;
   }
 
   @action
+  void setBeforeSpotData(SpotData value) {
+    beforeSpotData = value;
+  }
+
+  @action
   void setGoshuinMaxId(String value) {
     goshuinMaxId = value;
+  }
+
+  @action
+  void setSpotMaxId(String value) {
+    spotMaxId = value;
   }
 
   @action
@@ -157,7 +237,7 @@ abstract class _AppStore with Store {
   }
 
   /*
-  * リストの先頭に御朱印データ追加
+  * 御朱印リストの先頭に御朱印データ追加
   * prm : goshuinId 御朱印ID
   * return : なし
   */
@@ -167,7 +247,7 @@ abstract class _AppStore with Store {
   }
 
   /*
-  * リストのデータを変更
+  * 御朱印リストのデータを変更
   * prm : goshuinListData 御朱印データ
   * return : なし
   */
@@ -213,10 +293,43 @@ abstract class _AppStore with Store {
         break;
       }
     }
-
     // 同じIDのデータがない場合、リストの先頭に神社・寺院データ設定
     if (!flg) {
       spotArray.insert(0, value);
+    }
+  }
+
+
+
+
+  /*
+* 神社・寺院がupdateされた場合に御朱印リストの神社・寺院の情報を修正
+* prm : なし
+* return : なし
+ */
+  void updateGoshuinSpotInfo(SpotData spotData) {
+    for (var i = 0; i < goshuinArray.length; i++) {
+      // 神社・寺院IDが一致する場合に情報修正
+      if (goshuinArray[i].spotId== spotData.id) {
+
+        GoshuinListData setListData = GoshuinListData(
+          id: goshuinArray[i].id,
+          img: goshuinArray[i].img,
+          spotId: goshuinArray[i].spotId,
+          spotName: spotData.spotName,
+          spotPrefecturesNo:spotData.prefecturesNo,
+          spotPrefectures: spotData.prefectures,
+          goshuinName: goshuinArray[i].goshuinName,
+          date: goshuinArray[i].date,
+          memo: goshuinArray[i].memo,
+          createData: goshuinArray[i].createData,
+        );
+
+        // 削除
+        goshuinArray.removeAt(i);
+        // 削除した位置に追加
+        goshuinArray.insert(i, setListData);
+      }
     }
   }
 
@@ -235,8 +348,8 @@ abstract class _AppStore with Store {
 
     // 取得した御朱印リストから都道府県別にデータを設定する
     for (var goshuin in goshuinArray) {
-      //spotId(神社・寺院ID) [都道府県番号-都道府県番号内の連番5桁（03-00001）]から都道府県番号を取得
-      var pefNum = (goshuin.spotId).substring(0,2);
+      // 都道府県番号を取得
+      var pefNum = goshuin.spotPrefecturesNo;
 
       // mapの中に同じ都道府県番号があるかチェック
       if(goshuinMap.containsKey(pefNum)){
@@ -298,6 +411,211 @@ abstract class _AppStore with Store {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//
+//   // 御朱印データが存在する都道府県リスト（key：都道府県番号、value：spotId(神社・寺院ID)のリスト）
+//   @observable
+//   List<MapEntry<String, List<String>>> goshuinPefArray;
+//   // spotId(神社・寺院ID)ごとの御朱印IDマップ（key：spotId(神社・寺院ID)、value：御朱印IDのリスト）
+//   @observable
+//   Map<String, List<String>> goshuinSpotIdMap;
+//   // 御朱印データのMap型保持版（都道府県別表示に利用）
+//   @observable
+//   Map<String, GoshuinListData> goshuinDataMap;
+//   /*
+// * DBのデータから御朱印データが存在する都道府県リストを作成
+// * prm : なし
+// * return : なし
+//  */
+//   @action
+//   void setGoshuinPefArray() {
+//     // 御朱印データが存在する都道府県リスト（key：都道府県番号、value：spotId(神社・寺院ID)のリスト）
+//     List<MapEntry<String, List<String>>> ichijiGoshuinPefArray=[];
+//     // spotId(神社・寺院ID)ごとの御朱印IDマップ（key：spotId(神社・寺院ID)、value：御朱印IDのリスト）
+//     Map<String, List<String>> ichijiGoshuinSpotIdMap ={};
+//     // 御朱印データのMap型保持版（都道府県別表示に利用）
+//     Map<String, GoshuinListData> ichijiGoshuinDataMap ={};
+//
+//
+//
+//       // 一時的に格納するマップを設定（key：都道府県番号、value：都道府県番号ごとの御朱印データのList）
+//       Map<String, List<GoshuinListData>> goshuinMap = {};
+//
+//       // 取得した御朱印リストから都道府県別にデータを設定する
+//       for (var goshuin in goshuinArray) {
+//         //spotId(神社・寺院ID) [都道府県番号-都道府県番号内の連番5桁（03-00001）]から都道府県番号を取得
+//         var pefNum = (goshuin.spotId).substring(0,2);
+//
+//         // mapの中に同じ都道府県番号があるかチェック
+//         if(goshuinMap.containsKey(pefNum)){
+//           // 存在する場合、リストに御朱印データを追加
+//           // 都道府県の御朱印リストを取得
+//           List<GoshuinListData> list = goshuinMap[pefNum];
+//           //リストの末尾に追加
+//           list.add(goshuin);
+//
+//         }else{
+//           // 存在しない場合、mapに御朱印データを追加
+//           List<GoshuinListData> list = [goshuin];
+//           goshuinMap[pefNum] = list;
+//         }
+//       }
+//
+//       // 都道府県順に並び替え
+//       for(var prefectures in prefecturesListdata){
+//         // 都道府県番号と一致するデータがあるかチェック
+//         if(goshuinMap.containsKey(prefectures.key)){
+//           //　一時的にspotId(神社・寺院ID)ごとの御朱印IDを格納するマップを設定（key：spotId(神社・寺院ID)、value：御朱印IDのList）
+//           Map<String, List<String>> spotIdGoshuinIdMap = {};
+//
+//           // 都道府県番号ごとの御朱印データのListを取得
+//           List<GoshuinListData> goshuinlist =  goshuinMap[prefectures.key];
+//
+//           for (var goshuin in goshuinlist) {
+//             // mapの中に同じspotId(神社・寺院ID)があるかチェック
+//             if(spotIdGoshuinIdMap.containsKey(goshuin.spotId)){
+//               // 存在する場合、spotId(神社・寺院ID)ごとの御朱印IDを格納するマップに御朱印ID追加
+//               List<String> list = spotIdGoshuinIdMap[goshuin.spotId];
+//               list.add(goshuin.id);
+//             }else{
+//               // 存在しない場合、一時的に格納するマップに追加
+//               List<String> list = [goshuin.id];
+//               spotIdGoshuinIdMap[goshuin.spotId] = list;
+//             }
+//           }
+//
+//           // spotId(神社・寺院ID)リスト,御朱印IDのリストを格納用に変換
+//           List<String> spotIdList = [];
+//           for (var spotId in spotIdGoshuinIdMap.keys) {
+//             List<String> goshuinIdList = [];
+//             spotIdList.add(spotId);
+//
+//             for(var goshuinId in spotIdGoshuinIdMap[spotId]){
+//               goshuinIdList.add(goshuinId);
+//             }
+//
+//             // spotId(神社・寺院ID)ごとの御朱印IDマップに追加（key：spotId(神社・寺院ID)、value：御朱印IDのリスト）
+//             ichijiGoshuinSpotIdMap[spotId] = goshuinIdList;
+//           }
+//
+//           // 都道府県リストに追加（key：都道府県番号、value：spotId(神社・寺院ID)のリスト）
+//           ichijiGoshuinPefArray.add(MapEntry(prefectures.key, spotIdList));
+//         }
+//       }
+//
+//       // 御朱印リスト一覧をMapに変換（都道府県別表示に利用）
+//       goshuinArray.forEach((goshuin) => ichijiGoshuinDataMap[goshuin.id] = goshuin);
+//
+//       // それぞれを登録
+//     goshuinSpotIdMap = ichijiGoshuinSpotIdMap;
+//     goshuinPefArray = ichijiGoshuinPefArray;
+//     goshuinDataMap = ichijiGoshuinDataMap;
+//
+//     // ★表示用なので消す
+//     print(goshuinSpotIdMap);
+//       print(goshuinPefArray);
+//       print(goshuinDataMap);
+//   }
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//   // ★やめるかも
+//   /*
+// * 都道府県別の御朱印データ一覧の先頭にに1件追加
+// * prm : goshuinListData 御朱印データ
+// * return : なし
+//  */
+//
+//   @action
+//   void setGoshuinArrayPefOneData(GoshuinListData goshuinListData) {
+//     //spotId(神社・寺院ID) [都道府県番号-都道府県番号内の連番5桁（03-00001）]から都道府県番号を取得
+//     var pefNum = (goshuinListData.spotId).substring(0,2); // 文字列
+//     int pefNumIntSetdata = int.parse(pefNum); // 数値
+//
+//     // 都道府県がすでにあるかチェック
+//       for(int j = 0; j < goshuinArrayPef.length; j++){
+//       // 都道府県番号が一致した場合、リストに御朱印データを追加
+//       if(goshuinArrayPef[j].key == pefNum){
+//         // 都道府県の御朱印リストを取得
+//         List<MapEntry<String, List<GoshuinListData>>> goshuinMapList = goshuinArrayPef[j].value;
+//
+//         // 都道府県別の御朱印リストから同じspotId(神社・寺院ID)があるかチェック
+//
+//         for(int i = 0; i < goshuinMapList.length; i++){
+//           var spotId = goshuinListData.spotId;
+//           if(goshuinMapList[i].key == spotId){
+//             // 同じspotId(神社・寺院ID)が存在する場合
+//             // spotId(神社・寺院ID)の御朱印リストを取得
+//             List<GoshuinListData> goshuinSpotList = goshuinMapList[i].value;
+//             //リストの末尾に追加
+//             goshuinSpotList.add(goshuinListData);
+//
+//             // 都道府県の御朱印リストを更新(削除して追加）
+//             goshuinMapList.removeAt(i);
+//             // 削除した位置に追加
+//             goshuinMapList.insert(i, MapEntry(spotId, goshuinSpotList));
+//
+//
+//             break;
+//
+//             // List<MapEntry<String,  List<MapEntry<String, List<GoshuinListData>>>>> goshuinArrayPef;
+//
+//
+//           }
+//         }
+//
+//
+//         // List<GoshuinListData> list = (goshuinMapPef.value).;
+//         // //リストの末尾に追加
+//         // list.add(goshuin);
+//       }
+//
+//     }
+//
+//
+//
+//   }
+//
 
 
   // ignore: use_setters_to_change_properties

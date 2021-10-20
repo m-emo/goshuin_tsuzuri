@@ -72,7 +72,7 @@ class GoshuinListListState extends State {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              "${(store.goshuinArray)[index].spotName}",
+                              "${(store.goshuinArray)[index].spotId}"+"${(store.goshuinArray)[index].spotName}",
                               // 神社・寺院名
                               style: Styles.mainTextStyleBold,
                               overflow: TextOverflow.ellipsis,
@@ -80,7 +80,7 @@ class GoshuinListListState extends State {
                           ),
                           Container(
                             child: Text(
-                              "${(store.goshuinArray)[index].goshuinName}",
+                              "${(store.goshuinArray)[index].id}"+"${(store.goshuinArray)[index].goshuinName}",
                               // 御朱印名
                               style: Styles.mainTextStyle,
                               overflow: TextOverflow.ellipsis,

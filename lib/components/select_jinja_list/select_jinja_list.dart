@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/header.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
+import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import '../../app_store.dart';
 
 class SelectJinjaList extends StatelessWidget {
@@ -25,13 +28,22 @@ class SelectJinjaList extends StatelessWidget {
         centerTitle: true,
       ),
       persistentFooterButtons: <Widget>[
-        FlatButton(
-          color: Colors.white,
-          child: Text(
-            '＋ 神社・寺院を追加',
+        TextButton.icon(
+          onPressed: () {
+            // 更新前のデータを保持（比較チェック用）
+            setEditSopt(store, "0", null);
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) =>
+                  JinjaEdit(store: store, kbn: "0", senimotokbn: "2",)),
+            );
+          },
+          icon: StylesIcon.addIcon,
+          label: Text(
+            '神社・寺院を追加',
             style: Styles.mainTextStyle,
           ),
-          onPressed: () => Navigator.pushNamed(context, '/addJinja'),
         ),
       ],
       body: ListView.builder(
@@ -45,11 +57,13 @@ class SelectJinjaList extends StatelessWidget {
             ))),
             child: InkWell(
               onTap: () {
-                store.setEditSpotId((store.spotArray)[index].id); // 神社・寺院ID
-                store.setEditSpotName(
+                store.setEditGoshuinSpotId((store.spotArray)[index].id); // 神社・寺院ID
+                store.setEditGoshuinSpotName(
                     (store.spotArray)[index].spotName); // 神社・寺院名
-                store.setEditSpotPrefectures(
+                store.setEditGoshuinSpotPrefectures(
                     (store.spotArray)[index].prefectures); // 神社・寺院 都道府県
+                store.setEditGoshuinSpotPrefecturesNo(
+                    (store.spotArray)[index].prefecturesNo);  // 都道府県番号
                 Navigator.pop(context); //前の画面に戻る
               },
               child: Container(

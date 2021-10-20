@@ -2,7 +2,12 @@ import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:flutter/material.dart';
 
+import '../../app_store.dart';
+
 class PrefecturesList extends StatelessWidget {
+  const PrefecturesList({Key key, @required this.store}) : super(key: key);
+  final AppStore store;
+
   @override
   Widget build(BuildContext context) {
 
@@ -31,7 +36,9 @@ class PrefecturesList extends StatelessWidget {
             ))),
             child: InkWell(
               onTap: () {
-                Navigator.pop(context, prefecturesListdata[index]); //前の画面に戻る（変更なし）
+                store.setEditSpotprefectures(prefecturesListdata[index].value); // 都道府県名
+                store.setEditSpotprefecturesNo(prefecturesListdata[index].key); // 都道府県番号
+                Navigator.pop(context);
               },
               child: Container(
                 color: Colors.white,

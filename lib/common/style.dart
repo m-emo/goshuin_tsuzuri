@@ -65,6 +65,13 @@ class Styles {
     letterSpacing: 1.0,
     fontSize: 16.0,
   );
+
+// ボタンテキストスタイル(紫）
+  static const mainButtonTextStylePurple = TextStyle(
+    color: Color(0xFF724E87),
+    letterSpacing: 1.0,
+    fontSize: 16.0,
+  );
 }
 
 // 色のスタイル
@@ -73,13 +80,16 @@ class StylesColor {
   static const bgcolor = Color(0xFFFFFFFF);
 
   // 写真画像の背景色
-  static const bgImgcolor = Color(0xFFFFFFFF);
+  static const bgImgcolor = Color(0xFFFBFBFB);
 
 // ボーダーカラー
   static const bordercolor = Color(0xFFEAEAEA);
 
   // メインカラー
   static const maincolor = Color(0xFFE75331);
+
+  // メインカラー2
+  static const maincolor2 = Color(0xFF724E87);
 
   // サブテキストカラー
   static const subTextColor = Color(0xFF707070);

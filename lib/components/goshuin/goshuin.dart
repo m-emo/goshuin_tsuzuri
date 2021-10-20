@@ -33,13 +33,14 @@ class Goshuin extends StatelessWidget {
               icon: StylesIcon.editIcon,
               onPressed: () {
                 store.setEditGoshuinId(goshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
-                store.setEditBase64Image(goshuinData.img); // 御朱印画像(base64)
-                store.setEditSpotId(goshuinData.spotId); // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
-                store.setEditSpotName(goshuinData.spotName); // 神社・寺院名
-                store.setEditSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
+                store.setEditGoshuinBase64Image(goshuinData.img); // 御朱印画像(base64)
+                store.setEditGoshuinSpotId(goshuinData.spotId); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+                store.setEditGoshuinSpotName(goshuinData.spotName); // 神社・寺院名
+                store.setEditGoshuinSpotPrefecturesNo(goshuinData.spotPrefecturesNo); // 都道府県番号
+                store.setEditGoshuinSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
                 store.setEditGoshuinName(goshuinData.goshuinName); // 御朱印名
-                store.setEditSanpaiDate(goshuinData.date); // 参拝日
-                store.setEditMemo(goshuinData.memo); // メモ
+                store.setEditGoshuinSanpaiDate(goshuinData.date); // 参拝日
+                store.setEditGoshuinMemo(goshuinData.memo); // メモ
 
                 // 更新前のデータを保持（比較チェック用）
                 store.setBeforeGoshuinData(goshuinData);

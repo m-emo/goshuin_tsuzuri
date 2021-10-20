@@ -31,7 +31,7 @@ class DbSpotData extends DBProvider {
 }
 
 class SpotData {
-  final String id; // 神社・寺院ID [都道府県番号-都道府県番号内の連番5桁（03-00001）]
+  final String id; // 神社・寺院ID [SPT+連番6桁（SPT000001）]
   final String spotName; // 神社・寺名
   final String kbn; // 区分（1:神社, 2:寺 ,0:その他）
   final String prefectures; // 都道府県名

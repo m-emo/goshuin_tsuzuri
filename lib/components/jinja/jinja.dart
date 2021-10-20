@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
+import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 
@@ -35,6 +36,16 @@ class Jinja extends StatelessWidget {
           actions: <Widget>[
             IconButton(
               icon: StylesIcon.editIcon,
+              onPressed: () {
+                // 更新前のデータを保持（比較チェック用）
+                setEditSopt(store, "1", spotData);
+
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) =>
+                      JinjaEdit(store: store, kbn: "1")),
+                );
+              },
             ),
           ],
           backgroundColor: Colors.white,
@@ -183,7 +194,7 @@ class ListArea extends StatelessWidget {
                         children: <Widget>[
                           Container(
                             child: Text(
-                              goshuinArray[index].goshuinName, // 御朱印名
+                              goshuinArray[index].id+goshuinArray[index].goshuinName, // 御朱印名
                               style: Styles.mainTextStyle,
                               overflow: TextOverflow.ellipsis,
                               maxLines: 2,
