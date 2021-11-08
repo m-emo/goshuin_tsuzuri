@@ -53,6 +53,9 @@ abstract class _AppStore with Store {
   // メモ
   @observable
   String editGoshuinMemo;
+  // 登録日
+  @observable
+  String editGoshuinCreateData;
 //******** 御朱印登録に利用 -end- ********
 
 //******** 神社・寺院登録に利用 -start- ********
@@ -62,9 +65,9 @@ abstract class _AppStore with Store {
   // 神社・寺名
   @observable
   String editSpotName;
-  // 区分（1:神社, 2:寺 ,0:その他）
+  // 区分（1:寺, 2:神社 ,0:その他）
   @observable
-  String editSpotkbn;
+  String editSpotKbn;
   // 都道府県名
   @observable
   String editSpotprefectures;
@@ -78,6 +81,16 @@ abstract class _AppStore with Store {
   @observable
   String editSpotcreateData;
 //******** 神社・寺院登録に利用 -end- ********
+
+//******** 神社・寺院登録の画面表示用に利用 -start- ********
+  // 区分表示値
+  @observable
+  String editSpotShowKbn = "";
+  // 神社・寺院画像
+  @observable
+  String editSpotShowUint8ListImage;
+
+//******** 神社・寺院登録の画面表示用に利用 -end- ********
 
   // 編集前の御朱印データ
   GoshuinListData beforeGoshuinData;
@@ -167,6 +180,11 @@ abstract class _AppStore with Store {
   }
 
   @action
+  void setEditGoshuinCreateData(String value) {
+    editGoshuinCreateData = value;
+  }
+
+  @action
   void setEditSpotid(String value) {
     editSpotid = value;
   }
@@ -177,13 +195,14 @@ abstract class _AppStore with Store {
   }
 
   @action
-  void setEditSpotkbn(String value) {
-    editSpotkbn = value;
+  void setEditSpotKbn(String value) {
+    editSpotKbn = value;
   }
 
   @action
   void setEditSpotprefectures(String value) {
     editSpotprefectures = value;
+    print(editSpotprefectures);
   }
 
   @action
@@ -199,6 +218,16 @@ abstract class _AppStore with Store {
   @action
   void setEditSpotcreateData(String value) {
     editSpotcreateData = value;
+  }
+
+  @action
+  void setEditSpotShowKbn(String value) {
+    editSpotShowKbn = value;
+  }
+
+  @action
+  void setEditSpotShowUint8ListImage(String value) {
+    editSpotShowUint8ListImage = value;
   }
 
   @action

@@ -15,3 +15,16 @@ class MaxNum {
   static const max_goshuin_id = "GSI999999";
   static const max_spot_id = "SPT999999";
 }
+class Id {
+  static const goshuin_id_pfx = "GSI";
+  static const spot_id_pfx = "SPT";
+}
+
+class spotKbn{
+  static const spot_kbn_tera = "1";
+  static const spot_kbn_jinja = "2";
+  static const spot_kbn_sonota = "0";
+  static const spot_text_tera = "寺";
+  static const spot_text_jinja = "神社";
+  static const spot_text_sonota = "その他";
+}

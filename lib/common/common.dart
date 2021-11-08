@@ -1,13 +1,17 @@
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
+import 'package:provider/provider.dart';
 import '../dao/db_goshuin_data.dart';
+import 'package:goshuintsuzuri/common/property.dart';
 import '../app_store.dart';
 
+//******** ボタン付きメッセージウィンドウWidget -start- ********
 /*
-* メッセージウィンドウWidget
+* ボタン付きメッセージウィンドウWidget
 * prm : store 表示用データ
 *       msg 表示メッセージ
 *       btnMsg1 ボタンテキスト１（上部分）
@@ -111,15 +115,17 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
     },
   );
 }
+//******** ボタン付きメッセージウィンドウWidget -end- ********
 
+//******** ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget -start- ********
 /*
-* メッセージウィンドウ(サブ）Widget
+* ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget
 * prm : store 表示用データ
 *       msg 表示メッセージ
 *       btnMsg1 ボタンテキスト１（上部分）
 *       btnMsg1 ボタンテキスト２（下部分）
-*       flg 1:編集・登録を終了する、続けて登録するダイアログ
-*           2:削除する、編集を続けるダイアログ（神社・寺院削除）
+*       flg 1:編集、登録中の場合に戻るボタン押した際の確認ダイアログ
+*           2:「削除する/削除やめる」ダイアログ
 * return : Widget
  */
 Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
@@ -164,6 +170,7 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                       child: Text(btnMsg1, style: Styles.mainButtonTextStyle),
                       onPressed: () {
                         if (flg == 1) {
+                          //
                           // 戻る（ダイアログ閉じる⇒編集閉じる）
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -201,6 +208,7 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                       child: Text(btnMsg2,
                           style: Styles.mainButtonTextStylePurple),
                       onPressed: () {
+                        // 続けて登録する
                         if (flg == 1 || flg == 2) {
                           // ダイアログ閉じる
                           Navigator.of(context).pop();
@@ -218,6 +226,42 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
     },
   );
 }
+//******** ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget -end- ********
+
+//******** メッセージウィンドウWidget -start- ********
+/*
+* メッセージウィンドウWidget
+* prm : store 表示用データ
+* return : Widget
+ */
+class MsgArea extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final store = Provider.of<AppStore>(context);
+    return Observer(
+      builder: (context) {
+        return Visibility(
+          visible: store.goshuinErrFlg,
+          child: Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(top: 80),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.0),
+              color: Colors.black.withOpacity(0.5),
+            ),
+            child: Text(
+              '写真を追加してください',
+              style: Styles.mainButtonTextStyle,
+            ),
+            width: 300.0,
+            height: 80.0,
+          ),
+        );
+      },
+    );
+  }
+}
+//******** メッセージウィンドウWidget -end- ********
 
 class BoxFitType {
   final String name;
@@ -302,11 +346,15 @@ void editResetSopt(AppStore store) {
   // 編集対象のデータをクリア
   store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
   store.setEditSpotName(""); // 神社・寺名
-  store.setEditSpotkbn(""); // 区分（1:神社, 2:寺 ,0:その他）
+  store.setEditSpotKbn(""); // 区分（1:寺, 2:神社 ,0:その他）
   store.setEditSpotprefectures(""); // 都道府県名
   store.setEditSpotprefecturesNo(""); // 都道府県No
   store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
   store.setEditSpotcreateData(""); // 登録日
+
+  // 画面用表示値をクリア
+  store.setEditSpotShowKbn("");
+  store.setEditSpotShowUint8ListImage("");
 
   // 更新前のデータをクリア
   SpotData data = SpotData(
@@ -316,7 +364,7 @@ void editResetSopt(AppStore store) {
     prefectures: "",
     prefecturesNo: "",
     img: "",
-    createData: "",
+    createData: null,
   );
   store.setBeforeSpotData(data);
 }
@@ -333,7 +381,7 @@ void setEditSopt(AppStore store, String kbn, SpotData data) {
     // 新規登録
     store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
     store.setEditSpotName(""); // 神社・寺名
-    store.setEditSpotkbn(""); // 区分（1:神社, 2:寺 ,0:その他）
+    store.setEditSpotKbn(""); // 区分（1:寺, 2:神社 ,0:その他）
     store.setEditSpotprefectures(""); // 都道府県名
     store.setEditSpotprefecturesNo(""); // 都道府県No
     store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
@@ -353,11 +401,24 @@ void setEditSopt(AppStore store, String kbn, SpotData data) {
     // 更新
     store.setEditSpotid(data.id); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
     store.setEditSpotName(data.spotName); // 神社・寺名
-    store.setEditSpotkbn(data.kbn); // 区分（1:神社, 2:寺 ,0:その他）
+    store.setEditSpotKbn(data.kbn); // 区分（1:寺, 2:神社 ,0:その他）
     store.setEditSpotprefectures(data.prefectures); // 都道府県名
     store.setEditSpotprefecturesNo(data.prefecturesNo); // 都道府県No
     store.setEditSpotBase64Image(data.img); // 神社・寺院画像(base64)
     store.setEditSpotcreateData(data.createData); // 登録日
+
+    // 編集画面用表示値(区分)
+    var kbn = "";
+    if(data.kbn == spotKbn.spot_kbn_tera){
+      kbn = spotKbn.spot_text_tera;
+    }else if(data.kbn == spotKbn.spot_kbn_jinja){
+      kbn = spotKbn.spot_text_jinja;
+    }else if(data.kbn == spotKbn.spot_kbn_sonota){
+      kbn = spotKbn.spot_text_sonota;
+    }
+    store.setEditSpotShowKbn(kbn);
+
+    store.setEditSpotShowUint8ListImage("");
   }
   store.setBeforeSpotData(data);
 }

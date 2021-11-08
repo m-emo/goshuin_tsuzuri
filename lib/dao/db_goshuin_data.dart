@@ -28,6 +28,52 @@ class DbGoshuinData extends DBProvider {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  /* 更新 */
+  Future<void> updateGoshuin(GoshuinData goshuin) async {
+    // Get a reference to the database.
+    final db = await database;
+    await db.update(
+      tableName,
+      goshuin.toMap(),
+      where: "id = ?",
+      whereArgs: [goshuin.id],
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+  }
+
+  /* 削除 */
+  Future<void> deleteGoshuin(String id) async {
+    final db = await database;
+    await db.delete(
+      tableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+    print("db_goshuin_data.dart★削除した");
+  }
+
+  /* 最大IDレコード取得 */
+  Future<GoshuinData> getMaxIdGoshuin() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db
+        .rawQuery('SELECT * FROM ' + tableName + ' ORDER BY id DESC LIMIT 1');
+    var goshuin = new GoshuinData();
+    var i = 0;
+    if (maps.length != 0) {
+      goshuin = GoshuinData(
+        id: maps[i]['id'],
+        img: maps[i]['img'],
+        spotId: maps[i]['spotId'],
+        goshuinName: maps[i]['goshuinName'],
+        date: maps[i]['date'],
+        memo: maps[i]['memo'],
+        createData: maps[i]['createData'],
+      );
+    }
+    return goshuin;
+  }
+
 }
 
 class GoshuinData {
@@ -41,12 +87,12 @@ class GoshuinData {
 
   GoshuinData(
       {this.id,
-        this.img,
-        this.spotId,
-        this.goshuinName,
-        this.date,
-        this.memo,
-        this.createData});
+      this.img,
+      this.spotId,
+      this.goshuinName,
+      this.date,
+      this.memo,
+      this.createData});
 
   Map<String, dynamic> toMap() {
     return {
@@ -80,15 +126,15 @@ class GoshuinListData {
 
   GoshuinListData(
       {this.id,
-        this.img,
-        this.spotId,
-        this.spotName,
-        this.spotPrefecturesNo,
-        this.spotPrefectures,
-        this.goshuinName,
-        this.date,
-        this.memo,
-        this.createData});
+      this.img,
+      this.spotId,
+      this.spotName,
+      this.spotPrefecturesNo,
+      this.spotPrefectures,
+      this.goshuinName,
+      this.date,
+      this.memo,
+      this.createData});
 
   Map<String, dynamic> toMap() {
     return {

@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
-import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/components/jinja/jinja.dart';
 import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
+import 'package:provider/provider.dart';
 import '../../app_store.dart';
 
 class JinjaList extends StatelessWidget {
-  JinjaList({Key key, @required this.store}) : super(key: key);
+  // JinjaList({Key key, @required this.store}) : super(key: key);
+  JinjaList({Key key}) : super(key: key);
 
   // 引数取得
-  final AppStore store; // 引数
+  // final AppStore store; // 引数
 
   @override
   Widget build(BuildContext context) {
+    final _store = Provider.of<AppStore>(context);
     return Scaffold(
       // appBar: Header(),
       backgroundColor: Colors.white,
@@ -23,12 +25,12 @@ class JinjaList extends StatelessWidget {
         TextButton.icon(
           onPressed: () {
             // 更新前のデータを保持（比較チェック用）
-            setEditSopt(store, "0", null);
+            setEditSopt(_store, "0", null);
 
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) =>
-                  JinjaEdit(store: store, kbn: "0", senimotokbn: "1",)),
+                  JinjaEdit(store: _store, kbn: "0", senimotokbn: "1",)),
             );
           },
           icon: StylesIcon.addIcon,
@@ -53,19 +55,19 @@ class JinjaList extends StatelessWidget {
                   onTap: () {
                     // 神社・寺院別の御朱印一覧取得
                     List<GoshuinListData> goshuinArray = [];
-                    for (var getgoshuin in store.goshuinArray) {
+                    for (var getgoshuin in _store.goshuinArray) {
                       // 神社・寺院別のIDが一致する場合、リストに設定
-                      if (getgoshuin.spotId == (store.spotArray)[index].id) {
+                      if (getgoshuin.spotId == (_store.spotArray)[index].id) {
                         goshuinArray.add(getgoshuin);
                       }
                     }
                     // 画面表示用のデータ設定
-                    SpotData spotData = (store.spotArray)[index];
+                    SpotData spotData = (_store.spotArray)[index];
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                           builder: (context) => Jinja(
-                              store: store,
+                              store: _store,
                               spotData: spotData,
                               goshuinArray: goshuinArray)),
                     );
@@ -83,7 +85,7 @@ class JinjaList extends StatelessWidget {
                             width: 95.0,
                             color: StylesColor.bgImgcolor,
                             child: Container(
-                              child: showImg((store.spotArray)[index].img, 2),
+                              child: showImg((_store.spotArray)[index].img, 2),
                             ),
                           ),
                           Container(
@@ -92,7 +94,7 @@ class JinjaList extends StatelessWidget {
                           Expanded(
                             child: Container(
                               child: Text(
-                                "${(store.spotArray)[index].spotName}",
+                                "${(_store.spotArray)[index].spotName}",
                                 // 神社・寺院名
                                 style: Styles.mainTextStyleBold,
                                 overflow: TextOverflow.ellipsis,
@@ -104,7 +106,7 @@ class JinjaList extends StatelessWidget {
                             // width: 60,
                             child: Text(
                                 "[ " +
-                                    "${(store.spotArray)[index].prefectures}" +
+                                    "${(_store.spotArray)[index].prefectures}" +
                                     " ]  ",
                                 style: Styles.mainTextStyleSmall),
                           ),
@@ -115,7 +117,7 @@ class JinjaList extends StatelessWidget {
                 ),
               );
             },
-            itemCount: (store.spotArray).length,
+            itemCount: (_store.spotArray).length,
           ),
           Container(
             decoration: BoxDecoration(

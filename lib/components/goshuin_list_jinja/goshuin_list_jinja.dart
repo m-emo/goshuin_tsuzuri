@@ -226,7 +226,7 @@ class _GoshuinList extends StatelessWidget {
                         Container(
                           child: Text(
                             goshuinList[index].id +
-                                goshuinList[index].goshuinName, // 御朱印名
+                                goshuinList[index].goshuinName+goshuinList[index].spotId, // 御朱印名
                             style: Styles.mainTextStyle,
                             overflow: TextOverflow.ellipsis,
                             maxLines: 2,

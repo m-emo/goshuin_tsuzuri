@@ -664,7 +664,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
             var id = "";
             if (maxId == null || maxId == "") {
               // 初回登録
-              id = "GSI000001";
+              id = Id.goshuin_id_pfx+"000001";
             } else {
               var prefix = maxId.substring(0, 3); // プレフィックス
               int num = int.parse(maxId.substring(3, 9)); // 連番
@@ -675,6 +675,8 @@ class _ButtonAreaState extends State<_ButtonArea> {
             store.setGoshuinMaxId(id);
 
             // insert
+            final createData = (DateTime.now().toUtc().toIso8601String()); // 日時取得
+            print(DateTime.parse(createData).toLocal());
             goshuin = GoshuinData(
               id: id,
               img: store.editGoshuinBase64Image,
@@ -682,24 +684,24 @@ class _ButtonAreaState extends State<_ButtonArea> {
               goshuinName: store.editGoshuinName,
               date: store.editGoshuinSanpaiDate,
               memo: store.editGoshuinMemo,
-              createData: id,
+              createData: createData,
             );
             // DbGoshuinData().insertGoshuin(goshuin); // ★　戻す
 
             // 御朱印一覧保持リストの先頭にデータセット
-            //★テスト用に固定値設定
             GoshuinListData setListData = GoshuinListData(
-              id: "GSI000003",
-              img: "",
-              spotId: "SPT010001",
-              spotName: "清水寺①",
-              spotPrefecturesNo:"26",
-              spotPrefectures: "京都府",
-              goshuinName: "限定御朱印①",
-              date: "2021.10.30",
-              memo: "テストテスト",
-              createData: "2021.10.20",
+              id: id,
+              img: store.editGoshuinBase64Image,
+              spotId: store.editGoshuinSpotId,
+              spotName: store.editGoshuinSpotName,
+              spotPrefecturesNo:store.editGoshuinSpotPrefecturesNo,
+              spotPrefectures: store.editGoshuinSpotPrefectures,
+              goshuinName: store.editGoshuinName,
+              date: store.editGoshuinSanpaiDate,
+              memo: store.editGoshuinMemo,
+              createData: createData,
             );
+
             // 御朱印リストに追加
             store.setGoshuinArrayOneData(setListData);
             // 都道府県別御朱印リストを並び替え
@@ -723,13 +725,24 @@ class _ButtonAreaState extends State<_ButtonArea> {
                 goshuinName: store.editGoshuinName,
                 date: store.editGoshuinSanpaiDate,
                 memo: store.editGoshuinMemo,
-                createData: "", //★現在日入れる
+                createData: store.editGoshuinCreateData,
               );
               // 御朱印リストを修正
               store.updateGoshuinArrayOneData(setListData);
               // spotId、都道府県別御朱印リストを並び替え
               store.setGoshuinArrayPef();
-              //★DBのupdate
+
+              //DBのupdate
+              goshuin = GoshuinData(
+                id: store.editGoshuinId,
+                img: store.editGoshuinBase64Image,
+                spotId: store.editGoshuinSpotId,
+                goshuinName: store.editGoshuinName,
+                date: store.editGoshuinSanpaiDate,
+                memo: store.editGoshuinMemo,
+                createData: store.editGoshuinCreateData,
+              );
+              // DbGoshuinData().updateGoshuin(goshuin);// ★　戻す
             });
           }
 
@@ -764,7 +777,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
           // データを登録・更新する
           var msg = "";
           //★確認のために外す
-          // msg = inputCheck(); // 入力チェック
+          msg = inputCheck(); // 入力チェック
           if (msg != "") {
             // チェックNG
             // _pushDialog(context, msg);

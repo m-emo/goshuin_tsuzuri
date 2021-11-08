@@ -28,12 +28,58 @@ class DbSpotData extends DBProvider {
       conflictAlgorithm: ConflictAlgorithm.replace,
     );
   }
+
+  /* 更新 */
+  Future<void> updateSpot(SpotData spot) async {
+    final db = await database;
+    await db.update(
+      tableName,
+      spot.toMap(),
+      where: "id = ?",
+      whereArgs: [spot.id],
+      conflictAlgorithm: ConflictAlgorithm.fail,
+    );
+  }
+
+  /* 削除 */
+  Future<void> deleteSpot(String id) async {
+    final db = await database;
+    await db.delete(
+      tableName,
+      where: "id = ?",
+      whereArgs: [id],
+    );
+  }
+
+  /* 最大IDレコード取得 */
+  Future<SpotData> getMaxIdSpot() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db
+        .rawQuery('SELECT * FROM ' + tableName + ' ORDER BY id DESC LIMIT 1');
+    var spot = new SpotData();
+    var i = 0;
+    if (maps.length != 0) {
+      spot = SpotData(
+        id: maps[i]['id'],
+        spotName: maps[i]['spotName'],
+        kbn: maps[i]['kbn'],
+        prefectures: maps[i]['prefectures'],
+        prefecturesNo: maps[i]['prefecturesNo'],
+        img: maps[i]['img'],
+        createData: maps[i]['createData'],
+      );
+    }
+    return spot;
+  }
+
 }
+
+
 
 class SpotData {
   final String id; // 神社・寺院ID [SPT+連番6桁（SPT000001）]
   final String spotName; // 神社・寺名
-  final String kbn; // 区分（1:神社, 2:寺 ,0:その他）
+  final String kbn; // 区分（1:寺, 2:神社 ,0:その他）
   final String prefectures; // 都道府県名
   final String prefecturesNo; // 都道府県No
   final String img; // 画像(base64)
