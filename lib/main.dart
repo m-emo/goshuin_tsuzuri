@@ -10,12 +10,12 @@ void main() {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
 
-  // runApp(App());
+  runApp(App());
 
-  runApp(MultiProvider(
-    providers: [
-      Provider<AppStore>(create: (_) => AppStore()),
-    ],
-    child: App(),
-  ));
+  // runApp(MultiProvider(
+  //   providers: [
+  //     Provider<AppStore>(create: (_) => AppStore()),
+  //   ],
+  //   child: App(),
+  // ));
 }

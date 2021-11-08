@@ -220,7 +220,7 @@ class _RootWidgetState extends State<RootWidget> {
     var _routes = [
       GoshuinList(store: store),
       // JinjaList(store: store),
-      JinjaList(),
+      JinjaList(store: store),
       GoshuinEdit(kbn: "0"),
     ];
     final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();

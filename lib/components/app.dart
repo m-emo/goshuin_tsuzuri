@@ -8,8 +8,8 @@ import '../app_store.dart';
 class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // final store = AppStore();
-    final store = Provider.of<AppStore>(context);
+    final store = AppStore();
+    // final store = Provider.of<AppStore>(context);
     return MaterialApp(
       theme: ThemeData(
         scaffoldBackgroundColor: StylesColor.bgcolor,

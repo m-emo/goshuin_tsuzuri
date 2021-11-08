@@ -235,9 +235,13 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
 * return : Widget
  */
 class MsgArea extends StatelessWidget {
+
+  // 引数
+  final AppStore store;
+  MsgArea({@required this.store});
+
   @override
   Widget build(BuildContext context) {
-    final store = Provider.of<AppStore>(context);
     return Observer(
       builder: (context) {
         return Visibility(
@@ -257,6 +261,7 @@ class MsgArea extends StatelessWidget {
             height: 80.0,
           ),
         );
+
       },
     );
   }

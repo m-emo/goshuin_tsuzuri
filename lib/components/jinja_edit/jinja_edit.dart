@@ -84,7 +84,7 @@ class JinjaEdit extends StatelessWidget {
                 color: StylesColor.bgImgcolor,
               ),
               Area(kbn: kbn, store: store, senimotokbn: senimotokbn),
-              MsgArea(),
+              MsgArea(store: store),
             ],
           ),
         ),
@@ -110,9 +110,9 @@ class Area extends StatelessWidget {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           _ImagePickerView(kbn: kbn, store: store),
-          _KbnArea(kbn: kbn),
+          _KbnArea(kbn: kbn, store: store),
           // _PrefecturesArea(kbn: kbn, store: store),
-          _PrefecturesArea(kbn: kbn),
+          _PrefecturesArea(kbn: kbn, store: store),
           _NameArea(kbn: kbn, store: store),
           _ButtonArea(kbn: kbn, store: store, senimotokbn: senimotokbn),
           kbn == "1" // 更新
@@ -291,12 +291,13 @@ class _ImagePickerViewState extends State {
 class _KbnArea extends StatelessWidget {
   // 引数
   final String kbn;
+  final AppStore store;
 
-  _KbnArea({this.kbn});
+  _KbnArea({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
-    final _store = Provider.of<AppStore>(context);
+    // final _store = Provider.of<AppStore>(context);
     return Container(
       color: Colors.white,
       padding: const EdgeInsets.only(
@@ -314,24 +315,24 @@ class _KbnArea extends StatelessWidget {
                       title: Text(spotKbn.spot_text_tera),
                       onTap: () {
                         Navigator.pop(context);
-                        _store.setEditSpotShowKbn(spotKbn.spot_text_tera);
-                        _store.setEditSpotKbn(spotKbn.spot_kbn_tera);
+                        store.setEditSpotShowKbn(spotKbn.spot_text_tera);
+                        store.setEditSpotKbn(spotKbn.spot_kbn_tera);
                       }),
                   ListTile(
                       leading: FaIcon(FontAwesomeIcons.images),
                       title: Text(spotKbn.spot_text_jinja),
                       onTap: () {
                         Navigator.pop(context);
-                        _store.setEditSpotShowKbn(spotKbn.spot_text_jinja);
-                        _store.setEditSpotKbn(spotKbn.spot_kbn_jinja);
+                        store.setEditSpotShowKbn(spotKbn.spot_text_jinja);
+                        store.setEditSpotKbn(spotKbn.spot_kbn_jinja);
                       }),
                   ListTile(
                       leading: FaIcon(FontAwesomeIcons.images),
                       title: Text(spotKbn.spot_text_sonota),
                       onTap: () {
                         Navigator.pop(context);
-                        _store.setEditSpotShowKbn(spotKbn.spot_text_sonota);
-                        _store.setEditSpotKbn(spotKbn.spot_kbn_sonota);
+                        store.setEditSpotShowKbn(spotKbn.spot_text_sonota);
+                        store.setEditSpotKbn(spotKbn.spot_kbn_sonota);
                       }),
                 ],
               );
@@ -372,10 +373,11 @@ class _KbnArea extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 15.0),
                       child: Observer(
                         builder: (context) {
-                          return Text(
-                            "${_store.editSpotShowKbn}", // 区分
+                        return Text(
+                            "${store.editSpotShowKbn}", // 区分
                             style: Styles.mainTextStyle,
                           );
+
                         },
                       ),
                     ),
@@ -406,15 +408,12 @@ class _KbnArea extends StatelessWidget {
 class _PrefecturesArea extends StatelessWidget {
 // 引数
   final String kbn;
+  final AppStore store;
 
-  // final AppStore store;
-
-  // _PrefecturesArea({this.kbn, this.store});
-  _PrefecturesArea({this.kbn});
+  _PrefecturesArea({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
-    final _store = Provider.of<AppStore>(context);
     return Container(
       color: Colors.white,
       margin: const EdgeInsets.only(top: 4.0),
@@ -427,7 +426,7 @@ class _PrefecturesArea extends StatelessWidget {
             context,
             MaterialPageRoute(
                 // builder: (context) => PrefecturesList(store: _store)),
-                builder: (context) => PrefecturesList()),
+                builder: (context) => PrefecturesList(store:store)),
           );
         },
         child: Row(
@@ -466,7 +465,7 @@ class _PrefecturesArea extends StatelessWidget {
                         builder: (context) {
                           return Text(
                             // 登録
-                            "${_store.editSpotprefectures}", // 都道府県名
+                            "${store.editSpotprefectures}", // 都道府県名
                             style: Styles.mainTextStyle,
                           );
                         },
@@ -560,8 +559,7 @@ class _ButtonArea extends StatefulWidget {
 
   @override
   _ButtonAreaState createState() =>
-      // _ButtonAreaState(kbn: kbn, senimotokbn: senimotokbn, store: store);
-      _ButtonAreaState(kbn: kbn, senimotokbn: senimotokbn);
+      _ButtonAreaState(kbn: kbn, senimotokbn: senimotokbn, store: store);
 }
 
 class _ButtonAreaState extends State<_ButtonArea> {
@@ -570,19 +568,16 @@ class _ButtonAreaState extends State<_ButtonArea> {
   // 引数
   final String kbn;
   final String senimotokbn;
+  final AppStore store;
 
-  // final AppStore store;
-
-  // _ButtonAreaState({this.kbn, this.senimotokbn, this.store});
-  _ButtonAreaState({this.kbn, this.senimotokbn});
+  _ButtonAreaState({this.kbn, this.senimotokbn, this.store});
 
   @override
   Widget build(BuildContext context) {
-    final store = Provider.of<AppStore>(context);
     /*ボタン処理*/
     return Column(
       children: <Widget>[
-        MsgArea(),
+        MsgArea(store:store),
         Container(
           margin: const EdgeInsets.only(
               top: 20.0, right: 20.0, left: 20.0, bottom: 30.0),

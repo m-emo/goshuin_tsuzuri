@@ -6,13 +6,13 @@ import 'package:provider/provider.dart';
 import '../../app_store.dart';
 
 class PrefecturesList extends StatelessWidget {
-  // const PrefecturesList({Key key, @required this.store}) : super(key: key);
-  const PrefecturesList({Key key}) : super(key: key);
-  // final AppStore store;
+  const PrefecturesList({Key key, @required this.store}) : super(key: key);
+  // const PrefecturesList({Key key}) : super(key: key);
+  final AppStore store;
 
   @override
   Widget build(BuildContext context) {
-    final _store = Provider.of<AppStore>(context);
+    // final _store = Provider.of<AppStore>(context);
     return Scaffold(
       appBar: AppBar(
         leading: new IconButton(
@@ -38,8 +38,8 @@ class PrefecturesList extends StatelessWidget {
             ))),
             child: InkWell(
               onTap: () {
-                _store.setEditSpotprefectures(prefecturesListdata[index].value); // 都道府県名
-                _store.setEditSpotprefecturesNo(prefecturesListdata[index].key); // 都道府県番号
+                store.setEditSpotprefectures(prefecturesListdata[index].value); // 都道府県名
+                store.setEditSpotprefecturesNo(prefecturesListdata[index].key); // 都道府県番号
                 Navigator.pop(context);
               },
               child: Container(
