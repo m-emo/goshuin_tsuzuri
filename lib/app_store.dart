@@ -19,7 +19,6 @@ part 'app_store.g.dart';
 class AppStore = _AppStore with _$AppStore;
 
 abstract class _AppStore with Store {
-
   @observable
   Color primary;
 
@@ -127,12 +126,12 @@ abstract class _AppStore with Store {
   //  ]),
   // ]
   @observable
-  List<MapEntry<String,  List<MapEntry<String, List<GoshuinListData>>>>> goshuinArrayPef;
-
+  List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
+      goshuinArrayPef;
 
   // 神社・寺院一覧
   @observable
-  List<SpotData> spotArray;
+  ObservableList<SpotData> spotArray;
 
   @action
   void setEditGoshuinId(String value) {
@@ -261,7 +260,7 @@ abstract class _AppStore with Store {
   }
 
   @action
-  void setSpotArray(List<SpotData> value) {
+  void setSpotArray(ObservableList<SpotData> value) {
     spotArray = value;
   }
 
@@ -283,7 +282,7 @@ abstract class _AppStore with Store {
   @action
   void updateGoshuinArrayOneData(GoshuinListData goshuinListData) {
     for (var i = 0; i < goshuinArray.length; i++) {
-      if (goshuinArray[i].id== goshuinListData.id) {
+      if (goshuinArray[i].id == goshuinListData.id) {
         // 削除
         goshuinArray.removeAt(i);
         // 削除した位置に追加
@@ -328,9 +327,6 @@ abstract class _AppStore with Store {
     }
   }
 
-
-
-
   /*
 * 神社・寺院がupdateされた場合に御朱印リストの神社・寺院の情報を修正
 * prm : なし
@@ -339,14 +335,13 @@ abstract class _AppStore with Store {
   void updateGoshuinSpotInfo(SpotData spotData) {
     for (var i = 0; i < goshuinArray.length; i++) {
       // 神社・寺院IDが一致する場合に情報修正
-      if (goshuinArray[i].spotId== spotData.id) {
-
+      if (goshuinArray[i].spotId == spotData.id) {
         GoshuinListData setListData = GoshuinListData(
           id: goshuinArray[i].id,
           img: goshuinArray[i].img,
           spotId: goshuinArray[i].spotId,
           spotName: spotData.spotName,
-          spotPrefecturesNo:spotData.prefecturesNo,
+          spotPrefecturesNo: spotData.prefecturesNo,
           spotPrefectures: spotData.prefectures,
           goshuinName: goshuinArray[i].goshuinName,
           date: goshuinArray[i].date,
@@ -370,7 +365,8 @@ abstract class _AppStore with Store {
   @action
   void setGoshuinArrayPef() {
     // 都道府県別の御朱印データ一覧のList
-    List<MapEntry<String,  List<MapEntry<String, List<GoshuinListData>>>>> goshuinDataList = [];
+    List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
+        goshuinDataList = [];
 
     // 一時的に格納するマップを設定（key：都道府県番号、value：都道府県番号ごとの御朱印データのList）
     Map<String, List<GoshuinListData>> goshuinMap = {};
@@ -381,14 +377,13 @@ abstract class _AppStore with Store {
       var pefNum = goshuin.spotPrefecturesNo;
 
       // mapの中に同じ都道府県番号があるかチェック
-      if(goshuinMap.containsKey(pefNum)){
+      if (goshuinMap.containsKey(pefNum)) {
         // 存在する場合、リストに御朱印データを追加
         // 都道府県の御朱印リストを取得
         List<GoshuinListData> list = goshuinMap[pefNum];
         //リストの末尾に追加
         list.add(goshuin);
-
-      }else{
+      } else {
         // 存在しない場合、mapに御朱印データを追加
         List<GoshuinListData> list = [goshuin];
         goshuinMap[pefNum] = list;
@@ -396,19 +391,19 @@ abstract class _AppStore with Store {
     }
 
     // 都道府県順に並び替え
-    for(var prefectures in prefecturesListdata){
+    for (var prefectures in prefecturesListdata) {
       // 都道府県番号と一致するデータがあるかチェック
-      if(goshuinMap.containsKey(prefectures.key)){
+      if (goshuinMap.containsKey(prefectures.key)) {
         // 存在する場合、spotId(神社・寺院ID)ごとにリスト生成
 
         // 一時的に格納するマップを設定（key：spotId(神社・寺院ID)、value：spotIdごとの御朱印データのList）
         Map<String, List<GoshuinListData>> goshuinMapspotId = {};
         // 都道府県番号ごとの御朱印データのListを取得
-        List<GoshuinListData> goshuinlist =  goshuinMap[prefectures.key];
+        List<GoshuinListData> goshuinlist = goshuinMap[prefectures.key];
 
         for (var goshuin in goshuinlist) {
           // mapの中に同じspotId(神社・寺院ID)があるかチェック
-          if(goshuinMapspotId.containsKey(goshuin.spotId)){
+          if (goshuinMapspotId.containsKey(goshuin.spotId)) {
             // 存在する場合、リストに御朱印データを追加
             // spotIdごとの御朱印リストを取得
             List<GoshuinListData> list = goshuinMapspotId[goshuin.spotId];
@@ -417,7 +412,7 @@ abstract class _AppStore with Store {
             // 一時的に格納するマップに御朱印データを変更
             // ★書く
 
-          }else{
+          } else {
             // 存在しない場合、一時的に格納するマップに御朱印データを追加
             List<GoshuinListData> list = [goshuin];
             goshuinMapspotId[goshuin.spotId] = list;
@@ -431,29 +426,12 @@ abstract class _AppStore with Store {
         }
 
         // Listに追加
-        goshuinDataList.add(MapEntry(prefectures.key,  spotList));
+        goshuinDataList.add(MapEntry(prefectures.key, spotList));
       }
     }
     // データを格納
     goshuinArrayPef = goshuinDataList;
   }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //
 //   // 御朱印データが存在する都道府県リスト（key：都道府県番号、value：spotId(神社・寺院ID)のリスト）
@@ -645,7 +623,6 @@ abstract class _AppStore with Store {
 //
 //   }
 //
-
 
   // ignore: use_setters_to_change_properties
   @action
