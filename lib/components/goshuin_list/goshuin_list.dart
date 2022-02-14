@@ -22,9 +22,9 @@ class GoshuinList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final List<TabInfo> _tabs = [
-      TabInfo("一覧", GoshuinListList(store: store)),
-      TabInfo("神社・寺院", GoshuinListJija(store: store)),
-      TabInfo("写真", GoshuinListPhoto(store: store)),
+      TabInfo("一覧", GoshuinListList(key: PageStorageKey("goshuinListList"), store: store)),
+      // TabInfo("神社・寺院", GoshuinListJija(key: PageStorageKey("goshuinListJija"), store: store)),
+      TabInfo("写真", GoshuinListPhoto(key: PageStorageKey("goshuinListPhoto"), store: store)),
     ];
 
     return DefaultTabController(

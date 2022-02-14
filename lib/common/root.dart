@@ -6,6 +6,7 @@ import 'package:goshuintsuzuri/components/jinja_list/jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:mobx/mobx.dart';
 import '../app_store.dart';
 import 'header.dart';
 
@@ -58,7 +59,7 @@ class _RootWidgetState extends State<RootWidget> {
     // SpotData spot = DbSpotData().getMaxIdSpot();
     store.setSpotMaxId("SPT001001");
     //
-    List<GoshuinListData> value = [
+    ObservableList<GoshuinListData> value = ObservableList.of([
       GoshuinListData(
         id: "GSI000005",
         img: img5,
@@ -107,10 +108,28 @@ class _RootWidgetState extends State<RootWidget> {
         memo: "テストテスト",
         createData: "2021-10-29T05:14:07.009299Z",
       ),
-    ];
+    ]);
     store.setGoshuinArray(value);
     // DBからデータ取得
-    List<SpotData> value2 = [
+    ObservableList<SpotData> value2 = ObservableList.of([
+      SpotData(
+        id: "SPT000002",
+        spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
+        kbn: "1",
+        prefectures: "京都府",
+        prefecturesNo: "26",
+        img: img2_s,
+        createData: "2021.10.20",
+      ),
+      SpotData(
+        id: "SPT000012",
+        spotName: "下賀茂神社",
+        kbn: "1",
+        prefectures: "京都府",
+        prefecturesNo: "26",
+        img: img2_s,
+        createData: "2021.10.20",
+      ),
       SpotData(
         id: "SPT000003",
         spotName: "清水寺",
@@ -129,20 +148,11 @@ class _RootWidgetState extends State<RootWidget> {
         img: img1_s,
         createData: "2021.10.20",
       ),
-      SpotData(
-        id: "SPT000002",
-        spotName: "八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社八坂神社",
-        kbn: "1",
-        prefectures: "京都府",
-        prefecturesNo: "26",
-        img: img2_s,
-        createData: "2021.10.20",
-      ),
-    ];
+    ]);
     store.setSpotArray(value2);
 
-    // DBのデータから都道府県別の御朱印データ一覧を作成
-    store.setGoshuinArrayPef();
+    // DBのデータから都道府県別の神社・寺院データ一覧を作成
+    store.setSpotArrayPef();
   }
 
   /// インデックスのアイテムをアクティベートする
@@ -188,7 +198,7 @@ class _RootWidgetState extends State<RootWidget> {
         store.setEditGoshuinMemo(""); // メモ
 
         // 更新前のデータを保持（比較チェック用）
-        GoshuinListData data = GoshuinListData(
+        GoshuinListData goshuinListData = GoshuinListData(
           id: "",
           img: "",
           spotId: "",
@@ -200,7 +210,7 @@ class _RootWidgetState extends State<RootWidget> {
           memo: "",
           createData: "",
         );
-        store.setBeforeGoshuinData(data);
+        store.setShowGoshuinData(goshuinListData);
 
         Navigator.push(
           context,

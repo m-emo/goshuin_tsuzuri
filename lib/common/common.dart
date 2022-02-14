@@ -3,8 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/style.dart';
+import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
-import 'package:provider/provider.dart';
+import 'package:mobx/mobx.dart';
 import '../dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/common/property.dart';
 import '../app_store.dart';
@@ -12,16 +13,18 @@ import '../app_store.dart';
 //******** ボタン付きメッセージウィンドウWidget -start- ********
 /*
 * ボタン付きメッセージウィンドウWidget
-* prm : store 表示用データ
+* prm : context
 *       msg 表示メッセージ
 *       btnMsg1 ボタンテキスト１（上部分）
 *       btnMsg1 ボタンテキスト２（下部分）
-*       kbn 1:戻る、編集登録続けるの2処理
+*       flg 1:戻る、編集登録続けるの2処理
 *           2:削除、編集続けるの2処理（御朱印削除）
+*       store 表示用データ
+*       kbn 新規登録＝0、更新＝1
 * return : Widget
  */
 Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
-    String btnMsg2, int flg, AppStore store) {
+    String btnMsg2, int flg, AppStore store, String kbn) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -65,7 +68,7 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
                           // 戻る（ダイアログ閉じる⇒編集閉じる）
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
-                          editResetGoshuin(store);
+                          editResetGoshuin(store, kbn);
                         } else if (flg == 2) {
                           //御朱印削除
                           // ★DB削除
@@ -73,7 +76,7 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
                           // リストから削除
                           store.deleteGoshuinArrayOneData(store.editGoshuinId);
                           // editデータを初期化
-                          editResetGoshuin(store);
+                          editResetGoshuin(store, kbn);
                           // 戻る（ダイアログ閉じる⇒編集閉じる⇒詳細閉じる）
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -122,14 +125,42 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
 * ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget
 * prm : store 表示用データ
 *       msg 表示メッセージ
-*       btnMsg1 ボタンテキスト１（上部分）
-*       btnMsg1 ボタンテキスト２（下部分）
-*       flg 1:編集、登録中の場合に戻るボタン押した際の確認ダイアログ
-*           2:「削除する/削除やめる」ダイアログ
+*       flg 0:編集、登録中の場合に戻るボタン押した際の確認ダイアログ
+*           1:「削除する/削除やめる」ダイアログ
+*           2:「登録完了後閉じる/続けて登録」ダイアログ
+*           3:登録更新時に入力エラーでもこのまま登録するかの確認ダイアログ
 * return : Widget
  */
-Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
-    String btnMsg2, int flg, AppStore store) {
+class _btnMsgSpot {
+  final String btnMsg1;
+  final String btnMsg2;
+  final String msg;
+
+  _btnMsgSpot({this.btnMsg1, this.btnMsg2, this.msg});
+}
+
+Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
+    String kbn, String senimotokbn) {
+  // BoxFitType のリストを作成
+  //  btnMsg1 ボタンテキスト１（上部分）
+  //  btnMsg1 ボタンテキスト２（下部分）
+  //  msg 表示メッセージ
+  List<_btnMsgSpot> _listBtnMsgSpot = [
+    _btnMsgSpot(
+        btnMsg1: BtnText.btn_text_close,
+        btnMsg2: BtnText.btn_text_edit_continue,
+        msg: Msglist.edit_cancel),
+    _btnMsgSpot(btnMsg1: "", btnMsg2: "", msg: ""),
+    _btnMsgSpot(
+        btnMsg1: BtnText.btn_text_close,
+        btnMsg2: BtnText.btn_text_edit_continue_insert,
+        msg: Msglist.edit_complete_spot),
+    _btnMsgSpot(
+        btnMsg1: BtnText.btn_text_edit_continue_insert2,
+        btnMsg2: BtnText.btn_text_buck,
+        msg: Msglist.edit_same_nameSpot)
+  ];
+
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -151,7 +182,7 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                 Container(
                   margin: const EdgeInsets.only(bottom: 30.0),
                   child: Text(
-                    msg,
+                    _listBtnMsgSpot[flg].msg,
                     style: Styles.mainTextStyle,
                   ),
                 ),
@@ -167,15 +198,16 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                         ),
                         padding: EdgeInsets.all(10.0),
                       ),
-                      child: Text(btnMsg1, style: Styles.mainButtonTextStyle),
+                      child: Text(_listBtnMsgSpot[flg].btnMsg1,
+                          style: Styles.mainButtonTextStyle),
                       onPressed: () {
-                        if (flg == 1) {
+                        if (flg == 0 || flg == 2) {
                           //
                           // 戻る（ダイアログ閉じる⇒編集閉じる）
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           editResetSopt(store);
-                        } else if (flg == 2) {
+                        } else if (flg == 1) {
                           //神社・寺院削除
                           //削除対象に紐づく御朱印がないかチェック
 
@@ -189,6 +221,11 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
+                        } else if (flg == 3) {
+                          // ダイアログ閉じる
+                          Navigator.of(context).pop();
+                          // 登録、更新を進める
+                          insertupdateSpot(kbn, senimotokbn, store, context);
                         }
                         ;
                       },
@@ -205,11 +242,10 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
                         side: const BorderSide(color: StylesColor.maincolor2),
                         padding: EdgeInsets.all(10.0),
                       ),
-                      child: Text(btnMsg2,
+                      child: Text(_listBtnMsgSpot[flg].btnMsg2,
                           style: Styles.mainButtonTextStylePurple),
                       onPressed: () {
-                        // 続けて登録する
-                        if (flg == 1 || flg == 2) {
+                        if (flg == 0 || flg == 1 || flg == 2 || flg == 3) {
                           // ダイアログ閉じる
                           Navigator.of(context).pop();
                         }
@@ -235,17 +271,20 @@ Future<bool> myShowDialog_sub(BuildContext context, String msg, String btnMsg1,
 * return : Widget
  */
 class MsgArea extends StatelessWidget {
-
   // 引数
   final AppStore store;
-  MsgArea({@required this.store});
+
+  MsgArea({this.store});
 
   @override
   Widget build(BuildContext context) {
     return Observer(
       builder: (context) {
-        return Visibility(
-          visible: store.goshuinErrFlg,
+        return AnimatedOpacity(
+          opacity: store.errFlg ? 0.0 : 1.0,
+          duration: Duration(milliseconds: 200),
+          // Visibility(
+          // visible: store.errFlg,
           child: Container(
             alignment: Alignment.center,
             margin: EdgeInsets.only(top: 80),
@@ -254,24 +293,51 @@ class MsgArea extends StatelessWidget {
               color: Colors.black.withOpacity(0.5),
             ),
             child: Text(
-              '写真を追加してください',
+              "${store.errMsg}",
               style: Styles.mainButtonTextStyle,
             ),
             width: 300.0,
             height: 80.0,
           ),
         );
-
       },
     );
   }
 }
 //******** メッセージウィンドウWidget -end- ********
 
+//******** メッセージウィンドウ表示 -start- ********
+/*
+* メッセージウィンドウ表示
+* prm : msg メッセージウィンドウの表示テキスト
+*       store 表示用データ
+* return : なし
+ */
+void showMsgArea(String msg, AppStore store) {
+  // メッセージウィンドウのテキスト設定
+  store.setErrMsg(msg);
+  // メッセージウィンドウ表示に切り替え
+  store.setErrFlg(false);
+
+  // 3秒後に非表示
+  Future.delayed(Duration(seconds: 3), () {
+    store.setErrFlg(true);
+  });
+}
+
+//******** メッセージウィンドウ表示 -end- ********
+
+//******** 画像の変換 -start- ********
+/*
+* 画像の変換
+* prm : base64Image base64画像
+*       boxFitNum boxFitを適用する番号
+* return : 画像
+ */
+
 class BoxFitType {
   final String name;
   final BoxFit type;
-
   BoxFitType({this.name, this.type});
 }
 
@@ -305,13 +371,15 @@ Image showImg(String base64Image, int boxFitNum) {
     );
   }
 }
+//******** 画像の変換 -end- ********
 
 /*
 * 登録時の御朱印データeditのリセット
 * prm : store 表示用データ
+*       kbn 新規登録＝0、更新＝1
 * return : なし
  */
-void editResetGoshuin(AppStore store) {
+void editResetGoshuin(AppStore store, String kbn) {
   // 編集対象のデータをクリア
   store.setEditGoshuinId(""); // 御朱印ID[GSI+連番6桁（GSI000001）]
   store.setEditGoshuinBase64Image(""); // 御朱印画像(base64)
@@ -323,27 +391,29 @@ void editResetGoshuin(AppStore store) {
   store.setEditGoshuinSanpaiDate(""); // 参拝日
   store.setEditGoshuinMemo(""); // メモ
 
-  // 更新前のデータをクリア
-  GoshuinListData data = GoshuinListData(
-    id: "",
-    img: "",
-    spotId: "",
-    spotName: "",
-    spotPrefectures: "",
-    goshuinName: "",
-    date: "",
-    memo: "",
-    createData: "",
-  );
-  store.setBeforeGoshuinData(data);
+  // エラーメッセージをクリア
+  store.setErrMsg("");
+  store.setErrFlg(true);
+
+  // insert時のみ更新前のデータをクリア
+  if(kbn == "0"){
+    GoshuinListData data = GoshuinListData(
+      id: "",
+      img: "",
+      spotId: "",
+      spotName: "",
+      spotPrefectures: "",
+      goshuinName: "",
+      date: "",
+      memo: "",
+      createData: "",
+    );
+    store.setShowGoshuinData(data);
+  }
 }
 
-
-
-
-
 /*
-* 登録時の神社寺院データeditのリセット
+* 登録・更新時の神社寺院データeditのリセット
 * prm : store 表示用データ
 * return : なし
  */
@@ -352,7 +422,7 @@ void editResetSopt(AppStore store) {
   store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
   store.setEditSpotName(""); // 神社・寺名
   store.setEditSpotKbn(""); // 区分（1:寺, 2:神社 ,0:その他）
-  store.setEditSpotprefectures(""); // 都道府県名
+  // store.setEditSpotprefectures(""); // 都道府県名
   store.setEditSpotprefecturesNo(""); // 都道府県No
   store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
   store.setEditSpotcreateData(""); // 登録日
@@ -361,17 +431,21 @@ void editResetSopt(AppStore store) {
   store.setEditSpotShowKbn("");
   store.setEditSpotShowUint8ListImage("");
 
-  // 更新前のデータをクリア
-  SpotData data = SpotData(
-    id: "",
-    spotName: "",
-    kbn: "",
-    prefectures: "",
-    prefecturesNo: "",
-    img: "",
-    createData: null,
-  );
-  store.setBeforeSpotData(data);
+  // エラーメッセージをクリア
+  store.setErrMsg("");
+  store.setErrFlg(true);
+
+  // // 更新前のデータをクリア
+  // SpotData data = SpotData(
+  //   id: "",
+  //   spotName: "",
+  //   kbn: "",
+  //   prefectures: "",
+  //   prefecturesNo: "",
+  //   img: "",
+  //   createData: null,
+  // );
+  // store.setShowSpotData(data);
 }
 
 /*
@@ -380,9 +454,8 @@ void editResetSopt(AppStore store) {
 *       kbn 区分（0:新規登録、1:更新）
 * return : なし
  */
-void setEditSopt(AppStore store, String kbn, SpotData data) {
-
-  if(kbn == "0"){
+void setEditSopt(AppStore store, String kbn) {
+  if (kbn == "0") {
     // 新規登録
     store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
     store.setEditSpotName(""); // 神社・寺名
@@ -392,43 +465,30 @@ void setEditSopt(AppStore store, String kbn, SpotData data) {
     store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
     store.setEditSpotcreateData(""); // 登録日
 
-    // 更新前のデータを保持（比較チェック用）
-    data = SpotData(
-      id: "",
-      spotName: "",
-      kbn: "",
-      prefectures: "",
-      prefecturesNo: "",
-      img: "",
-      createData: "",
-    );
-  }else if(kbn == "1"){
+  } else if (kbn == "1") {
     // 更新
-    store.setEditSpotid(data.id); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
-    store.setEditSpotName(data.spotName); // 神社・寺名
-    store.setEditSpotKbn(data.kbn); // 区分（1:寺, 2:神社 ,0:その他）
-    store.setEditSpotprefectures(data.prefectures); // 都道府県名
-    store.setEditSpotprefecturesNo(data.prefecturesNo); // 都道府県No
-    store.setEditSpotBase64Image(data.img); // 神社・寺院画像(base64)
-    store.setEditSpotcreateData(data.createData); // 登録日
+    store.setEditSpotid(store.showSpotData.id); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditSpotName(store.showSpotData.spotName); // 神社・寺名
+    store.setEditSpotKbn(store.showSpotData.kbn); // 区分（1:寺, 2:神社 ,0:その他）
+    store.setEditSpotprefectures(store.showSpotData.prefectures); // 都道府県名
+    store.setEditSpotprefecturesNo(store.showSpotData.prefecturesNo); // 都道府県No
+    store.setEditSpotBase64Image(store.showSpotData.img); // 神社・寺院画像(base64)
+    store.setEditSpotcreateData(store.showSpotData.createData); // 登録日
 
     // 編集画面用表示値(区分)
     var kbn = "";
-    if(data.kbn == spotKbn.spot_kbn_tera){
+    if (store.showSpotData.kbn == spotKbn.spot_kbn_tera) {
       kbn = spotKbn.spot_text_tera;
-    }else if(data.kbn == spotKbn.spot_kbn_jinja){
+    } else if (store.showSpotData.kbn == spotKbn.spot_kbn_jinja) {
       kbn = spotKbn.spot_text_jinja;
-    }else if(data.kbn == spotKbn.spot_kbn_sonota){
+    } else if (store.showSpotData.kbn == spotKbn.spot_kbn_sonota) {
       kbn = spotKbn.spot_text_sonota;
     }
     store.setEditSpotShowKbn(kbn);
 
     store.setEditSpotShowUint8ListImage("");
   }
-  store.setBeforeSpotData(data);
 }
-
-
 
 /*
 * 御朱印を新規登録、変更時に既存データから変更しているかチェック
@@ -437,7 +497,7 @@ void setEditSopt(AppStore store, String kbn, SpotData data) {
  */
 bool checkGoshuinEdit(AppStore store) {
   // 更新前のデータ
-  GoshuinListData beforeGoshuinData = store.beforeGoshuinData;
+  GoshuinListData beforeGoshuinData = store.showGoshuinData;
   // 編集状態判定
   bool flg = false;
 
@@ -449,7 +509,8 @@ bool checkGoshuinEdit(AppStore store) {
     flg = true; // 御朱印名チェック
   if (beforeGoshuinData.date != store.editGoshuinSanpaiDate)
     flg = true; // 参拝日チェック
-  if (beforeGoshuinData.memo != store.editGoshuinMemo) flg = true; // メモ
+  if (beforeGoshuinData.memo != store.editGoshuinMemo)
+    flg = true; // メモチェック
 
   // いずれかが変更されていた場合編集中となる
   if (flg) {
@@ -466,11 +527,12 @@ bool checkGoshuinEdit(AppStore store) {
  */
 bool checkSpotEdit(AppStore store) {
   // 更新前のデータ
-  SpotData beforeSpotData = store.beforeSpotData;
+  SpotData beforeSpotData = store.showSpotData;
   // 編集状態判定
   bool flg = false;
 
   if (beforeSpotData.img != store.editSpotBase64Image) flg = true; // 画像チェック
+  if (beforeSpotData.kbn != store.editSpotKbn) flg = true; // 区分チェック
   if (beforeSpotData.prefecturesNo != store.editSpotprefecturesNo)
     flg = true; // 都道府県チェック
   if (beforeSpotData.spotName != store.editSpotName) flg = true; // 神社・寺院名

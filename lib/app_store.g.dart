@@ -9,43 +9,6 @@ part of 'app_store.dart';
 // ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
 
 mixin _$AppStore on _AppStore, Store {
-  Computed<Color> _$whiteOrNotComputed;
-
-  @override
-  Color get whiteOrNot => (_$whiteOrNotComputed ??=
-          Computed<Color>(() => super.whiteOrNot, name: '_AppStore.whiteOrNot'))
-      .value;
-
-  final _$primaryAtom = Atom(name: '_AppStore.primary');
-
-  @override
-  Color get primary {
-    _$primaryAtom.reportRead();
-    return super.primary;
-  }
-
-  @override
-  set primary(Color value) {
-    _$primaryAtom.reportWrite(value, super.primary, () {
-      super.primary = value;
-    });
-  }
-
-  final _$secondaryAtom = Atom(name: '_AppStore.secondary');
-
-  @override
-  Color get secondary {
-    _$secondaryAtom.reportRead();
-    return super.secondary;
-  }
-
-  @override
-  set secondary(Color value) {
-    _$secondaryAtom.reportWrite(value, super.secondary, () {
-      super.secondary = value;
-    });
-  }
-
   final _$editGoshuinIdAtom = Atom(name: '_AppStore.editGoshuinId');
 
   @override
@@ -345,6 +308,53 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
+  final _$showGoshuinDataAtom = Atom(name: '_AppStore.showGoshuinData');
+
+  @override
+  GoshuinListData get showGoshuinData {
+    _$showGoshuinDataAtom.reportRead();
+    return super.showGoshuinData;
+  }
+
+  @override
+  set showGoshuinData(GoshuinListData value) {
+    _$showGoshuinDataAtom.reportWrite(value, super.showGoshuinData, () {
+      super.showGoshuinData = value;
+    });
+  }
+
+  final _$showSpotDataAtom = Atom(name: '_AppStore.showSpotData');
+
+  @override
+  SpotData get showSpotData {
+    _$showSpotDataAtom.reportRead();
+    return super.showSpotData;
+  }
+
+  @override
+  set showSpotData(SpotData value) {
+    _$showSpotDataAtom.reportWrite(value, super.showSpotData, () {
+      super.showSpotData = value;
+    });
+  }
+
+  final _$showSpotDataUnderGoshuinListAtom =
+      Atom(name: '_AppStore.showSpotDataUnderGoshuinList');
+
+  @override
+  ObservableList<GoshuinListData> get showSpotDataUnderGoshuinList {
+    _$showSpotDataUnderGoshuinListAtom.reportRead();
+    return super.showSpotDataUnderGoshuinList;
+  }
+
+  @override
+  set showSpotDataUnderGoshuinList(ObservableList<GoshuinListData> value) {
+    _$showSpotDataUnderGoshuinListAtom
+        .reportWrite(value, super.showSpotDataUnderGoshuinList, () {
+      super.showSpotDataUnderGoshuinList = value;
+    });
+  }
+
   final _$goshuinMaxIdAtom = Atom(name: '_AppStore.goshuinMaxId');
 
   @override
@@ -375,64 +385,76 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$goshuinErrFlgAtom = Atom(name: '_AppStore.goshuinErrFlg');
+  final _$errFlgAtom = Atom(name: '_AppStore.errFlg');
 
   @override
-  bool get goshuinErrFlg {
-    _$goshuinErrFlgAtom.reportRead();
-    return super.goshuinErrFlg;
+  bool get errFlg {
+    _$errFlgAtom.reportRead();
+    return super.errFlg;
   }
 
   @override
-  set goshuinErrFlg(bool value) {
-    _$goshuinErrFlgAtom.reportWrite(value, super.goshuinErrFlg, () {
-      super.goshuinErrFlg = value;
+  set errFlg(bool value) {
+    _$errFlgAtom.reportWrite(value, super.errFlg, () {
+      super.errFlg = value;
+    });
+  }
+
+  final _$errMsgAtom = Atom(name: '_AppStore.errMsg');
+
+  @override
+  String get errMsg {
+    _$errMsgAtom.reportRead();
+    return super.errMsg;
+  }
+
+  @override
+  set errMsg(String value) {
+    _$errMsgAtom.reportWrite(value, super.errMsg, () {
+      super.errMsg = value;
     });
   }
 
   final _$goshuinArrayAtom = Atom(name: '_AppStore.goshuinArray');
 
   @override
-  List<GoshuinListData> get goshuinArray {
+  ObservableList<GoshuinListData> get goshuinArray {
     _$goshuinArrayAtom.reportRead();
     return super.goshuinArray;
   }
 
   @override
-  set goshuinArray(List<GoshuinListData> value) {
+  set goshuinArray(ObservableList<GoshuinListData> value) {
     _$goshuinArrayAtom.reportWrite(value, super.goshuinArray, () {
       super.goshuinArray = value;
     });
   }
 
-  final _$goshuinArrayPefAtom = Atom(name: '_AppStore.goshuinArrayPef');
+  final _$spotArrayPefAtom = Atom(name: '_AppStore.spotArrayPef');
 
   @override
-  List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
-      get goshuinArrayPef {
-    _$goshuinArrayPefAtom.reportRead();
-    return super.goshuinArrayPef;
+  List<MapEntry<String, List<SpotData>>> get spotArrayPef {
+    _$spotArrayPefAtom.reportRead();
+    return super.spotArrayPef;
   }
 
   @override
-  set goshuinArrayPef(
-      List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
-          value) {
-    _$goshuinArrayPefAtom.reportWrite(value, super.goshuinArrayPef, () {
-      super.goshuinArrayPef = value;
+  set spotArrayPef(List<MapEntry<String, List<SpotData>>> value) {
+    _$spotArrayPefAtom.reportWrite(value, super.spotArrayPef, () {
+      super.spotArrayPef = value;
     });
   }
 
   final _$spotArrayAtom = Atom(name: '_AppStore.spotArray');
 
   @override
-  List<SpotData> get spotArray {
+  ObservableList<SpotData> get spotArray {
     _$spotArrayAtom.reportRead();
     return super.spotArray;
   }
 
   @override
-  set spotArray(List<SpotData> value) {
+  set spotArray(ObservableList<SpotData> value) {
     _$spotArrayAtom.reportWrite(value, super.spotArray, () {
       super.spotArray = value;
     });
@@ -650,22 +672,33 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setBeforeGoshuinData(GoshuinListData value) {
+  void setShowGoshuinData(GoshuinListData value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setBeforeGoshuinData');
+        name: '_AppStore.setShowGoshuinData');
     try {
-      return super.setBeforeGoshuinData(value);
+      return super.setShowGoshuinData(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setBeforeSpotData(SpotData value) {
+  void setShowSpotData(SpotData value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setBeforeSpotData');
+        name: '_AppStore.setShowSpotData');
     try {
-      return super.setBeforeSpotData(value);
+      return super.setShowSpotData(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setShowSpotDataUnderGoshuinList(ObservableList<GoshuinListData> value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setShowSpotDataUnderGoshuinList');
+    try {
+      return super.setShowSpotDataUnderGoshuinList(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -694,18 +727,29 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setGoshuinErrFlg(bool value) {
-    final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setGoshuinErrFlg');
+  void setErrFlg(bool value) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setErrFlg');
     try {
-      return super.setGoshuinErrFlg(value);
+      return super.setErrFlg(value);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setGoshuinArray(List<GoshuinListData> value) {
+  void setErrMsg(String value) {
+    final _$actionInfo =
+        _$_AppStoreActionController.startAction(name: '_AppStore.setErrMsg');
+    try {
+      return super.setErrMsg(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
+  void setGoshuinArray(ObservableList<GoshuinListData> value) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
         name: '_AppStore.setGoshuinArray');
     try {
@@ -716,7 +760,7 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setSpotArray(List<SpotData> value) {
+  void setSpotArray(ObservableList<SpotData> value) {
     final _$actionInfo =
         _$_AppStoreActionController.startAction(name: '_AppStore.setSpotArray');
     try {
@@ -771,33 +815,33 @@ mixin _$AppStore on _AppStore, Store {
   }
 
   @override
-  void setGoshuinArrayPef() {
+  void updateSpotArrayOneData(SpotData spotData) {
     final _$actionInfo = _$_AppStoreActionController.startAction(
-        name: '_AppStore.setGoshuinArrayPef');
+        name: '_AppStore.updateSpotArrayOneData');
     try {
-      return super.setGoshuinArrayPef();
+      return super.updateSpotArrayOneData(spotData);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setPrimary(Color value) {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.setPrimary');
+  void deleteSpotArrayOneData(String spotId) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.deleteSpotArrayOneData');
     try {
-      return super.setPrimary(value);
+      return super.deleteSpotArrayOneData(spotId);
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
   }
 
   @override
-  void setSecondary(Color value) {
-    final _$actionInfo =
-        _$_AppStoreActionController.startAction(name: '_AppStore.setSecondary');
+  void setSpotArrayPef() {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setSpotArrayPef');
     try {
-      return super.setSecondary(value);
+      return super.setSpotArrayPef();
     } finally {
       _$_AppStoreActionController.endAction(_$actionInfo);
     }
@@ -806,8 +850,6 @@ mixin _$AppStore on _AppStore, Store {
   @override
   String toString() {
     return '''
-primary: ${primary},
-secondary: ${secondary},
 editGoshuinId: ${editGoshuinId},
 editGoshuinBase64Image: ${editGoshuinBase64Image},
 editGoshuinSpotId: ${editGoshuinSpotId},
@@ -827,13 +869,16 @@ editSpotBase64Image: ${editSpotBase64Image},
 editSpotcreateData: ${editSpotcreateData},
 editSpotShowKbn: ${editSpotShowKbn},
 editSpotShowUint8ListImage: ${editSpotShowUint8ListImage},
+showGoshuinData: ${showGoshuinData},
+showSpotData: ${showSpotData},
+showSpotDataUnderGoshuinList: ${showSpotDataUnderGoshuinList},
 goshuinMaxId: ${goshuinMaxId},
 spotMaxId: ${spotMaxId},
-goshuinErrFlg: ${goshuinErrFlg},
+errFlg: ${errFlg},
+errMsg: ${errMsg},
 goshuinArray: ${goshuinArray},
-goshuinArrayPef: ${goshuinArrayPef},
-spotArray: ${spotArray},
-whiteOrNot: ${whiteOrNot}
+spotArrayPef: ${spotArrayPef},
+spotArray: ${spotArray}
     ''';
   }
 }

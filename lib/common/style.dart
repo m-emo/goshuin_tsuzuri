@@ -120,11 +120,12 @@ class StylesIcon {
   // 神社・寺院選択リスト用アイコン
   // 神社
   static const jinjaIcon =
-      Icon(FontAwesomeIcons.toriiGate, color: Color(0xFFB9B9B9), size: 20);
+      // Icon(FontAwesomeIcons.toriiGate, color: Color(0xFFB9B9B9), size: 20);
+      Image(image: AssetImage('assets/img/icon_jinja.png',),height: 30);
 
-  // 神社
+  // 寺
   static const teraIcon =
-      Icon(FontAwesomeIcons.home, color: Color(0xFFB9B9B9), size: 20);
+  Image(image: AssetImage('assets/img/icon_tera.png',),height: 30);
 
   // その他
   static const sonotaIcon =

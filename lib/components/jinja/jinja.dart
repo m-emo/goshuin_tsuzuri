@@ -1,25 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
 import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
+import 'package:mobx/mobx.dart';
 
 import '../../app_store.dart';
 
 class Jinja extends StatelessWidget {
-  const Jinja(
-      {Key key,
-      @required this.store,
-      @required this.spotData,
-      @required this.goshuinArray})
-      : super(key: key);
+  const Jinja({Key key, @required this.store}) : super(key: key);
 
   // 引数
   final AppStore store;
-  final SpotData spotData;
-  final List<GoshuinListData> goshuinArray;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +25,7 @@ class Jinja extends StatelessWidget {
             onPressed: () => Navigator.of(context).pop(),
           ),
           title: Text(
-            spotData.spotName,
+            "${store.showSpotData.spotName}",
             style: Styles.appBarTextStyle,
           ),
           actions: <Widget>[
@@ -38,12 +33,12 @@ class Jinja extends StatelessWidget {
               icon: StylesIcon.editIcon,
               onPressed: () {
                 // 更新前のデータを保持（比較チェック用）
-                setEditSopt(store, "1", spotData);
+                setEditSopt(store, "1");
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>
-                      JinjaEdit(store: store, kbn: "1")),
+                  MaterialPageRoute(
+                      builder: (context) => JinjaEdit(store: store, kbn: "1")),
                 );
               },
             ),
@@ -53,26 +48,27 @@ class Jinja extends StatelessWidget {
         ),
         body: ListView(
           children: <Widget>[
-            Photo(spotData: spotData),
-            NameArea(spotData: spotData),
-            ListArea(goshuinArray: goshuinArray, store: store),
+            _Photo(store: store),
+            _NameArea(store: store),
+            ListArea(store: store),
           ],
         ));
   }
 }
 
 //******** 写真Widget -start- ********
-class Photo extends StatelessWidget {
+class _Photo extends StatelessWidget {
   // 引数
-  final SpotData spotData;
-  Photo({@required this.spotData});
+  final AppStore store;
+
+  _Photo({@required this.store});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: StylesColor.bgImgcolor,
       child: Container(
-        child: showImg(spotData.img, 1),
+        child: showImg(store.showSpotData.img, 1),
       ),
     );
   }
@@ -85,10 +81,11 @@ class Photo extends StatelessWidget {
 * prm :
 * return : Widget
  */
-class NameArea extends StatelessWidget {
+class _NameArea extends StatelessWidget {
   // 引数
-  final SpotData spotData;
-  NameArea({@required this.spotData});
+  final AppStore store;
+
+  _NameArea({@required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -109,18 +106,26 @@ class NameArea extends StatelessWidget {
           children: <Widget>[
             Container(
               width: double.infinity,
-              child: Text(
-                "[ " + spotData.prefectures + " ]",
-                style: Styles.subTextStyle,
-                textAlign: TextAlign.right,
+              child: Observer(
+                builder: (context) {
+                  return Text(
+                    "[ " + "${store.showSpotData.prefectures}" + " ]",
+                    style: Styles.subTextStyle,
+                    textAlign: TextAlign.right,
+                  );
+                },
               ),
             ),
             Container(
               padding: const EdgeInsets.only(top: 15.0),
-              child: Text(
-                spotData.spotName,
-                // 御朱印名
-                style: Styles.mainTextStyleLarge,
+              child: Observer(
+                builder: (context) {
+                  return Text(
+                    "${store.showSpotData.spotName}",
+                    // 御朱印名
+                    style: Styles.mainTextStyleLarge,
+                  );
+                },
               ),
             ),
           ],
@@ -140,83 +145,99 @@ class NameArea extends StatelessWidget {
  */
 class ListArea extends StatelessWidget {
   // 引数
-  final List<GoshuinListData> goshuinArray;
   final AppStore store;
 
-  ListArea({@required this.goshuinArray, @required this.store});
+  ListArea({@required this.store});
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      shrinkWrap: true,
-      physics: NeverScrollableScrollPhysics(),
-      itemBuilder: (BuildContext context, int index) {
-        return Container(
-          decoration: BoxDecoration(
-              border: Border(
-                  bottom: BorderSide(
-            color: StylesColor.bordercolor,
-            width: 1.0,
-          ))),
-          child: InkWell(
-            onTap: () {
-              GoshuinListData goshuinData = goshuinArray[index];
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => Goshuin(store: store, goshuinData: goshuinData)),
-              );
-            },
-            child: Container(
-              color: Colors.white,
-              padding:
-                  EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
-              height: 100.0,
-              child: Container(
-                child: Row(
-                  children: <Widget>[
-                    Container(
-                      height: 90.0,
-                      width: 90.0,
-                      color: StylesColor.bgImgcolor,
+    return Observer(
+        builder: (context) => ListView.builder(
+              shrinkWrap: true,
+              physics: NeverScrollableScrollPhysics(),
+              itemBuilder: (BuildContext context, int index) {
+                return Container(
+                  decoration: BoxDecoration(
+                      border: Border(
+                          bottom: BorderSide(
+                    color: StylesColor.bordercolor,
+                    width: 1.0,
+                  ))),
+                  child: InkWell(
+                    onTap: () {
+                      // 表示用データをセット
+                      store.setShowGoshuinData(
+                          (store.showSpotDataUnderGoshuinList)[index]);
+
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Goshuin(store: store)),
+                      );
+                    },
+                    child: Container(
+                      color: Colors.white,
+                      padding: EdgeInsets.only(
+                          top: 10, right: 10, bottom: 10, left: 10),
+                      height: 100.0,
                       child: Container(
-                        child: showImg((store.goshuinArray)[index].img, 1),
-                      ),
-                    ),
-                    Container(
-                      padding: const EdgeInsets.only(right: 10.0),
-                    ),
-                    Flexible(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        // 左寄せ
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        // 均等配置
-                        children: <Widget>[
-                          Container(
-                            child: Text(
-                              goshuinArray[index].id+goshuinArray[index].goshuinName, // 御朱印名
-                              style: Styles.mainTextStyle,
-                              overflow: TextOverflow.ellipsis,
-                              maxLines: 2,
+                        child: Row(
+                          children: <Widget>[
+                            Container(
+                              height: 90.0,
+                              width: 90.0,
+                              color: StylesColor.bgImgcolor,
+                              child: Container(
+                                child: showImg(
+                                    (store.showSpotDataUnderGoshuinList)[index]
+                                        .img,
+                                    1),
+                              ),
                             ),
-                          ),
-                          Container(
-                            child: Text(goshuinArray[index].date,
-                                // 日付
-                                style: Styles.subTextStyleSmall),
-                          ),
-                        ],
+                            Container(
+                              padding: const EdgeInsets.only(right: 10.0),
+                            ),
+                            Flexible(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                // 左寄せ
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                // 均等配置
+                                children: <Widget>[
+                                  Container(
+                                    child: Text(
+                                      store.showSpotDataUnderGoshuinList[index]
+                                              .id +
+                                          store
+                                              .showSpotDataUnderGoshuinList[
+                                                  index]
+                                              .goshuinName, // 御朱印名
+                                      style: Styles.mainTextStyle,
+                                      overflow: TextOverflow.ellipsis,
+                                      maxLines: 2,
+                                    ),
+                                  ),
+                                  Container(
+                                    child: Text(
+                                        store
+                                            .showSpotDataUnderGoshuinList[index]
+                                            .date,
+                                        // 日付
+                                        style: Styles.subTextStyleSmall),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        );
-      },
-      itemCount: goshuinArray.length,
-    );
+                  ),
+                );
+              },
+              itemCount: store.showSpotDataUnderGoshuinList.length,
+            ));
   }
 }
 //******** 御朱印リストWidget -end- ********

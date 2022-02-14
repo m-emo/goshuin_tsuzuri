@@ -1,19 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
-import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 
 import '../../app_store.dart';
 
-
 class Goshuin extends StatelessWidget {
-  const Goshuin({Key key, @required this.store, @required this.goshuinData})
-      : super(key: key);
+  const Goshuin({Key key, @required this.store}) : super(key: key);
 
   // 引数
   final AppStore store;
-  final GoshuinListData goshuinData;
 
   @override
   Widget build(BuildContext context) {
@@ -23,32 +20,45 @@ class Goshuin extends StatelessWidget {
             icon: StylesIcon.backIcon,
             onPressed: () => Navigator.of(context).pop(),
           ),
-          title: Text(
-            goshuinData.spotName,
-            style: Styles.appBarTextStyle,
+          title: Observer(
+            builder: (context) {
+              return Text(
+                "${store.showGoshuinData.spotName}",
+                style: Styles.appBarTextStyle,
+              );
+            },
           ),
           actions: <Widget>[
             IconButton(
               // 編集画面へ移動
               icon: StylesIcon.editIcon,
               onPressed: () {
-                store.setEditGoshuinId(goshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
-                store.setEditGoshuinBase64Image(goshuinData.img); // 御朱印画像(base64)
-                store.setEditGoshuinSpotId(goshuinData.spotId); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
-                store.setEditGoshuinSpotName(goshuinData.spotName); // 神社・寺院名
-                store.setEditGoshuinSpotPrefecturesNo(goshuinData.spotPrefecturesNo); // 都道府県番号
-                store.setEditGoshuinSpotPrefectures(goshuinData.spotPrefectures); // 神社・寺院 都道府県
-                store.setEditGoshuinName(goshuinData.goshuinName); // 御朱印名
-                store.setEditGoshuinSanpaiDate(goshuinData.date); // 参拝日
-                store.setEditGoshuinMemo(goshuinData.memo); // メモ
+                store.setEditGoshuinId(
+                    store.showGoshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
+                store.setEditGoshuinBase64Image(
+                    store.showGoshuinData.img); // 御朱印画像(base64)
+                store.setEditGoshuinSpotId(store
+                    .showGoshuinData.spotId); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+                store.setEditGoshuinSpotName(
+                    store.showGoshuinData.spotName); // 神社・寺院名
+                store.setEditGoshuinSpotPrefecturesNo(
+                    store.showGoshuinData.spotPrefecturesNo); // 都道府県番号
+                store.setEditGoshuinSpotPrefectures(
+                    store.showGoshuinData.spotPrefectures); // 神社・寺院 都道府県
+                store.setEditGoshuinName(
+                    store.showGoshuinData.goshuinName); // 御朱印名
+                store.setEditGoshuinSanpaiDate(
+                    store.showGoshuinData.date); // 参拝日
+                store.setEditGoshuinMemo(store.showGoshuinData.memo); // メモ
 
                 // 更新前のデータを保持（比較チェック用）
-                store.setBeforeGoshuinData(goshuinData);
+                // store.setBeforeGoshuinData(goshuinData);
 
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) =>
-                      GoshuinEdit(store: store, kbn: "1")),
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          GoshuinEdit(store: store, kbn: "1")),
                 );
               },
             ),
@@ -58,26 +68,36 @@ class Goshuin extends StatelessWidget {
         ),
         body: ListView(
           children: <Widget>[
-            Photo(goshuinData: goshuinData),
-            NameArea(goshuinData: goshuinData),
-            MemoArea(goshuinData: goshuinData),
+            _Photo(store: store),
+            _NameArea(store: store),
+            _MemoArea(store: store),
           ],
         ));
   }
 }
 
 //******** 写真Widget -start- ********
-class Photo extends StatelessWidget {
+/*
+* 写真Widget
+* prm : store 表示用データ
+* return : Widget
+ */
+class _Photo extends StatelessWidget {
   // 引数
-  final GoshuinListData goshuinData;
-  Photo({@required this.goshuinData});
+  final AppStore store;
+
+  _Photo({@required this.store});
 
   @override
   Widget build(BuildContext context) {
     return Container(
       color: StylesColor.bgImgcolor,
-      child: Container(
-        child: showImg(goshuinData.img, 1),
+      child: Observer(
+        builder: (context) {
+          return Container(
+            child: showImg(store.showGoshuinData.img, 1),
+          );
+        },
       ),
     );
   }
@@ -87,13 +107,14 @@ class Photo extends StatelessWidget {
 //******** 御朱印名Widget -start- ********
 /*
 * 御朱印名Widget
-* prm : goshuinData 御朱印データ
+* prm : store 表示用データ
 * return : Widget
  */
-class NameArea extends StatelessWidget {
+class _NameArea extends StatelessWidget {
   // 引数
-  final GoshuinListData goshuinData;
-  NameArea({@required this.goshuinData});
+  final AppStore store;
+
+  _NameArea({@required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -107,26 +128,41 @@ class NameArea extends StatelessWidget {
         children: <Widget>[
           Container(
             width: double.infinity,
-            child: Text(
-              "[ " + goshuinData.spotPrefectures + " ]  " + goshuinData.date,
-              style: Styles.subTextStyle,
-              textAlign: TextAlign.right,
+            child: Observer(
+              builder: (context) {
+                return Text(
+                  "[ " +
+                      "${store.showGoshuinData.spotPrefectures}" +
+                      " ]  " +
+                      "${store.showGoshuinData.date}",
+                  style: Styles.subTextStyle,
+                  textAlign: TextAlign.right,
+                );
+              },
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 15.0),
-            child: Text(
-              goshuinData.spotName,
-              // 神社名
-              style: Styles.mainTextStyleLarge,
+            child: Observer(
+              builder: (context) {
+                return Text(
+                  "${store.showGoshuinData.spotName}",
+                  // 神社名
+                  style: Styles.mainTextStyleLarge,
+                );
+              },
             ),
           ),
           Container(
             padding: const EdgeInsets.only(top: 15.0),
-            child: Text(
-              goshuinData.goshuinName,
-              // 御朱印名
-              style: Styles.mainTextStyle,
+            child: Observer(
+              builder: (context) {
+                return Text(
+                  "${store.showGoshuinData.goshuinName}",
+                  // 御朱印名
+                  style: Styles.mainTextStyle,
+                );
+              },
             ),
           ),
         ],
@@ -139,13 +175,14 @@ class NameArea extends StatelessWidget {
 //******** メモWidget -start- ********
 /*
 * メモWidget
-* prm : goshuinData 御朱印データ
+* prm : store 表示用データ
 * return : Widget
  */
-class MemoArea extends StatelessWidget {
+class _MemoArea extends StatelessWidget {
   // 引数
-  final GoshuinListData goshuinData;
-  MemoArea({@required this.goshuinData});
+  final AppStore store;
+
+  _MemoArea({@required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -164,10 +201,14 @@ class MemoArea extends StatelessWidget {
           // メモ欄
           Container(
             width: double.infinity,
-            child: Text(
-              goshuinData.memo,
-              textAlign: TextAlign.left,
-              style: Styles.mainTextStyle,
+            child: Observer(
+              builder: (context) {
+                return Text(
+                  "${store.showGoshuinData.memo}",
+                  textAlign: TextAlign.left,
+                  style: Styles.mainTextStyle,
+                );
+              },
             ),
           ),
         ],
