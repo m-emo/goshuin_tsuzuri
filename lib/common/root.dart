@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/components/goshuin_list/goshuin_list.dart';
 import 'package:goshuintsuzuri/components/jinja_list/jinja_list.dart';
@@ -160,28 +161,18 @@ class _RootWidgetState extends State<RootWidget> {
     return BottomNavigationBarItem(
         icon: Icon(
           _footerIcons[index],
-          color: Color(0xFFE75331),
         ),
-        title: Text(
-          _footerItemNames[index],
-          style: TextStyle(
-            color: Color(0xFFE75331),
-          ),
-        ));
+      label: _footerItemNames[index],
+    );
   }
 
   BottomNavigationBarItem _UpdateDeactiveState(int index) {
     return BottomNavigationBarItem(
         icon: Icon(
           _footerIcons[index],
-          color: Colors.black26,
         ),
-        title: Text(
-          _footerItemNames[index],
-          style: TextStyle(
-            color: Colors.black26,
-          ),
-        ));
+      label: _footerItemNames[index],
+    );
   }
 
   void _onItemTapped(int index) {
@@ -285,6 +276,8 @@ class _RootWidgetState extends State<RootWidget> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         selectedFontSize: 12.0,
+        selectedItemColor: StylesColor.maincolor,
+        unselectedItemColor: StylesColor.subTextColor2,
       ),
 
     );
