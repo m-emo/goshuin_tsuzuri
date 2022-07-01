@@ -7,16 +7,16 @@ import 'package:path/path.dart';
 
 class DbSpotData extends DBProvider {
   @override
-  String get databaseName => "goshuin.db";
+  String get databaseName => "goshuintsuzuri.db";
 
   @override
   String get tableName => "spot";
 
   @override
   createDatabase(Database db, int version) async {
-    db.execute(
+    /*db.execute(
       "CREATE TABLE $tableName(id TEXT PRIMARY KEY, spotName TEXT,  kbn TEXT, prefectures TEXT,  prefecturesNo TEXT, img TEXT, createData TEXT)",
-    );
+    );*/
   }
 
   /* データ登録*/
@@ -49,6 +49,26 @@ class DbSpotData extends DBProvider {
       where: "id = ?",
       whereArgs: [id],
     );
+  }
+
+  /* 全件取得 */
+  Future<List<SpotData>> getAllSpot() async {
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db
+        .rawQuery('SELECT * FROM ' + tableName + ' ORDER BY id ASC');
+    List<SpotData> list = [];
+    for (Map map in maps) {
+      list.add(SpotData(
+        id: map['id'],
+        spotName: map['spotName'],
+        kbn: map['kbn'],
+        prefectures: map['prefectures'],
+        prefecturesNo: map['prefecturesNo'],
+        img: map['img'],
+        createData: map['createData'],
+      ));
+    }
+    return list;
   }
 
   /* 最大IDレコード取得 */

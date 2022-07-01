@@ -36,14 +36,14 @@ class GoshuinListPhoto extends StatelessWidget {
                   return Card(
                     margin: EdgeInsets.all(0.0),
                     shape: RoundedRectangleBorder(
-                      // side: BorderSide(color: Colors.blue, width: 1),
                       borderRadius: BorderRadius.circular(0),
                     ),
                     child: InkWell(
                         onTap: () {
                           // 表示用データをセット
-                          // store.showGoshuinData = (store.goshuinArray)[index];
                           store.showGoshuinData = (store.goshuinArray)[index];
+
+                          // 画面遷移
                           Navigator.push(
                             context,
                             MaterialPageRoute(

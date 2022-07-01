@@ -132,7 +132,7 @@ abstract class _AppStore with Store {
 
   // 御朱印一覧
   @observable
-  ObservableList<GoshuinListData> goshuinArray;
+  ObservableList<GoshuinListData> goshuinArray = ObservableList.of([]);
 
 /*
   // 御朱印一覧(都道府県別）
@@ -239,7 +239,6 @@ abstract class _AppStore with Store {
   @action
   void setEditSpotprefectures(String value) {
     editSpotprefectures = value;
-    print(editSpotprefectures);
   }
 
   @action
@@ -394,7 +393,7 @@ abstract class _AppStore with Store {
   }
 
   /*
-  * 御朱印リストから削除
+  * 神社・寺院リストから削除
   * prm : spotId 神社・寺院ID
   * return : なし
   */
@@ -406,6 +405,9 @@ abstract class _AppStore with Store {
         break;
       }
     }
+
+    // 都道府県別の神社・寺院データ一覧を再作成
+    setSpotArrayPef();
   }
 
   /*
@@ -444,6 +446,35 @@ abstract class _AppStore with Store {
       }
     }
   }
+  /*
+* 神社・寺院がupdateされた場合に神社・寺院データの詳細画面表示時の下に表示される関連の御朱印リストを修正
+* prm : spotName 神社名
+*       spotPrefectures 都道府県名
+*       spotPrefecturesNo 都道府県番号
+* return : なし
+ */
+  void updateSpotShowSpotDataUnderGoshuinList(String spotName, String spotPrefectures, String spotPrefecturesNo) {
+    for (var i = 0; i < showSpotDataUnderGoshuinList.length; i++) {
+    GoshuinListData setListData  = GoshuinListData(
+        id: showSpotDataUnderGoshuinList[i].id,
+        img: showSpotDataUnderGoshuinList[i].img,
+        spotId: showSpotDataUnderGoshuinList[i].spotId,
+        spotName: spotName,
+        spotPrefecturesNo: spotPrefecturesNo,
+        spotPrefectures: spotPrefectures,
+        goshuinName: showSpotDataUnderGoshuinList[i].goshuinName,
+        date: showSpotDataUnderGoshuinList[i].date,
+        memo: showSpotDataUnderGoshuinList[i].memo,
+        createData: showSpotDataUnderGoshuinList[i].createData,
+      );
+    // 削除
+    showSpotDataUnderGoshuinList.removeAt(i);
+
+    // 削除した位置に追加
+    showSpotDataUnderGoshuinList.insert(i, setListData);
+    }
+  }
+
 
   /*
 * 神社・寺院がupdateされた場合に御朱印リストの神社・寺院の情報を修正
@@ -569,47 +600,49 @@ abstract class _AppStore with Store {
     Map<String, List<SpotData>> spotMap = {};
 
     // 取得した神社・寺院一覧から都道府県別にデータを設定する
-    for (var spot in spotArray) {
-      // 都道府県番号を取得
-      var pefNum = spot.prefecturesNo;
+    if(spotArray != null){
+      // 取得した神社・寺院一覧がnullでない場合のみ実行
+      for (var spot in spotArray) {
+        // 都道府県番号を取得
+        var pefNum = spot.prefecturesNo;
 
-      // mapの中に同じ都道府県番号があるかチェック
-      if (spotMap.containsKey(pefNum)) {
-        // 存在する場合、リストに神社・寺院データを追加
-        // 都道府県の神社・寺院リストを取得
-        List<SpotData> list = spotMap[pefNum];
-        //リストの末尾に追加
-        list.add(spot);
-      } else {
-        // 存在しない場合、mapに神社・寺院データを追加
-        List<SpotData> list = [spot];
-        spotMap[pefNum] = list;
+        // mapの中に同じ都道府県番号があるかチェック
+        if (spotMap.containsKey(pefNum)) {
+          // 存在する場合、リストに神社・寺院データを追加
+          // 都道府県の神社・寺院リストを取得
+          List<SpotData> list = spotMap[pefNum];
+          //リストの末尾に追加
+          list.add(spot);
+        } else {
+          // 存在しない場合、mapに神社・寺院データを追加
+          List<SpotData> list = [spot];
+          spotMap[pefNum] = list;
+        }
+      }
+
+      // 都道府県順に並び替え
+      for (var prefectures in prefecturesListdata) {
+        // 都道府県番号と一致するデータがあるかチェック
+        if (spotMap.containsKey(prefectures.key)) {
+          // 存在する場合、区分昇順、ID昇順で並べる
+
+          // 該当の都道府県の神社・寺院データを取得
+          List<SpotData> dataList = spotMap[prefectures.key];
+          dataList.sort(
+                (a, b) {
+              int result = a.kbn.compareTo(b.kbn);
+              if (result != 0) return result;
+              return a.id.compareTo(b.id);
+            },
+          );
+
+          // Listに追加
+          spotDataList.add(MapEntry(prefectures.key, dataList));
+        }
       }
     }
 
-    // 都道府県順に並び替え
-    for (var prefectures in prefecturesListdata) {
-      // 都道府県番号と一致するデータがあるかチェック
-      if (spotMap.containsKey(prefectures.key)) {
-        // 存在する場合、区分昇順、ID昇順で並べる
-
-        // 該当の都道府県の神社・寺院データを取得
-        List<SpotData> dataList = spotMap[prefectures.key];
-        dataList.sort(
-              (a, b) {
-            int result = a.kbn.compareTo(b.kbn);
-            if (result != 0) return result;
-            return a.id.compareTo(b.id);
-          },
-        );
-
-        // Listに追加
-        spotDataList.add(MapEntry(prefectures.key, dataList));
-      }
-    }
     // データを格納
     spotArrayPef = spotDataList;
   }
-
-
 }

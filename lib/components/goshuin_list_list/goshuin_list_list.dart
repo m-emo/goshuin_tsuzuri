@@ -28,6 +28,7 @@ class GoshuinListListState extends State {
 
   Widget build(BuildContext context) {
     return Scaffold(
+
       body: Observer(
         builder: (context) => ListView.builder(
           itemBuilder: (BuildContext context, int index) {
@@ -41,10 +42,9 @@ class GoshuinListListState extends State {
               child: InkWell(
                 onTap: () {
                   // 表示用データをセット
-                  // store.showGoshuinData = (store.goshuinArray)[index];
                   store.showGoshuinData = (store.goshuinArray)[index];
-                  // GoshuinListData goshuinData = (store.goshuinArray)[index];
 
+                  // 画面遷移
                   Navigator.push(
                     context,
                     MaterialPageRoute(
@@ -88,7 +88,7 @@ class GoshuinListListState extends State {
                             Container(
                               child: Text(
                                 "${(store.goshuinArray)[index].id}" +
-                                    "${(store.goshuinArray)[index].goshuinName}",
+                                    "${(store.goshuinArray)[index].goshuinName}_ ${(store.goshuinArray)[index].createData}",
                                 // 御朱印名
                                 style: Styles.mainTextStyle,
                                 overflow: TextOverflow.ellipsis,

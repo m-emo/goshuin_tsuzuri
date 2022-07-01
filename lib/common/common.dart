@@ -5,7 +5,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/jinja_edit/jinja_edit.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
-import 'package:mobx/mobx.dart';
 import '../dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/common/property.dart';
 import '../app_store.dart';
@@ -71,8 +70,8 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
                           editResetGoshuin(store, kbn);
                         } else if (flg == 2) {
                           //御朱印削除
-                          // ★DB削除
-
+                          // DBのdelete
+                          DbGoshuinData().deleteGoshuin(store.editGoshuinId);
                           // リストから削除
                           store.deleteGoshuinArrayOneData(store.editGoshuinId);
                           // editデータを初期化
@@ -81,8 +80,7 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
-                        }
-                        ;
+                        };
                       },
                     ),
                   ),
@@ -112,7 +110,6 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
               ],
             ),
           ),
-          // )
         ],
       );
     },
@@ -123,12 +120,14 @@ Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
 //******** ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget -start- ********
 /*
 * ボタン付きメッセージウィンドウ(神社・寺院登録編集用）Widget
-* prm : store 表示用データ
-*       msg 表示メッセージ
+* prm : context
 *       flg 0:編集、登録中の場合に戻るボタン押した際の確認ダイアログ
 *           1:「削除する/削除やめる」ダイアログ
 *           2:「登録完了後閉じる/続けて登録」ダイアログ
 *           3:登録更新時に入力エラーでもこのまま登録するかの確認ダイアログ
+*       store 表示用データ
+*       kbn 更新・新規登録区分値（新規登録＝０、更新＝1） ※登録、更新時に必要
+*       senimotokbn 遷移元区分 （神社・寺院一覧からの新規登録遷移＝1、御朱印登録からの新規登録遷移＝2）※登録、更新時に必要
 * return : Widget
  */
 class _btnMsgSpot {
@@ -150,7 +149,10 @@ Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
         btnMsg1: BtnText.btn_text_close,
         btnMsg2: BtnText.btn_text_edit_continue,
         msg: Msglist.edit_cancel),
-    _btnMsgSpot(btnMsg1: "", btnMsg2: "", msg: ""),
+    _btnMsgSpot(
+        btnMsg1: BtnText.btn_text_delete,
+        btnMsg2: BtnText.btn_text_buck,
+        msg: Msglist.delete),
     _btnMsgSpot(
         btnMsg1: BtnText.btn_text_close,
         btnMsg2: BtnText.btn_text_edit_continue_insert,
@@ -210,11 +212,25 @@ Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
                         } else if (flg == 1) {
                           //神社・寺院削除
                           //削除対象に紐づく御朱印がないかチェック
+                          var checkflg = false;
+                          for (var i = 0; i < store.goshuinArray.length; i++) {
+                            if (store.goshuinArray[i].spotId == store.editSpotid) {
+                              checkflg = true;
+                              break;
+                            }
+                          }
+                          // 紐づく御朱印があるため削除しない
+                          if(checkflg){
+                            // 戻る（ダイアログ閉じる）
+                            Navigator.of(context).pop();
+                            showMsgArea("削除対象の神社・寺院で登録されている御朱印があるため削除できません。\n先に御朱印を削除してください。", store);
+                            return;
+                          }
 
-                          // ★DB削除
-
-                          // リストから削除
-                          store.deleteGoshuinArrayOneData(store.editGoshuinId);
+                          // DBのdelete
+                          DbSpotData().deleteSpot(store.editSpotid);
+                          // 神社・寺院リストから削除
+                          store.deleteSpotArrayOneData(store.editSpotid);
                           // editデータを初期化
                           editResetSopt(store);
                           // 戻る（ダイアログ閉じる⇒編集閉じる⇒詳細閉じる）
@@ -238,7 +254,6 @@ Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
                     margin: const EdgeInsets.only(bottom: 10.0),
                     child: OutlinedButton(
                       style: OutlinedButton.styleFrom(
-                        // primary: Colors.black,
                         side: const BorderSide(color: StylesColor.maincolor2),
                         padding: EdgeInsets.all(10.0),
                       ),
@@ -319,8 +334,8 @@ void showMsgArea(String msg, AppStore store) {
   // メッセージウィンドウ表示に切り替え
   store.setErrFlg(false);
 
-  // 3秒後に非表示
-  Future.delayed(Duration(seconds: 3), () {
+  // 5秒後に非表示
+  Future.delayed(Duration(seconds: 5), () {
     store.setErrFlg(true);
   });
 }
@@ -338,6 +353,7 @@ void showMsgArea(String msg, AppStore store) {
 class BoxFitType {
   final String name;
   final BoxFit type;
+
   BoxFitType({this.name, this.type});
 }
 
@@ -374,6 +390,48 @@ Image showImg(String base64Image, int boxFitNum) {
 //******** 画像の変換 -end- ********
 
 /*
+* 登録時・更新の御朱印データeditの保持
+* prm : store 表示用データ
+*       kbn 新規登録＝0、更新＝1
+* return : なし
+ */
+void editSetGoshuin(AppStore store, String kbn){
+  if(kbn == "0"){
+    store.setEditGoshuinId(""); // 御朱印ID[GSI+連番6桁（GSI000001）]
+    store.setEditGoshuinBase64Image(""); // 御朱印画像(base64)
+    store.setEditGoshuinSpotId(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditGoshuinSpotName(""); // 神社・寺院名
+    store.setEditGoshuinSpotPrefecturesNo(""); // 都道府県番号
+    store.setEditGoshuinSpotPrefectures(""); // 神社・寺院 都道府県
+    store.setEditGoshuinName(""); // 御朱印名
+    store.setEditGoshuinSanpaiDate(""); // 参拝日
+    store.setEditGoshuinMemo(""); // メモ
+    store.setEditGoshuinCreateData(""); // 登録日
+  }else{
+    store.setEditGoshuinId(
+        store.showGoshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
+    store.setEditGoshuinBase64Image(
+        store.showGoshuinData.img); // 御朱印画像(base64)
+    store.setEditGoshuinSpotId(store
+        .showGoshuinData.spotId); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditGoshuinSpotName(
+        store.showGoshuinData.spotName); // 神社・寺院名
+    store.setEditGoshuinSpotPrefecturesNo(
+        store.showGoshuinData.spotPrefecturesNo); // 都道府県番号
+    store.setEditGoshuinSpotPrefectures(
+        store.showGoshuinData.spotPrefectures); // 神社・寺院 都道府県
+    store.setEditGoshuinName(
+        store.showGoshuinData.goshuinName); // 御朱印名
+    store.setEditGoshuinSanpaiDate(
+        store.showGoshuinData.date); // 参拝日
+    store.setEditGoshuinMemo(store.showGoshuinData.memo); // メモ
+    store.setEditGoshuinCreateData(store.showGoshuinData.createData); // 登録日
+  }
+}
+
+
+
+/*
 * 登録時の御朱印データeditのリセット
 * prm : store 表示用データ
 *       kbn 新規登録＝0、更新＝1
@@ -390,13 +448,14 @@ void editResetGoshuin(AppStore store, String kbn) {
   store.setEditGoshuinName(""); // 御朱印名
   store.setEditGoshuinSanpaiDate(""); // 参拝日
   store.setEditGoshuinMemo(""); // メモ
+  store.setEditGoshuinCreateData(""); // 登録日
 
   // エラーメッセージをクリア
   store.setErrMsg("");
   store.setErrFlg(true);
 
   // insert時のみ更新前のデータをクリア
-  if(kbn == "0"){
+  if (kbn == "0") {
     GoshuinListData data = GoshuinListData(
       id: "",
       img: "",
@@ -465,6 +524,17 @@ void setEditSopt(AppStore store, String kbn) {
     store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
     store.setEditSpotcreateData(""); // 登録日
 
+    // 更新前のデータを保持（比較チェック用）
+    SpotData spotData = SpotData(
+      id: "",
+      spotName: "",
+      kbn: "",
+      prefectures: "",
+      prefecturesNo: "",
+      img: "",
+      createData: "",
+    );
+    store.setShowSpotData(spotData);
   } else if (kbn == "1") {
     // 更新
     store.setEditSpotid(store.showSpotData.id); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
@@ -509,8 +579,7 @@ bool checkGoshuinEdit(AppStore store) {
     flg = true; // 御朱印名チェック
   if (beforeGoshuinData.date != store.editGoshuinSanpaiDate)
     flg = true; // 参拝日チェック
-  if (beforeGoshuinData.memo != store.editGoshuinMemo)
-    flg = true; // メモチェック
+  if (beforeGoshuinData.memo != store.editGoshuinMemo) flg = true; // メモチェック
 
   // いずれかが変更されていた場合編集中となる
   if (flg) {
@@ -536,7 +605,6 @@ bool checkSpotEdit(AppStore store) {
   if (beforeSpotData.prefecturesNo != store.editSpotprefecturesNo)
     flg = true; // 都道府県チェック
   if (beforeSpotData.spotName != store.editSpotName) flg = true; // 神社・寺院名
-
   // いずれかが変更されていた場合編集中となる
   if (flg) {
     return true;

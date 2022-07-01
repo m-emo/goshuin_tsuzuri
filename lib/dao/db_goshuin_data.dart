@@ -7,15 +7,19 @@ import 'package:path/path.dart';
 
 class DbGoshuinData extends DBProvider {
   @override
-  String get databaseName => "goshuin.db";
+  String get databaseName => "goshuintsuzuri.db";
 
   @override
   String get tableName => "goshuin";
+  String get tableNameSopt => "spot";
 
   @override
   createDatabase(Database db, int version) async {
     db.execute(
-      "CREATE TABLE $tableName(id TEXT PRIMARY KEY, img TEXT, spotId TEXT, goshuinName TEXT, date TEXT, memo TEXT, createData TEXT)",
+      "CREATE TABLE $tableName(id TEXT PRIMARY KEY, spotId TEXT, goshuinName TEXT, date TEXT, memo TEXT, createData TEXT, img TEXT)",
+    );
+    db.execute(
+      "CREATE TABLE $tableNameSopt(id TEXT PRIMARY KEY, spotName TEXT,  kbn TEXT, prefectures TEXT,  prefecturesNo TEXT, createData TEXT, img TEXT)",
     );
   }
 
@@ -31,7 +35,7 @@ class DbGoshuinData extends DBProvider {
 
   /* 更新 */
   Future<void> updateGoshuin(GoshuinData goshuin) async {
-    // Get a reference to the database.
+    print("★------------更新したよ-------------★");
     final db = await database;
     await db.update(
       tableName,
@@ -53,6 +57,29 @@ class DbGoshuinData extends DBProvider {
     print("db_goshuin_data.dart★削除した");
   }
 
+  /* 全件取得 */
+  Future<List<GoshuinListData>> getAllGoshuins() async {
+    var sqltext = 'SELECT goshuin.id, goshuin.spotId, spot.spotName, spot.prefecturesNo, spot.prefectures, goshuin.goshuinName, goshuin.date, goshuin.memo, goshuin.createData, goshuin.img FROM ' + tableName + ' INNER JOIN '+ tableNameSopt +' ON '+tableName+'.spotId = '+ tableNameSopt +'.id ORDER BY goshuin.id DESC';
+    final Database db = await database;
+    final List<Map<String, dynamic>> maps = await db.rawQuery(sqltext);
+    List<GoshuinListData> list =[];
+    for (Map map in maps) {
+      list.add(GoshuinListData(
+        id: map['id'],
+        img: map['img'],
+        spotId: map['spotId'],
+        spotName: map['spotName'],
+        spotPrefecturesNo: map['prefecturesNo'],
+        spotPrefectures: map['prefectures'],
+        goshuinName: map['goshuinName'],
+        date: map['date'],
+        memo: map['memo'],
+        createData: map['createData'],
+      ));
+    }
+    return list;
+  }
+
   /* 最大IDレコード取得 */
   Future<GoshuinData> getMaxIdGoshuin() async {
     final Database db = await database;
@@ -61,6 +88,8 @@ class DbGoshuinData extends DBProvider {
     var goshuin = new GoshuinData();
     var i = 0;
     if (maps.length != 0) {
+      print("★★★--------最大IDレコード取得");
+      print(maps[i]['createData']);
       goshuin = GoshuinData(
         id: maps[i]['id'],
         img: maps[i]['img'],
@@ -73,7 +102,6 @@ class DbGoshuinData extends DBProvider {
     }
     return goshuin;
   }
-
 }
 
 class GoshuinData {

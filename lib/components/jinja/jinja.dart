@@ -35,6 +35,7 @@ class Jinja extends StatelessWidget {
                 // 更新前のデータを保持（比較チェック用）
                 setEditSopt(store, "1");
 
+                // 編集画面に繊維
                 Navigator.push(
                   context,
                   MaterialPageRoute(

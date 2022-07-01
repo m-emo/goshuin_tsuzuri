@@ -14,6 +14,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:mobx/mobx.dart';
 
 import '../../app_store.dart';
+import '../../dao/db_goshuin_data.dart';
 
 class JinjaEdit extends StatelessWidget {
   const JinjaEdit({Key key, @required this.store, this.kbn, this.senimotokbn})
@@ -251,7 +252,8 @@ class _ImagePickerViewState extends State {
 // カメラまたはライブラリから画像を取得
   void _getImageFromDevice(ImageSource source, AppStore store) async {
     // 撮影/選択したFileを取得
-    var imageFile = await ImagePicker.pickImage(source: source);
+    //var imageFile = await ImagePicker.pickImage(source: source);
+    var imageFile = await ImagePicker().pickImage(source: source);
     // Androidで撮影せずに閉じた場合はnullになる
     if (imageFile == null) {
       return;
@@ -259,7 +261,7 @@ class _ImagePickerViewState extends State {
 
     // 指定サイズ／品質に圧縮
     List<int> imageBytes = await FlutterImageCompress.compressWithFile(
-      imageFile.absolute.path,
+      imageFile.path,
       minWidth: 800,
       minHeight: 800,
       quality: 60,
@@ -307,7 +309,7 @@ class _KbnArea extends StatelessWidget {
                 mainAxisSize: MainAxisSize.min,
                 children: <Widget>[
                   ListTile(
-                      leading: FaIcon(FontAwesomeIcons.camera),
+                      leading: StylesIcon.teraIcon,
                       title: Text(spotKbn.spot_text_tera),
                       onTap: () {
                         Navigator.pop(context);
@@ -315,7 +317,7 @@ class _KbnArea extends StatelessWidget {
                         store.setEditSpotKbn(spotKbn.spot_kbn_tera);
                       }),
                   ListTile(
-                      leading: FaIcon(FontAwesomeIcons.images),
+                      leading: StylesIcon.jinjaIcon,
                       title: Text(spotKbn.spot_text_jinja),
                       onTap: () {
                         Navigator.pop(context);
@@ -792,12 +794,12 @@ void insertupdateSpot(
       store.updateSpotArrayOneData(spot);
       // 都道府県別の神社・寺院データ一覧を更新
       store.setSpotArrayPef();
-
-      // ★DBのupdate（御朱印リストの都道府県、神社名を修正）
-      //★書く
+      // 神社・寺院データの詳細画面表示時の下に表示される関連の御朱印リストを修正
+      store.updateSpotShowSpotDataUnderGoshuinList(store.editSpotName,
+          store.editSpotprefectures, store.editSpotprefecturesNo);
     }
     // 画像が変更されている場合、それぞれのリストを変更
-    if(store.showSpotData.img != store.editSpotBase64Image){
+    if (store.showSpotData.img != store.editSpotBase64Image) {
       // 都道府県別の神社・寺院データ一覧を更新
       store.setSpotArrayPef();
     }
@@ -805,7 +807,8 @@ void insertupdateSpot(
     // 詳細画面表示時の神社・寺院データを更新
     store.setShowSpotData(spot);
 
-    //★DBのupdate（神社・寺院を修正）
+    // DBのinsert（神社・寺院）
+    DbSpotData().updateSpot(spot);
 
     Navigator.of(context).pop();
   }
@@ -830,7 +833,6 @@ void insertupdateSpot(
 
     // insert
     final createData = (DateTime.now().toUtc().toIso8601String()); // 日時取得
-    print(DateTime.parse(createData).toLocal());
     spot = SpotData(
         id: id,
         spotName: store.editSpotName,
@@ -845,9 +847,8 @@ void insertupdateSpot(
     // 都道府県別の神社・寺院データ一覧を更新
     store.setSpotArrayPef();
 
-
-    // DBに登録　★書く
-    //DbSpotData().insertSpot(spot);
+    // DBのinsert
+    DbSpotData().insertSpot(spot);
 
     // 神社・寺院一覧からの新規登録遷移の場合、続けて登録ダイアログを表示
     if (senimotokbn == "1") {
@@ -875,6 +876,7 @@ class _ButtonDeleteArea extends StatelessWidget {
   // 引数
   final AppStore store;
   final String kbn;
+
   _ButtonDeleteArea({this.kbn, this.store});
 
   @override
@@ -889,8 +891,7 @@ class _ButtonDeleteArea extends StatelessWidget {
         ),
         child: Text('神社・寺院を削除する', style: Styles.mainButtonTextStylePurple),
         onPressed: () {
-          myShowDialog(context, Msglist.delete, BtnText.btn_text_delete,
-              BtnText.btn_text_buck, 2, store, kbn);
+          myShowDialogSpot(context, 1, store, "", "");
         },
       ),
     );

@@ -266,7 +266,8 @@ class _ImagePickerViewState extends State {
 // カメラまたはライブラリから画像を取得
   void _getImageFromDevice(ImageSource source, AppStore store) async {
     // 撮影/選択したFileを取得
-    var imageFile = await ImagePicker.pickImage(source: source);
+    //var imageFile = await ImagePicker.pickImage(source: source);
+    var imageFile = await ImagePicker().pickImage(source: source);
     // Androidで撮影せずに閉じた場合はnullになる
     if (imageFile == null) {
       return;
@@ -274,7 +275,8 @@ class _ImagePickerViewState extends State {
 
     // 指定サイズ／品質に圧縮
     List<int> imageBytes = await FlutterImageCompress.compressWithFile(
-      imageFile.absolute.path,
+      // imageFile.absolute.path,
+      imageFile.path,
       minWidth: 800,
       minHeight: 800,
       quality: 60,
@@ -655,10 +657,8 @@ class _ButtonAreaState extends State<_ButtonArea> {
             // 最大ID登録
             store.setGoshuinMaxId(id);
 
-            // insert
-            final createData =
-                (DateTime.now().toUtc().toIso8601String()); // 日時取得
-            print(DateTime.parse(createData).toLocal());
+            // DBのinsert
+            final createData = (DateTime.now().toUtc().toIso8601String()); // 日時取得
             goshuin = GoshuinData(
               id: id,
               img: store.editGoshuinBase64Image,
@@ -668,7 +668,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
               memo: store.editGoshuinMemo,
               createData: createData,
             );
-            // DbGoshuinData().insertGoshuin(goshuin); // ★　戻す
+            DbGoshuinData().insertGoshuin(goshuin);
 
             // 御朱印一覧保持リストの先頭にデータセット
             GoshuinListData setListData = GoshuinListData(
@@ -714,10 +714,6 @@ class _ButtonAreaState extends State<_ButtonArea> {
               // 詳細画面表示時の御朱印データを更新
               store.setShowGoshuinData(setListData);
 
-
-
-
-
               //DBのupdate
               goshuin = GoshuinData(
                 id: store.editGoshuinId,
@@ -728,7 +724,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
                 memo: store.editGoshuinMemo,
                 createData: store.editGoshuinCreateData,
               );
-              // DbGoshuinData().updateGoshuin(goshuin);// ★　戻す
+              DbGoshuinData().updateGoshuin(goshuin);
             });
           }
 

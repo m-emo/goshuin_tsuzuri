@@ -149,7 +149,7 @@ class _SpotList extends StatelessWidget {
                     Expanded(
                       child: Container(
                         child: Text(
-                          "${spotList[index].kbn}_${spotList[index].id}_${spotList[index].spotName}",
+                          "${spotList[index].kbn}_${spotList[index].id}_${spotList[index].spotName}_ ${spotList[index].createData}",
                           // 神社・寺院名
                           style: Styles.mainTextStyleBold,
                           overflow: TextOverflow.ellipsis,

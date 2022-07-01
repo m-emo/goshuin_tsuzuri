@@ -207,12 +207,13 @@ class _SpotList extends StatelessWidget {
   /*区分からアイコンを返却*/
   Image icon(kbn) {
     if (kbn == "1") {
-      // 神社
-      return StylesIcon.jinjaIcon;
-    }
-    else if (kbn == "2") {
       // 寺
       return StylesIcon.teraIcon;
+    }
+    else if (kbn == "2") {
+
+      // 神社
+      return StylesIcon.jinjaIcon;
     }
     // else {
     //   // その他
