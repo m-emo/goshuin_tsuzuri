@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
-import 'package:goshuintsuzuri/common/header.dart';
-import 'package:goshuintsuzuri/components/goshuin_list_jinja/goshuin_list_jinja.dart';
-import 'package:goshuintsuzuri/components/goshuin_list_jinja/goshuin_list_jinja2.dart';
 import 'package:goshuintsuzuri/components/goshuin_list_list/goshuin_list_list.dart';
 import 'package:goshuintsuzuri/components/goshuin_list_photo/goshuin_list_photo.dart';
 
@@ -23,15 +20,12 @@ class GoshuinList extends StatelessWidget {
   Widget build(BuildContext context) {
     final List<TabInfo> _tabs = [
       TabInfo("一覧", GoshuinListList(key: PageStorageKey("goshuinListList"), store: store)),
-      // TabInfo("神社・寺院", GoshuinListJija(key: PageStorageKey("goshuinListJija"), store: store)),
       TabInfo("写真", GoshuinListPhoto(key: PageStorageKey("goshuinListPhoto"), store: store)),
     ];
 
     return DefaultTabController(
       length: _tabs.length,
       child: Scaffold(
-        // key: _scaffoldKey,
-
         appBar: PreferredSize(
           preferredSize: Size.fromHeight(40.0),
           child: AppBar(
@@ -48,7 +42,6 @@ class GoshuinList extends StatelessWidget {
           ),
         ),
         body: TabBarView(
-            // key: PageStorageKey(_tabs.map((tab) => tab.index).toList()),
             children: _tabs.map((tab) => tab.widget).toList()
         ),
       ),

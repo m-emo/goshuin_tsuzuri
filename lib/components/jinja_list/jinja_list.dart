@@ -45,7 +45,7 @@ class JinjaList extends StatelessWidget {
       body: Stack(
         children: <Widget>[
           Observer(
-            builder: (context) => ListView.builder(
+            builder: (context) => (store.spotArrayPef).isEmpty ? NoDataAreaSpot() : ListView.builder(
               shrinkWrap: true,
               // physics: NeverScrollableScrollPhysics(),
               itemBuilder: (BuildContext context, int index) {

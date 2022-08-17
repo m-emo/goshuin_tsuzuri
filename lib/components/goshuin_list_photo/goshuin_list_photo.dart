@@ -16,7 +16,7 @@ class GoshuinListPhoto extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return (store.goshuinArray).isEmpty ? NoDataArea() : Container(
         padding: EdgeInsets.only(right: 2.0, left: 2.0),
         color: Color(0xFFFFFFFF),
         child: Scaffold(

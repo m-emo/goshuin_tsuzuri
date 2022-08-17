@@ -422,7 +422,6 @@ class _PrefecturesArea extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-                // builder: (context) => PrefecturesList(store: _store)),
                 builder: (context) => PrefecturesList(store: store)),
           );
         },
@@ -511,7 +510,7 @@ class _NameArea extends StatelessWidget {
           Container(
             child: RichText(
               text: TextSpan(
-                text: "神社・寺院",
+                text: "神社・寺院名",
                 style: Styles.mainTextStyleBold,
                 children: <TextSpan>[
                   TextSpan(
@@ -526,9 +525,12 @@ class _NameArea extends StatelessWidget {
             child: TextField(
               style: Styles.mainTextStyle,
               controller: TextEditingController(text: store.editSpotName),
-              decoration: new InputDecoration.collapsed(
-                border: InputBorder.none,
-              ),
+              // decoration: const InputDecoration(
+              //   border: InputBorder.none,
+              // ),
+              // decoration: new InputDecoration.collapsed(
+              //   border: InputBorder.none,
+              // ),
               onChanged: (changed) => store.setEditSpotName(changed),
             ),
           ),
@@ -594,77 +596,6 @@ class _ButtonAreaState extends State<_ButtonArea> {
                 style: Styles.mainButtonTextStyle,
               ),
         onPressed: () {
-          /*
-          * 登録
-          * */
-          void insert() {
-            // // 該当都道府県の最大の神社・寺院IDを取得
-            // var maxId = store.spotMaxId;
-            //
-            // var id = "";
-            // if (maxId == null || maxId == "") {
-            //   // 初回登録
-            //   id = Id.spot_id_pfx + "000001";
-            // } else {
-            //   var prefix = maxId.substring(0, 3); // プレフィックス
-            //   int num = int.parse(maxId.substring(3, 9)); // 連番
-            //   num = num + 1;
-            //   id = prefix + num.toString().padLeft(6, "0");
-            // }
-            // // 最大ID登録
-            // store.setSpotMaxId(id);
-            //
-            // // insert
-            // final createData =
-            //     (DateTime.now().toUtc().toIso8601String()); // 日時取得
-            // print(DateTime.parse(createData).toLocal());
-            // spot = SpotData(
-            //     id: id,
-            //     spotName: store.editSpotName,
-            //     kbn: store.editSpotKbn,
-            //     prefectures: store.editSpotprefectures,
-            //     prefecturesNo: store.editSpotprefecturesNo,
-            //     img: store.editSpotBase64Image,
-            //     createData: createData);
-            //
-            // //神社・寺院一覧保持リストの先頭にデータセット
-            // store.setSpotArrayOneData(spot);
-            // // print(store.spotArray); // ★消す
-            // // DBに登録　★書く
-            // //DbSpotData().insertSpot(spot);
-          }
-
-          /*
-          * 更新
-          */
-          // void update() {
-          //   setState(() {
-          //     //神社・寺院一覧を更新する
-          //     spot = SpotData(
-          //         id: store.editSpotid,
-          //         spotName: store.editSpotName,
-          //         kbn: store.editSpotKbn,
-          //         prefectures: store.editSpotprefectures,
-          //         prefecturesNo: store.editSpotprefecturesNo,
-          //         img: store.editSpotBase64Image,
-          //         createData: store.editSpotcreateData);
-          //
-          //     // 都道府県、神社名が変わっている場合、それぞれの御朱印リストを更新
-          //     if (store.beforeSpotData.prefecturesNo !=
-          //             store.editSpotprefecturesNo ||
-          //         store.beforeSpotData.spotName != store.editSpotName) {
-          //       // 御朱印リストの都道府県、神社名を修正
-          //       store.updateGoshuinSpotInfo(spot);
-          //       // 都道府県別御朱印リストを並び替え
-          //       store.setGoshuinArrayPef();
-          //       // ★DBのupdate（御朱印リストの都道府県、神社名を修正）
-          //       //★書く
-          //     }
-          //
-          //     //★DBのupdate（神社・寺院を修正）
-          //   });
-          // }
-
           /**
            ** 入力チェック
            **/
@@ -733,26 +664,8 @@ class _ButtonAreaState extends State<_ButtonArea> {
             return;
           }
 
+          // Insert update処理
           insertupdateSpot(kbn, senimotokbn, store, context);
-          //
-          // if (kbn == "1") {
-          //   // 更新
-          //   update();
-          //   Navigator.of(context).pop();
-          // } else {
-          //   // 登録
-          //   insert();
-          //   // 神社・寺院一覧からの新規登録遷移の場合、続けて登録ダイアログを表示
-          //   if (senimotokbn == "1") {
-          //     myShowDialogSpot(context, 2, store);
-          //   }
-          //   // 御朱印登録からの新規登録遷移の場合
-          //   else if (senimotokbn == "2") {
-          //     Navigator.of(context).pop();
-          //   }
-          // }
-          // // insert,update終わった後で、editデータを初期化
-          // editResetSopt(store);
         },
       ),
     );
@@ -815,7 +728,7 @@ void insertupdateSpot(
 
   // 登録
   else {
-    // 該当都道府県の最大の神社・寺院IDを取得
+    // 最大の神社・寺院IDを取得
     var maxId = store.spotMaxId;
 
     var id = "";

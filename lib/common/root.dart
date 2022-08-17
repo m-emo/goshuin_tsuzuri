@@ -263,7 +263,6 @@ class _RootWidgetState extends State<RootWidget> {
   Widget build(BuildContext context) {
     var _routes = [
       GoshuinList(store: store),
-      // JinjaList(store: store),
       JinjaList(store: store),
       GoshuinEdit(kbn: "0"),
     ];
@@ -302,11 +301,11 @@ class _RootWidgetState extends State<RootWidget> {
               ),
             ),
             ListTile(
-              title: Text("Item 1"),
+              title: Text("バックアップ"),
               trailing: Icon(Icons.arrow_forward),
             ),
             ListTile(
-              title: Text("Item 2"),
+              title: Text("プライバシーポリシー"),
               trailing: Icon(Icons.arrow_forward),
             ),
           ],

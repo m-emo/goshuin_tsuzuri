@@ -3,8 +3,6 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:goshuintsuzuri/common/common.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
-import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
-import 'package:mobx/mobx.dart';
 
 import '../../app_store.dart';
 
@@ -30,7 +28,7 @@ class GoshuinListListState extends State {
     return Scaffold(
 
       body: Observer(
-        builder: (context) => ListView.builder(
+        builder: (context) => (store.goshuinArray).isEmpty ? NoDataArea() : ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return Container(
               decoration: BoxDecoration(

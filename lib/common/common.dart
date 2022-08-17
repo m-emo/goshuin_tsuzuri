@@ -389,6 +389,63 @@ Image showImg(String base64Image, int boxFitNum) {
 }
 //******** 画像の変換 -end- ********
 
+//******** 御朱印登録がない場合の表示Widget -start- ********
+/*
+* 御朱印登録がない場合の表示Widget
+* prm : なし
+* return : Widget
+ */
+class NoDataArea extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: <Widget>[
+        Image(
+            image: AssetImage(
+              'assets/img/no_data_list.png',
+            ),
+          height: 150,
+        ),
+        Text('御朱印がありません', style: Styles.mainTextStyle),
+        Text('登録を押して御朱印を登録してください',style: Styles.subTextStyleSmall),
+      ],
+      ),
+    );
+  }
+}
+//******** 御朱印登録がない場合の表示Widget -end- ********
+
+//******** 神社・寺院登録がない場合の表示Widget -start- ********
+/*
+* 神社・寺院登録がない場合の表示Widget
+* prm : なし
+* return : Widget
+ */
+class NoDataAreaSpot extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: <Widget>[
+          Image(
+            image: AssetImage(
+              'assets/img/no_data_list2.png',
+            ),
+            height: 150,
+          ),
+          Text('神社・寺院がありません', style: Styles.mainTextStyle),
+          Text('＋を押して神社・寺院を登録してください',style: Styles.subTextStyleSmall),
+        ],
+      ),
+    );
+  }
+}
+//******** 神社・寺院登録がない場合の表示Widget -end- ********
 /*
 * 登録時・更新の御朱印データeditの保持
 * prm : store 表示用データ

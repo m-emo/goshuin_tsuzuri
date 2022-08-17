@@ -50,71 +50,11 @@ class SelectJinjaList extends StatelessWidget {
         ),
       ],
       body: Observer(
-        builder: (context) => ListView.builder(
+        builder: (context) => (store.spotArrayPef).isEmpty ? NoDataAreaSpot() : ListView.builder(
           itemBuilder: (BuildContext context, int index) {
             return _SpotList(
                 store: store,
                 spotList: (store.spotArrayPef)[index].value);
-            // return ListView.builder(
-            //   itemBuilder: (BuildContext context, int index) {
-            //     return Container(
-            //       decoration: BoxDecoration(
-            //           border: Border(
-            //               bottom: BorderSide(
-            //         color: StylesColor.bordercolor,
-            //         width: 1.0,
-            //       ))),
-            //       child: InkWell(
-            //         onTap: () {
-            //           store.setEditGoshuinSpotId(
-            //               (store.spotArray)[index].id); // 神社・寺院ID
-            //           store.setEditGoshuinSpotName(
-            //               (store.spotArray)[index].spotName); // 神社・寺院名
-            //           store.setEditGoshuinSpotPrefectures(
-            //               (store.spotArray)[index].prefectures); // 神社・寺院 都道府県
-            //           store.setEditGoshuinSpotPrefecturesNo(
-            //               (store.spotArray)[index].prefecturesNo); // 都道府県番号
-            //           Navigator.pop(context); //前の画面に戻る
-            //         },
-            //         child: Container(
-            //           color: Colors.white,
-            //           padding: EdgeInsets.only(right: 10, left: 10),
-            //           height: 70.0,
-            //           child: Container(
-            //             child: Row(
-            //               children: <Widget>[
-            //                 Container(
-            //                   padding: EdgeInsets.only(right: 20, left: 10),
-            //                   child: icon((store.spotArray)[index].kbn),
-            //                 ),
-            //                 Expanded(
-            //                   child: Container(
-            //                     padding: EdgeInsets.only(right: 10),
-            //                     child: Text(
-            //                       "${(store.spotArray)[index].spotName}",
-            //                       // 神社・寺院名
-            //                       style: Styles.mainTextStyleBold,
-            //                       overflow: TextOverflow.ellipsis,
-            //                       maxLines: 2,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Container(
-            //                   child: Text(
-            //                       "[ " +
-            //                           "${(store.spotArray)[index].prefectures}" +
-            //                           " ]  ",
-            //                       style: Styles.mainTextStyleSmall),
-            //                 ),
-            //               ],
-            //             ),
-            //           ),
-            //         ),
-            //       ),
-            //     );
-            //   },
-            //   itemCount: (store.spotArrayPef[indexPrf].value).length,
-            // );
           },
           itemCount: (store.spotArrayPef).length,
         ),
