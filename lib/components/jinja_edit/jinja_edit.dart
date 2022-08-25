@@ -11,10 +11,7 @@ import 'package:goshuintsuzuri/components/pefectures_list/prefectures_list.dart'
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:mobx/mobx.dart';
-
 import '../../app_store.dart';
-import '../../dao/db_goshuin_data.dart';
 
 class JinjaEdit extends StatelessWidget {
   const JinjaEdit({Key key, @required this.store, this.kbn, this.senimotokbn})
@@ -80,7 +77,7 @@ class JinjaEdit extends StatelessWidget {
             children: [
               Container(
                 // 背景色
-                color: StylesColor.bgImgcolor,
+                color: StylesColor.bgEditcolor,
               ),
               Area(kbn: kbn, store: store, senimotokbn: senimotokbn),
               MsgArea(store: store),
@@ -490,12 +487,22 @@ class _PrefecturesArea extends StatelessWidget {
 *       store 表示用データ
 * return : Widget
  */
-class _NameArea extends StatelessWidget {
+class _NameArea extends StatefulWidget {
   // 引数
   final String kbn;
   final AppStore store;
 
   _NameArea({this.kbn, this.store});
+
+  @override
+  _NameAreaState createState() => _NameAreaState(kbn: kbn, store: store);
+}
+class _NameAreaState extends State<_NameArea> {
+  // 引数
+  final String kbn;
+  final AppStore store;
+
+  _NameAreaState({this.kbn, this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -528,9 +535,9 @@ class _NameArea extends StatelessWidget {
               // decoration: const InputDecoration(
               //   border: InputBorder.none,
               // ),
-              // decoration: new InputDecoration.collapsed(
-              //   border: InputBorder.none,
-              // ),
+              decoration: InputDecoration(
+                contentPadding: EdgeInsets.all(0),
+              ),
               onChanged: (changed) => store.setEditSpotName(changed),
             ),
           ),
@@ -539,6 +546,57 @@ class _NameArea extends StatelessWidget {
     );
   }
 }
+
+
+// class _NameArea extends StatelessWidget {
+//   // 引数
+//   final String kbn;
+//   final AppStore store;
+//
+//   _NameArea({this.kbn, this.store});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       color: Colors.white,
+//       margin: const EdgeInsets.only(top: 4.0),
+//       padding: const EdgeInsets.only(
+//           top: 15.0, right: 20.0, bottom: 15.0, left: 20.0),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.stretch,
+//         children: <Widget>[
+//           Container(
+//             child: RichText(
+//               text: TextSpan(
+//                 text: "神社・寺院名",
+//                 style: Styles.mainTextStyleBold,
+//                 children: <TextSpan>[
+//                   TextSpan(
+//                       text: ' *',
+//                       style: TextStyle(color: StylesColor.maincolor)),
+//                 ],
+//               ),
+//             ),
+//           ),
+//           Container(
+//             padding: const EdgeInsets.only(top: 5.0),
+//             child: TextField(
+//               style: Styles.mainTextStyle,
+//               controller: TextEditingController(text: store.editSpotName),
+//               // decoration: const InputDecoration(
+//               //   border: InputBorder.none,
+//               // ),
+//               decoration: InputDecoration(
+//                 contentPadding: EdgeInsets.all(0),
+//               ),
+//               onChanged: (changed) => store.setEditSpotName(changed),
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
 //******** 神社・寺院名Widget -end- ********
 
 //******** ボタンWidget -start- ********
@@ -602,7 +660,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
           String inputCheck() {
             // ★上限数いれるか考える
             if (store.spotMaxId == MaxNum.max_spot_id) {
-              return "神社・寺院の登録件数が999999件となり上限です。";
+              return "神社・寺院の登録件数が999999999件となり上限です。";
             }
             if (store.editSpotKbn == "") {
               return "区分を選択してください";
@@ -730,16 +788,16 @@ void insertupdateSpot(
   else {
     // 最大の神社・寺院IDを取得
     var maxId = store.spotMaxId;
-
+print("★maxId"+maxId);
     var id = "";
     if (maxId == null || maxId == "") {
       // 初回登録
-      id = Id.spot_id_pfx + "000001";
+      id = Id.spot_id_pfx + "000000001";
     } else {
       var prefix = maxId.substring(0, 3); // プレフィックス
-      int num = int.parse(maxId.substring(3, 9)); // 連番
+      int num = int.parse(maxId.substring(3, 12)); // 連番
       num = num + 1;
-      id = prefix + num.toString().padLeft(6, "0");
+      id = prefix + num.toString().padLeft(9, "0");
     }
     // 最大ID登録
     store.setSpotMaxId(id);

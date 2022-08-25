@@ -14,8 +14,8 @@ class BtnText{
   static const btn_text_delete = "削除する";
 }
 class MaxNum {
-  static const max_goshuin_id = "GSI999999";
-  static const max_spot_id = "SPT999999";
+  static const max_goshuin_id = "GSI999999999";
+  static const max_spot_id = "SPT999999999";
 }
 class Id {
   static const goshuin_id_pfx = "GSI";

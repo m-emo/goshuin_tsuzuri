@@ -72,6 +72,11 @@ class Styles {
     letterSpacing: 1.0,
     fontSize: 16.0,
   );
+
+  // 必須のスタイル（*）
+  static const mainTextRequired = TextStyle(
+    color: Color(0xFFD13833),
+  );
 }
 
 // 色のスタイル
@@ -81,6 +86,9 @@ class StylesColor {
 
   // 写真画像の背景色
   static const bgImgcolor = Color(0xFFFBFBFB);
+
+  // 入力、編集画面の背景色
+  static const bgEditcolor = Color(0xFFEAEAEA);
 
 // ボーダーカラー
   static const bordercolor = Color(0xFFEAEAEA);
@@ -119,15 +127,23 @@ class StylesIcon {
 
   // 神社・寺院選択リスト用アイコン
   // 神社
-  static const jinjaIcon =
-      // Icon(FontAwesomeIcons.toriiGate, color: Color(0xFFB9B9B9), size: 20);
-      Image(image: AssetImage('assets/img/icon_jinja.png',),height: 30);
+  static const jinjaIcon = Image(
+      image: AssetImage(
+        'assets/img/icon_jinja.png',
+      ),
+      height: 30);
 
   // 寺
-  static const teraIcon =
-  Image(image: AssetImage('assets/img/icon_tera.png',),height: 30);
+  static const teraIcon = Image(
+      image: AssetImage(
+        'assets/img/icon_tera.png',
+      ),
+      height: 30);
 
   // その他
-  static const sonotaIcon =
-      Icon(FontAwesomeIcons.key, color: Color(0xFFB9B9B9), size: 20);
+  static const sonotaIcon = Image(
+      image: AssetImage(
+        'assets/img/icon_sonota.png',
+      ),
+      height: 30);
 }

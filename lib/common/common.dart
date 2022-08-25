@@ -202,7 +202,7 @@ Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
                       ),
                       child: Text(_listBtnMsgSpot[flg].btnMsg1,
                           style: Styles.mainButtonTextStyle),
-                      onPressed: () {
+                      onPressed: () async {
                         if (flg == 0 || flg == 2) {
                           //
                           // 戻る（ダイアログ閉じる⇒編集閉じる）
@@ -233,6 +233,20 @@ Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
                           store.deleteSpotArrayOneData(store.editSpotid);
                           // editデータを初期化
                           editResetSopt(store);
+                          // 神社・寺院最大IDを再取得
+                          SpotData spotMax = await DbSpotData().getMaxIdSpot();
+                          var spotMaxId = spotMax.id;
+                          var id = "";
+                          if (spotMaxId == null) {
+                            // 全件消えた場合
+                            id = "";
+                            print("★0件になった");
+                          } else {
+                            id = spotMaxId;
+                            print("★最大値"+id);
+                          }
+                          store.setSpotMaxId(id);
+
                           // 戻る（ダイアログ閉じる⇒編集閉じる⇒詳細閉じる）
                           Navigator.of(context).pop();
                           Navigator.of(context).pop();
@@ -454,9 +468,9 @@ class NoDataAreaSpot extends StatelessWidget {
  */
 void editSetGoshuin(AppStore store, String kbn){
   if(kbn == "0"){
-    store.setEditGoshuinId(""); // 御朱印ID[GSI+連番6桁（GSI000001）]
+    store.setEditGoshuinId(""); // 御朱印ID[GSI+連番9桁（GSI000000001）]
     store.setEditGoshuinBase64Image(""); // 御朱印画像(base64)
-    store.setEditGoshuinSpotId(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditGoshuinSpotId(""); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
     store.setEditGoshuinSpotName(""); // 神社・寺院名
     store.setEditGoshuinSpotPrefecturesNo(""); // 都道府県番号
     store.setEditGoshuinSpotPrefectures(""); // 神社・寺院 都道府県
@@ -466,11 +480,11 @@ void editSetGoshuin(AppStore store, String kbn){
     store.setEditGoshuinCreateData(""); // 登録日
   }else{
     store.setEditGoshuinId(
-        store.showGoshuinData.id); // 御朱印ID[GSI+連番6桁（GSI000001）]
+        store.showGoshuinData.id); // 御朱印ID[GSI+連番9桁（GSI000000001）]
     store.setEditGoshuinBase64Image(
         store.showGoshuinData.img); // 御朱印画像(base64)
     store.setEditGoshuinSpotId(store
-        .showGoshuinData.spotId); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+        .showGoshuinData.spotId); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
     store.setEditGoshuinSpotName(
         store.showGoshuinData.spotName); // 神社・寺院名
     store.setEditGoshuinSpotPrefecturesNo(
@@ -496,9 +510,9 @@ void editSetGoshuin(AppStore store, String kbn){
  */
 void editResetGoshuin(AppStore store, String kbn) {
   // 編集対象のデータをクリア
-  store.setEditGoshuinId(""); // 御朱印ID[GSI+連番6桁（GSI000001）]
+  store.setEditGoshuinId(""); // 御朱印ID[GSI+連番9桁（GSI000000001）]
   store.setEditGoshuinBase64Image(""); // 御朱印画像(base64)
-  store.setEditGoshuinSpotId(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  store.setEditGoshuinSpotId(""); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   store.setEditGoshuinSpotName(""); // 神社・寺院名
   store.setEditGoshuinSpotPrefecturesNo(""); // 都道府県番号
   store.setEditGoshuinSpotPrefectures(""); // 神社・寺院 都道府県
@@ -535,10 +549,10 @@ void editResetGoshuin(AppStore store, String kbn) {
  */
 void editResetSopt(AppStore store) {
   // 編集対象のデータをクリア
-  store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  store.setEditSpotid(""); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   store.setEditSpotName(""); // 神社・寺名
   store.setEditSpotKbn(""); // 区分（1:寺, 2:神社 ,0:その他）
-  // store.setEditSpotprefectures(""); // 都道府県名
+  store.setEditSpotprefectures(""); // 都道府県名
   store.setEditSpotprefecturesNo(""); // 都道府県No
   store.setEditSpotBase64Image(""); // 神社・寺院画像(base64)
   store.setEditSpotcreateData(""); // 登録日
@@ -546,6 +560,8 @@ void editResetSopt(AppStore store) {
   // 画面用表示値をクリア
   store.setEditSpotShowKbn("");
   store.setEditSpotShowUint8ListImage("");
+  store.setEditSpotName("");
+  print("★"+store.editSpotName);
 
   // エラーメッセージをクリア
   store.setErrMsg("");
@@ -573,7 +589,7 @@ void editResetSopt(AppStore store) {
 void setEditSopt(AppStore store, String kbn) {
   if (kbn == "0") {
     // 新規登録
-    store.setEditSpotid(""); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditSpotid(""); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
     store.setEditSpotName(""); // 神社・寺名
     store.setEditSpotKbn(""); // 区分（1:寺, 2:神社 ,0:その他）
     store.setEditSpotprefectures(""); // 都道府県名
@@ -594,7 +610,7 @@ void setEditSopt(AppStore store, String kbn) {
     store.setShowSpotData(spotData);
   } else if (kbn == "1") {
     // 更新
-    store.setEditSpotid(store.showSpotData.id); // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+    store.setEditSpotid(store.showSpotData.id); // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
     store.setEditSpotName(store.showSpotData.spotName); // 神社・寺名
     store.setEditSpotKbn(store.showSpotData.kbn); // 区分（1:寺, 2:神社 ,0:その他）
     store.setEditSpotprefectures(store.showSpotData.prefectures); // 都道府県名

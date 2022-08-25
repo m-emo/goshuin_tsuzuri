@@ -18,7 +18,7 @@ class AppStore = _AppStore with _$AppStore;
 abstract class _AppStore with Store {
 
 //******** 御朱印登録に利用 -start- ********
-  // 御朱印ID[GSI+連番6桁（GSI000001）]
+  // 御朱印ID[GSI+連番9桁（GSI000000001）]
   @observable
   String editGoshuinId;
 
@@ -26,7 +26,7 @@ abstract class _AppStore with Store {
   @observable
   String editGoshuinBase64Image;
 
-  // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   @observable
   String editGoshuinSpotId;
 
@@ -61,7 +61,7 @@ abstract class _AppStore with Store {
 //******** 御朱印登録に利用 -end- ********
 
 //******** 神社・寺院登録に利用 -start- ********
-  // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   @observable
   String editSpotid;
 
@@ -133,24 +133,6 @@ abstract class _AppStore with Store {
   // 御朱印一覧
   @observable
   ObservableList<GoshuinListData> goshuinArray = ObservableList.of([]);
-
-/*
-  // 御朱印一覧(都道府県別）
-  // (例）
-  // [
-  // MapEntry(01(都道府県番号), [
-  //   MapEntry(01-00001(spotId), [<GoshuinListData>,<GoshuinListData>]),
-  //   MapEntry(01-00002(spotId), [<GoshuinListData>,<GoshuinListData>]),
-  //  ]),
-  // MapEntry(02(都道府県番号), [
-  //   MapEntry(02-00001(spotId), [<GoshuinListData>,<GoshuinListData>]),
-  //   MapEntry(02-00002(spotId), [<GoshuinListData>,<GoshuinListData>]),
-  //  ]),
-  // ]
-  @observable
-  List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
-      goshuinArrayPef;
-*/
 
   // 神社・寺院一覧（都道府県順の神社寺院一覧に必要）
   //(例）
@@ -505,83 +487,6 @@ abstract class _AppStore with Store {
       }
     }
   }
-
-  /*
-* DBのデータから都道府県別の御朱印データ一覧を作成
-* prm : なし
-* return : なし
-
-  @action
-  void setGoshuinArrayPef() {
-    // 都道府県別の御朱印データ一覧のList
-    List<MapEntry<String, List<MapEntry<String, List<GoshuinListData>>>>>
-        goshuinDataList = [];
-
-    // 一時的に格納するマップを設定（key：都道府県番号、value：都道府県番号ごとの御朱印データのList）
-    Map<String, List<GoshuinListData>> goshuinMap = {};
-
-    // 取得した御朱印リストから都道府県別にデータを設定する
-    for (var goshuin in goshuinArray) {
-      // 都道府県番号を取得
-      var pefNum = goshuin.spotPrefecturesNo;
-
-      // mapの中に同じ都道府県番号があるかチェック
-      if (goshuinMap.containsKey(pefNum)) {
-        // 存在する場合、リストに御朱印データを追加
-        // 都道府県の御朱印リストを取得
-        List<GoshuinListData> list = goshuinMap[pefNum];
-        //リストの末尾に追加
-        list.add(goshuin);
-      } else {
-        // 存在しない場合、mapに御朱印データを追加
-        List<GoshuinListData> list = [goshuin];
-        goshuinMap[pefNum] = list;
-      }
-    }
-
-    // 都道府県順に並び替え
-    for (var prefectures in prefecturesListdata) {
-      // 都道府県番号と一致するデータがあるかチェック
-      if (goshuinMap.containsKey(prefectures.key)) {
-        // 存在する場合、spotId(神社・寺院ID)ごとにリスト生成
-
-        // 一時的に格納するマップを設定（key：spotId(神社・寺院ID)、value：spotIdごとの御朱印データのList）
-        Map<String, List<GoshuinListData>> goshuinMapspotId = {};
-        // 都道府県番号ごとの御朱印データのListを取得
-        List<GoshuinListData> goshuinlist = goshuinMap[prefectures.key];
-
-        for (var goshuin in goshuinlist) {
-          // mapの中に同じspotId(神社・寺院ID)があるかチェック
-          if (goshuinMapspotId.containsKey(goshuin.spotId)) {
-            // 存在する場合、リストに御朱印データを追加
-            // spotIdごとの御朱印リストを取得
-            List<GoshuinListData> list = goshuinMapspotId[goshuin.spotId];
-            //リストの末尾に追加
-            list.add(goshuin);
-            // 一時的に格納するマップに御朱印データを変更
-            // ★書く
-
-          } else {
-            // 存在しない場合、一時的に格納するマップに御朱印データを追加
-            List<GoshuinListData> list = [goshuin];
-            goshuinMapspotId[goshuin.spotId] = list;
-          }
-        }
-
-        // spotId(神社・寺院ID)毎の御朱印リストを格納用に変換
-        List<MapEntry<String, List<GoshuinListData>>> spotList = [];
-        for (var key in goshuinMapspotId.keys) {
-          spotList.add(MapEntry(key, goshuinMapspotId[key]));
-        }
-
-        // Listに追加
-        goshuinDataList.add(MapEntry(prefectures.key, spotList));
-      }
-    }
-    // データを格納
-    goshuinArrayPef = goshuinDataList;
-  }
-*/
 
   /*
 * DBのデータから都道府県別の神社・寺院データ一覧を作成

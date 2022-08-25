@@ -71,6 +71,15 @@ class DbSpotData extends DBProvider {
     return list;
   }
 
+  // /* 件数取得（取得条件なし） */
+  // Future<int> getAllCount() async {
+  //   final Database db = await database;
+  //   var result = Sqflite.firstIntValue(
+  //       await db.rawQuery("SELECT COUNT (*) FROM " + tableName)
+  //   );
+  //   return result;
+  // }
+
   /* 最大IDレコード取得 */
   Future<SpotData> getMaxIdSpot() async {
     final Database db = await database;
@@ -97,7 +106,7 @@ class DbSpotData extends DBProvider {
 
 
 class SpotData {
-  final String id; // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  final String id; // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   final String spotName; // 神社・寺名
   final String kbn; // 区分（1:寺, 2:神社 ,0:その他）
   final String prefectures; // 都道府県名

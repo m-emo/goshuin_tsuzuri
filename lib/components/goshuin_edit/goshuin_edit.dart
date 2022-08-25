@@ -9,11 +9,9 @@ import 'package:goshuintsuzuri/common/property.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/select_jinja_list/select_jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
-import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
-import 'package:mobx/mobx.dart';
 
 import '../../app_store.dart';
 
@@ -55,10 +53,10 @@ class GoshuinEdit extends StatelessWidget {
                     BtnText.btn_text_close,
                     BtnText.btn_text_edit_continue,
                     1,
-                    store, kbn);
+                    store,
+                    kbn);
               }
             },
-            // onPressed: () => Navigator.of(context).pop(),
           ),
           title: kbn == "1" // 更新
               ? new Text(
@@ -82,7 +80,7 @@ class GoshuinEdit extends StatelessWidget {
             children: [
               Container(
                 // 背景色
-                color: StylesColor.bgImgcolor,
+                color: StylesColor.bgEditcolor,
               ),
               Area(kbn: kbn, store: store),
               MsgArea(store: store),
@@ -231,24 +229,20 @@ class _ImagePickerViewState extends State {
                   Expanded(
                     flex: 11,
                     child: Container(
-                        padding: const EdgeInsets.only(right: 20.0),
-                        child: RichText(
-                          text: TextSpan(
-                            text: "写真を選択・追加",
+                      padding: const EdgeInsets.only(right: 20.0),
+                      child: Row(
+                        children: <Widget>[
+                          Text(
+                            "写真を選択・追加",
                             style: Styles.mainTextStyleBold,
-                            children: <TextSpan>[
-                              TextSpan(
-                                  text: ' *',
-                                  style:
-                                      TextStyle(color: StylesColor.maincolor)),
-                            ],
                           ),
-                        )
-                        // child: Text(
-                        //   "写真を選択・追加",
-                        //   style: Styles.mainTextStyleBold,
-                        // ),
-                        ),
+                          Text(
+                            " *",
+                            style: Styles.mainTextRequired,
+                          ),
+                        ],
+                      ),
+                    ),
                   ),
                   Expanded(
                     flex: 1,
@@ -339,17 +333,17 @@ class _PlaceArea extends StatelessWidget {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Container(
-                            child: RichText(
-                              text: TextSpan(
-                                text: "神社・寺院",
-                                style: Styles.mainTextStyleBold,
-                                children: <TextSpan>[
-                                  TextSpan(
-                                      text: ' *',
-                                      style: TextStyle(
-                                          color: StylesColor.maincolor)),
-                                ],
-                              ),
+                            child: Row(
+                              children: <Widget>[
+                                Text(
+                                  "神社・寺院",
+                                  style: Styles.mainTextStyleBold,
+                                ),
+                                Text(
+                                  " *",
+                                  style: Styles.mainTextRequired,
+                                ),
+                              ],
                             ),
                           ),
                           Container(
@@ -500,17 +494,18 @@ class _SelectDateAreaState extends State<_SelectDateArea> {
             children: <Widget>[
               Expanded(
                 flex: 1,
-                child: RichText(
-                  text: TextSpan(
-                    text: "参拝日",
-                    style: Styles.mainTextStyleBold,
-                    children: <TextSpan>[
-                      TextSpan(
-                          text: ' *',
-                          style: TextStyle(color: Color(0xFFD13833))),
-                    ],
-                  ),
-                ),
+                child: Row(
+                  children: <Widget>[
+                    Text(
+                      "参拝日",
+                      style: Styles.mainTextStyleBold,
+                    ),
+                    Text(
+                      " *",
+                      style: Styles.mainTextRequired,
+                    ),
+                  ],
+                ), // child: RichText(
               ),
               Expanded(
                 flex: 3,
@@ -647,18 +642,19 @@ class _ButtonAreaState extends State<_ButtonArea> {
             var id = "";
             if (maxId == null || maxId == "") {
               // 初回登録
-              id = Id.goshuin_id_pfx + "000001";
+              id = Id.goshuin_id_pfx + "000000001";
             } else {
               var prefix = maxId.substring(0, 3); // プレフィックス
-              int num = int.parse(maxId.substring(3, 9)); // 連番
+              int num = int.parse(maxId.substring(3, 12)); // 連番
               num = num + 1;
-              id = prefix + num.toString().padLeft(6, "0");
+              id = prefix + num.toString().padLeft(9, "0");
             }
             // 最大ID登録
             store.setGoshuinMaxId(id);
 
             // DBのinsert
-            final createData = (DateTime.now().toUtc().toIso8601String()); // 日時取得
+            final createData =
+                (DateTime.now().toUtc().toIso8601String()); // 日時取得
             goshuin = GoshuinData(
               id: id,
               img: store.editGoshuinBase64Image,
@@ -693,7 +689,6 @@ class _ButtonAreaState extends State<_ButtonArea> {
           */
           void update() {
             setState(() {
-
               GoshuinListData setListData = GoshuinListData(
                 id: store.editGoshuinId,
                 img: store.editGoshuinBase64Image,
@@ -768,7 +763,8 @@ class _ButtonAreaState extends State<_ButtonArea> {
                   BtnText.btn_text_close,
                   BtnText.btn_text_edit_continue_insert,
                   1,
-                  store, kbn);
+                  store,
+                  kbn);
             }
             // insert,update終わった後で、editデータを初期化
             editResetGoshuin(store, kbn);
@@ -791,6 +787,7 @@ class _ButtonDeleteArea extends StatelessWidget {
   // 引数
   final AppStore store;
   final String kbn;
+
   _ButtonDeleteArea({this.kbn, this.store});
 
   @override

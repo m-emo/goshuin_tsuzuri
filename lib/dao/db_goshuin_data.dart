@@ -105,9 +105,9 @@ class DbGoshuinData extends DBProvider {
 }
 
 class GoshuinData {
-  final String id; // [GSI+連番6桁（GSI000001）]
+  final String id; // [GSI+連番9桁（GSI000000001）]
   final String img; // 画像(base64)
-  final String spotId; // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  final String spotId; // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   final String goshuinName; // 御朱印名
   final String date; // 参拝日
   final String memo; // メモ
@@ -141,9 +141,9 @@ class GoshuinData {
 }
 
 class GoshuinListData {
-  final String id; // [GSI+連番6桁（GSI000001）]
+  final String id; // [GSI+連番9桁（GSI000000001）]
   final String img; // 画像(base64)
-  final String spotId; // 神社・寺院ID [SPT+連番6桁（SPT000001）]
+  final String spotId; // 神社・寺院ID [SPT+連番9桁（SPT000000001）]
   final String spotName; // 神社・寺院名
   final String spotPrefecturesNo; // 都道府県番号
   final String spotPrefectures; // 神社・寺院 都道府県
