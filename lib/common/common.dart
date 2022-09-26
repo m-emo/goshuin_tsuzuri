@@ -22,8 +22,10 @@ import '../app_store.dart';
 *       kbn 新規登録＝0、更新＝1
 * return : Widget
  */
-Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
-    String btnMsg2, int flg, AppStore store, String kbn) {
+// Future<bool> myShowDialog(BuildContext context, String msg, String btnMsg1,
+//     String btnMsg2, int flg, AppStore store, String kbn) {
+  Future<dynamic> myShowDialog(BuildContext context, String msg, String btnMsg1,
+      String btnMsg2, int flg, AppStore store, String kbn) {
   return showDialog(
     barrierDismissible: false,
     context: context,
@@ -135,11 +137,13 @@ class _btnMsgSpot {
   final String btnMsg2;
   final String msg;
 
-  _btnMsgSpot({this.btnMsg1, this.btnMsg2, this.msg});
+  _btnMsgSpot({required this.btnMsg1, required this.btnMsg2, required this.msg});
 }
 
-Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
-    String kbn, String senimotokbn) {
+// Future<bool> myShowDialogSpot(BuildContext context, int flg, AppStore store,
+//     String kbn, String senimotokbn) {
+  Future<dynamic> myShowDialogSpot(BuildContext context, int flg, AppStore store,
+      String kbn, String senimotokbn) {
   // BoxFitType のリストを作成
   //  btnMsg1 ボタンテキスト１（上部分）
   //  btnMsg1 ボタンテキスト２（下部分）
@@ -303,7 +307,7 @@ class MsgArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  MsgArea({this.store});
+  MsgArea({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -368,7 +372,7 @@ class BoxFitType {
   final String name;
   final BoxFit type;
 
-  BoxFitType({this.name, this.type});
+  BoxFitType({required this.name, required this.type});
 }
 
 /*画像がない場合は初期画像を表示*/
@@ -532,6 +536,7 @@ void editResetGoshuin(AppStore store, String kbn) {
       img: "",
       spotId: "",
       spotName: "",
+      spotPrefecturesNo: '',
       spotPrefectures: "",
       goshuinName: "",
       date: "",
@@ -685,6 +690,13 @@ bool checkSpotEdit(AppStore store) {
     return false;
   }
 }
+
+/*
+* 神社寺院を新規登録、変更時に既存データから変更しているかチェック
+* prm : store 表示用データ
+* return : flg (true:編集中、false：データを変更していない）
+ */
+
 
 /*都道府県リスト*/
 const List<MapEntry<String, String>> prefecturesListdata = [

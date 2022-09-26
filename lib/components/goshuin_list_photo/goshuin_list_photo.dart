@@ -9,7 +9,7 @@ import 'package:mobx/mobx.dart';
 import '../../app_store.dart';
 
 class GoshuinListPhoto extends StatelessWidget {
-  const GoshuinListPhoto({Key key, @required this.store}) : super(key: key);
+  const GoshuinListPhoto({Key? key, required this.store}) : super(key: key);
 
   // 引数取得
   final AppStore store; // 引数

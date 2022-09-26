@@ -7,7 +7,7 @@ import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import '../../app_store.dart';
 
 class Goshuin extends StatelessWidget {
-  const Goshuin({Key key, @required this.store}) : super(key: key);
+  const Goshuin({Key? key, required this.store}) : super(key: key);
 
   // 引数
   final AppStore store;
@@ -72,7 +72,7 @@ class _Photo extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _Photo({@required this.store});
+  _Photo({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -100,7 +100,7 @@ class _NameArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _NameArea({@required this.store});
+  _NameArea({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -168,7 +168,7 @@ class _MemoArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _MemoArea({@required this.store});
+  _MemoArea({required this.store});
 
   @override
   Widget build(BuildContext context) {

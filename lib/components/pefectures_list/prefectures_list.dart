@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 import '../../app_store.dart';
 
 class PrefecturesList extends StatelessWidget {
-  const PrefecturesList({Key key, @required this.store}) : super(key: key);
+  const PrefecturesList({Key? key, required this.store}) : super(key: key);
   // const PrefecturesList({Key key}) : super(key: key);
   final AppStore store;
 

@@ -11,7 +11,7 @@ import 'package:mobx/mobx.dart';
 import '../../app_store.dart';
 
 class Jinja extends StatelessWidget {
-  const Jinja({Key key, @required this.store}) : super(key: key);
+  const Jinja({Key? key, required this.store}) : super(key: key);
 
   // 引数
   final AppStore store;
@@ -35,11 +35,11 @@ class Jinja extends StatelessWidget {
                 // 更新前のデータを保持（比較チェック用）
                 setEditSopt(store, "1");
 
-                // 編集画面に繊維
+                // 編集画面に遷移
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) => JinjaEdit(store: store, kbn: "1")),
+                      builder: (context) => JinjaEdit(store: store, kbn: "1", senimotokbn: '',)),
                 );
               },
             ),
@@ -62,7 +62,7 @@ class _Photo extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _Photo({@required this.store});
+  _Photo({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -86,7 +86,7 @@ class _NameArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _NameArea({@required this.store});
+  _NameArea({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -148,7 +148,7 @@ class ListArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  ListArea({@required this.store});
+  ListArea({required this.store});
 
   @override
   Widget build(BuildContext context) {

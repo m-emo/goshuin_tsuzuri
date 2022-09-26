@@ -7,7 +7,7 @@ import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import '../../app_store.dart';
 
 class SelectJinjaList extends StatelessWidget {
-  const SelectJinjaList({Key key, @required this.store}) : super(key: key);
+  const SelectJinjaList({Key? key, required this.store}) : super(key: key);
 
   final AppStore store;
 
@@ -75,7 +75,7 @@ class _SpotList extends StatelessWidget {
   final AppStore store;
   final List<SpotData> spotList;
 
-  _SpotList({this.store, this.spotList});
+  _SpotList({required this.store, required this.spotList});
 
   @override
   Widget build(BuildContext context) {
@@ -155,10 +155,10 @@ class _SpotList extends StatelessWidget {
       // 神社
       return StylesIcon.jinjaIcon;
     }
-    // else {
-    //   // その他
-    //   return StylesIcon.sonotaIcon;
-    // }
+    else {
+      // その他
+      return StylesIcon.sonotaIcon;
+    }
   }
 }
 //******** 神社・寺院リストWidget -end- ********

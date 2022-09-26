@@ -4,7 +4,7 @@ import 'package:sqflite/sqlite_api.dart';
 import 'dart:async';
 
 abstract class DBProvider {
-  Database _instance;
+  late Database _instance;
 
   String get databaseName;
   String get tableName;

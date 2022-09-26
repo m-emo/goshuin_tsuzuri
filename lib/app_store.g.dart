@@ -6,10 +6,11 @@ part of 'app_store.dart';
 // StoreGenerator
 // **************************************************************************
 
-// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic
+// ignore_for_file: non_constant_identifier_names, unnecessary_brace_in_string_interps, unnecessary_lambdas, prefer_expression_function_bodies, lines_longer_than_80_chars, avoid_as, avoid_annotating_with_dynamic, no_leading_underscores_for_local_identifiers
 
 mixin _$AppStore on _AppStore, Store {
-  final _$editGoshuinIdAtom = Atom(name: '_AppStore.editGoshuinId');
+  late final _$editGoshuinIdAtom =
+      Atom(name: '_AppStore.editGoshuinId', context: context);
 
   @override
   String get editGoshuinId {
@@ -24,8 +25,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinBase64ImageAtom =
-      Atom(name: '_AppStore.editGoshuinBase64Image');
+  late final _$editGoshuinBase64ImageAtom =
+      Atom(name: '_AppStore.editGoshuinBase64Image', context: context);
 
   @override
   String get editGoshuinBase64Image {
@@ -41,7 +42,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinSpotIdAtom = Atom(name: '_AppStore.editGoshuinSpotId');
+  late final _$editGoshuinSpotIdAtom =
+      Atom(name: '_AppStore.editGoshuinSpotId', context: context);
 
   @override
   String get editGoshuinSpotId {
@@ -56,7 +58,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinSpotNameAtom = Atom(name: '_AppStore.editGoshuinSpotName');
+  late final _$editGoshuinSpotNameAtom =
+      Atom(name: '_AppStore.editGoshuinSpotName', context: context);
 
   @override
   String get editGoshuinSpotName {
@@ -71,8 +74,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinSpotPrefecturesNoAtom =
-      Atom(name: '_AppStore.editGoshuinSpotPrefecturesNo');
+  late final _$editGoshuinSpotPrefecturesNoAtom =
+      Atom(name: '_AppStore.editGoshuinSpotPrefecturesNo', context: context);
 
   @override
   String get editGoshuinSpotPrefecturesNo {
@@ -88,8 +91,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinSpotPrefecturesAtom =
-      Atom(name: '_AppStore.editGoshuinSpotPrefectures');
+  late final _$editGoshuinSpotPrefecturesAtom =
+      Atom(name: '_AppStore.editGoshuinSpotPrefectures', context: context);
 
   @override
   String get editGoshuinSpotPrefectures {
@@ -105,7 +108,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinNameAtom = Atom(name: '_AppStore.editGoshuinName');
+  late final _$editGoshuinNameAtom =
+      Atom(name: '_AppStore.editGoshuinName', context: context);
 
   @override
   String get editGoshuinName {
@@ -120,8 +124,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinSanpaiDateAtom =
-      Atom(name: '_AppStore.editGoshuinSanpaiDate');
+  late final _$editGoshuinSanpaiDateAtom =
+      Atom(name: '_AppStore.editGoshuinSanpaiDate', context: context);
 
   @override
   String get editGoshuinSanpaiDate {
@@ -137,7 +141,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinMemoAtom = Atom(name: '_AppStore.editGoshuinMemo');
+  late final _$editGoshuinMemoAtom =
+      Atom(name: '_AppStore.editGoshuinMemo', context: context);
 
   @override
   String get editGoshuinMemo {
@@ -152,8 +157,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editGoshuinCreateDataAtom =
-      Atom(name: '_AppStore.editGoshuinCreateData');
+  late final _$editGoshuinCreateDataAtom =
+      Atom(name: '_AppStore.editGoshuinCreateData', context: context);
 
   @override
   String get editGoshuinCreateData {
@@ -169,7 +174,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotidAtom = Atom(name: '_AppStore.editSpotid');
+  late final _$editSpotidAtom =
+      Atom(name: '_AppStore.editSpotid', context: context);
 
   @override
   String get editSpotid {
@@ -184,7 +190,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotNameAtom = Atom(name: '_AppStore.editSpotName');
+  late final _$editSpotNameAtom =
+      Atom(name: '_AppStore.editSpotName', context: context);
 
   @override
   String get editSpotName {
@@ -199,7 +206,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotKbnAtom = Atom(name: '_AppStore.editSpotKbn');
+  late final _$editSpotKbnAtom =
+      Atom(name: '_AppStore.editSpotKbn', context: context);
 
   @override
   String get editSpotKbn {
@@ -214,7 +222,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotprefecturesAtom = Atom(name: '_AppStore.editSpotprefectures');
+  late final _$editSpotprefecturesAtom =
+      Atom(name: '_AppStore.editSpotprefectures', context: context);
 
   @override
   String get editSpotprefectures {
@@ -229,8 +238,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotprefecturesNoAtom =
-      Atom(name: '_AppStore.editSpotprefecturesNo');
+  late final _$editSpotprefecturesNoAtom =
+      Atom(name: '_AppStore.editSpotprefecturesNo', context: context);
 
   @override
   String get editSpotprefecturesNo {
@@ -246,7 +255,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotBase64ImageAtom = Atom(name: '_AppStore.editSpotBase64Image');
+  late final _$editSpotBase64ImageAtom =
+      Atom(name: '_AppStore.editSpotBase64Image', context: context);
 
   @override
   String get editSpotBase64Image {
@@ -261,7 +271,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotcreateDataAtom = Atom(name: '_AppStore.editSpotcreateData');
+  late final _$editSpotcreateDataAtom =
+      Atom(name: '_AppStore.editSpotcreateData', context: context);
 
   @override
   String get editSpotcreateData {
@@ -276,7 +287,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotShowKbnAtom = Atom(name: '_AppStore.editSpotShowKbn');
+  late final _$editSpotShowKbnAtom =
+      Atom(name: '_AppStore.editSpotShowKbn', context: context);
 
   @override
   String get editSpotShowKbn {
@@ -291,8 +303,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$editSpotShowUint8ListImageAtom =
-      Atom(name: '_AppStore.editSpotShowUint8ListImage');
+  late final _$editSpotShowUint8ListImageAtom =
+      Atom(name: '_AppStore.editSpotShowUint8ListImage', context: context);
 
   @override
   String get editSpotShowUint8ListImage {
@@ -308,7 +320,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$showGoshuinDataAtom = Atom(name: '_AppStore.showGoshuinData');
+  late final _$showGoshuinDataAtom =
+      Atom(name: '_AppStore.showGoshuinData', context: context);
 
   @override
   GoshuinListData get showGoshuinData {
@@ -323,7 +336,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$showSpotDataAtom = Atom(name: '_AppStore.showSpotData');
+  late final _$showSpotDataAtom =
+      Atom(name: '_AppStore.showSpotData', context: context);
 
   @override
   SpotData get showSpotData {
@@ -338,8 +352,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$showSpotDataUnderGoshuinListAtom =
-      Atom(name: '_AppStore.showSpotDataUnderGoshuinList');
+  late final _$showSpotDataUnderGoshuinListAtom =
+      Atom(name: '_AppStore.showSpotDataUnderGoshuinList', context: context);
 
   @override
   ObservableList<GoshuinListData> get showSpotDataUnderGoshuinList {
@@ -355,7 +369,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$goshuinMaxIdAtom = Atom(name: '_AppStore.goshuinMaxId');
+  late final _$goshuinMaxIdAtom =
+      Atom(name: '_AppStore.goshuinMaxId', context: context);
 
   @override
   String get goshuinMaxId {
@@ -370,7 +385,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$spotMaxIdAtom = Atom(name: '_AppStore.spotMaxId');
+  late final _$spotMaxIdAtom =
+      Atom(name: '_AppStore.spotMaxId', context: context);
 
   @override
   String get spotMaxId {
@@ -385,7 +401,7 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$errFlgAtom = Atom(name: '_AppStore.errFlg');
+  late final _$errFlgAtom = Atom(name: '_AppStore.errFlg', context: context);
 
   @override
   bool get errFlg {
@@ -400,7 +416,7 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$errMsgAtom = Atom(name: '_AppStore.errMsg');
+  late final _$errMsgAtom = Atom(name: '_AppStore.errMsg', context: context);
 
   @override
   String get errMsg {
@@ -415,7 +431,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$goshuinArrayAtom = Atom(name: '_AppStore.goshuinArray');
+  late final _$goshuinArrayAtom =
+      Atom(name: '_AppStore.goshuinArray', context: context);
 
   @override
   ObservableList<GoshuinListData> get goshuinArray {
@@ -430,7 +447,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$spotArrayPefAtom = Atom(name: '_AppStore.spotArrayPef');
+  late final _$spotArrayPefAtom =
+      Atom(name: '_AppStore.spotArrayPef', context: context);
 
   @override
   List<MapEntry<String, List<SpotData>>> get spotArrayPef {
@@ -445,7 +463,8 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$spotArrayAtom = Atom(name: '_AppStore.spotArray');
+  late final _$spotArrayAtom =
+      Atom(name: '_AppStore.spotArray', context: context);
 
   @override
   ObservableList<SpotData> get spotArray {
@@ -460,7 +479,35 @@ mixin _$AppStore on _AppStore, Store {
     });
   }
 
-  final _$_AppStoreActionController = ActionController(name: '_AppStore');
+  late final _$mailaddressAtom =
+      Atom(name: '_AppStore.mailaddress', context: context);
+
+  @override
+  String get mailaddress {
+    _$mailaddressAtom.reportRead();
+    return super.mailaddress;
+  }
+
+  @override
+  set mailaddress(String value) {
+    _$mailaddressAtom.reportWrite(value, super.mailaddress, () {
+      super.mailaddress = value;
+    });
+  }
+
+  late final _$_AppStoreActionController =
+      ActionController(name: '_AppStore', context: context);
+
+  @override
+  void setMailaddress(String value) {
+    final _$actionInfo = _$_AppStoreActionController.startAction(
+        name: '_AppStore.setMailaddress');
+    try {
+      return super.setMailaddress(value);
+    } finally {
+      _$_AppStoreActionController.endAction(_$actionInfo);
+    }
+  }
 
   @override
   void setEditGoshuinId(String value) {
@@ -878,7 +925,8 @@ errFlg: ${errFlg},
 errMsg: ${errMsg},
 goshuinArray: ${goshuinArray},
 spotArrayPef: ${spotArrayPef},
-spotArray: ${spotArray}
+spotArray: ${spotArray},
+mailaddress: ${mailaddress}
     ''';
   }
 }

@@ -85,7 +85,7 @@ class DbGoshuinData extends DBProvider {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db
         .rawQuery('SELECT * FROM ' + tableName + ' ORDER BY id DESC LIMIT 1');
-    var goshuin = new GoshuinData();
+    var goshuin = new GoshuinData(id: '', img: '', spotId: '', goshuinName: '', date: '', memo: '', createData: '',);
     var i = 0;
     if (maps.length != 0) {
       print("★★★--------最大IDレコード取得");
@@ -114,13 +114,13 @@ class GoshuinData {
   final String createData; // 登録日
 
   GoshuinData(
-      {this.id,
-      this.img,
-      this.spotId,
-      this.goshuinName,
-      this.date,
-      this.memo,
-      this.createData});
+      {required this.id,
+        required this.img,
+        required this.spotId,
+        required this.goshuinName,
+        required this.date,
+        required this.memo,
+        required this.createData});
 
   Map<String, dynamic> toMap() {
     return {
@@ -153,16 +153,16 @@ class GoshuinListData {
   final String createData; // 登録日
 
   GoshuinListData(
-      {this.id,
-      this.img,
-      this.spotId,
-      this.spotName,
-      this.spotPrefecturesNo,
-      this.spotPrefectures,
-      this.goshuinName,
-      this.date,
-      this.memo,
-      this.createData});
+      {required this.id,
+      required this.img,
+      required this.spotId,
+      required this.spotName,
+      required this.spotPrefecturesNo,
+      required this.spotPrefectures,
+      required this.goshuinName,
+      required this.date,
+      required this.memo,
+      required this.createData});
 
   Map<String, dynamic> toMap() {
     return {

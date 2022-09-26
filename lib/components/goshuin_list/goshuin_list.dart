@@ -12,7 +12,7 @@ class TabInfo {
 }
 
 class GoshuinList extends StatelessWidget {
-  GoshuinList({Key key, @required this.store}) : super(key: key);
+  GoshuinList({Key? key, required this.store}) : super(key: key);
 
   final AppStore store;
 

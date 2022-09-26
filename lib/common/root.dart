@@ -9,10 +9,12 @@ import 'package:goshuintsuzuri/dao/db_spot_data.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:mobx/mobx.dart';
 import '../app_store.dart';
+import '../components/backup/backup.dart';
 import 'common.dart';
+import 'drawer_content.dart';
 
 class RootWidget extends StatefulWidget {
-  const RootWidget({Key key, @required this.store}) : super(key: key);
+  const RootWidget({Key? key, required this.store}) : super(key: key);
 
   // 引数取得
   final AppStore store;
@@ -25,7 +27,7 @@ class _RootWidgetState extends State<RootWidget> {
   // 引数取得
   final AppStore store;
 
-  _RootWidgetState({this.store});
+  _RootWidgetState({required this.store});
 
   int _selectedIndex = 0;
   final _bottomNavigationBarItems = <BottomNavigationBarItem>[];
@@ -78,7 +80,8 @@ class _RootWidgetState extends State<RootWidget> {
       store.setSpotMaxId(id);
 
       // 御朱印を全件取得
-      ObservableList<GoshuinListData> goshuinObservableList = ObservableList.of([]);
+      ObservableList<GoshuinListData> goshuinObservableList =
+          ObservableList.of([]);
       if (goshuinMaxId == null) {
         // 登録なしのためデータは空
       } else {
@@ -149,7 +152,7 @@ class _RootWidgetState extends State<RootWidget> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GoshuinEdit(store: store)),
+          MaterialPageRoute(builder: (context) => GoshuinEdit(store: store, kbn: '0',)),
         );
       } else {
         _bottomNavigationBarItems[_selectedIndex] =
@@ -165,13 +168,12 @@ class _RootWidgetState extends State<RootWidget> {
     var _routes = [
       GoshuinList(store: store),
       JinjaList(store: store),
-      GoshuinEdit(kbn: "0"),
+      GoshuinEdit(kbn: "0", store: store,),
     ];
     final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
 
     return Scaffold(
       key: _key,
-      // appBar: Header(key:_key),
       appBar: AppBar(
         elevation: 0.0,
         // 影
@@ -186,12 +188,14 @@ class _RootWidgetState extends State<RootWidget> {
           color: Color(0xFF707070),
           padding: new EdgeInsets.all(15.0),
           onPressed: () {
-            _key.currentState.openDrawer();
+            // _key.currentState.openDrawer();
+            Scaffold.of(context).openDrawer();
           },
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
       ),
+      // drawer: DrawerContent(key: key, store: store,),
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
@@ -202,8 +206,30 @@ class _RootWidgetState extends State<RootWidget> {
               ),
             ),
             ListTile(
-              title: Text("バックアップ"),
+              title: Text("バックアップ・機種変更"),
               trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Backup(store: store,)),
+                );
+              },
+            ),
+            ListTile(
+              title: Text("データ復元"),
+              trailing: Icon(Icons.arrow_forward),
+              onTap: () {
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) =>
+                          Backup(store: store,)),
+                );
+              },
             ),
             ListTile(
               title: Text("プライバシーポリシー"),

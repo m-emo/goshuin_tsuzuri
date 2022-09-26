@@ -85,7 +85,7 @@ class DbSpotData extends DBProvider {
     final Database db = await database;
     final List<Map<String, dynamic>> maps = await db
         .rawQuery('SELECT * FROM ' + tableName + ' ORDER BY id DESC LIMIT 1');
-    var spot = new SpotData();
+    var spot = new SpotData(id: '', spotName: '', kbn: '', prefectures: '', prefecturesNo: '', img: '', createData: '');
     var i = 0;
     if (maps.length != 0) {
       spot = SpotData(
@@ -115,13 +115,13 @@ class SpotData {
   final String createData; // 登録日
 
   SpotData(
-      {this.id,
-        this.spotName,
-        this.kbn,
-        this.prefectures,
-        this.prefecturesNo,
-        this.img,
-        this.createData});
+      {required this.id,
+        required this.spotName,
+        required this.kbn,
+        required this.prefectures,
+        required this.prefecturesNo,
+        required this.img,
+        required this.createData});
 
   Map<String, dynamic> toMap() {
     return {

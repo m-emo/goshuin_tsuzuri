@@ -14,7 +14,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import '../../app_store.dart';
 
 class JinjaEdit extends StatelessWidget {
-  const JinjaEdit({Key key, @required this.store, this.kbn, this.senimotokbn})
+  const JinjaEdit({Key? key, required this.store, required this.kbn, required this.senimotokbn})
       : super(key: key);
 
   // 引数取得
@@ -25,7 +25,7 @@ class JinjaEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () {
+      onWillPop: () async{
         // backキー
         // 編集中かチェック
         bool check = checkSpotEdit(store);
@@ -37,6 +37,7 @@ class JinjaEdit extends StatelessWidget {
           // ダイアログを表示
           myShowDialogSpot(context, 0, store, kbn, senimotokbn);
         }
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -95,7 +96,7 @@ class Area extends StatelessWidget {
   final String senimotokbn;
   final AppStore store;
 
-  Area({this.kbn, this.senimotokbn, this.store});
+  Area({required this.kbn, required this.senimotokbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -131,7 +132,7 @@ class _ImagePickerView extends StatefulWidget {
   final String kbn;
   final AppStore store;
 
-  _ImagePickerView({this.kbn, this.store});
+  _ImagePickerView({required this.kbn, required this.store});
 
   @override
   State createState() {
@@ -144,10 +145,10 @@ class _ImagePickerViewState extends State {
   final String kbn;
   final AppStore store;
 
-  _ImagePickerViewState({this.kbn, this.store});
+  _ImagePickerViewState({required this.kbn, required this.store});
 
-  File imageFile;
-  Uint8List bytesImage;
+  late File imageFile;
+  Uint8List? bytesImage;
 
   @override
   void initState() {
@@ -185,7 +186,7 @@ class _ImagePickerViewState extends State {
                     child: StylesIcon.insertPhotoRounded,
                   )
                 : Image.memory(
-                    bytesImage,
+                    bytesImage!,
                     height: size.width - 150,
                     width: size.width - 150,
                   ),
@@ -257,12 +258,18 @@ class _ImagePickerViewState extends State {
     }
 
     // 指定サイズ／品質に圧縮
-    List<int> imageBytes = await FlutterImageCompress.compressWithFile(
+    List<int> imageBytes = (await FlutterImageCompress.compressWithFile(
       imageFile.path,
       minWidth: 800,
       minHeight: 800,
       quality: 60,
-    );
+    )) as List<int>;
+    // List<int> imageBytes = await FlutterImageCompress.compressWithFile(
+    //   imageFile.path,
+    //   minWidth: 800,
+    //   minHeight: 800,
+    //   quality: 60,
+    // );
 
     // BASE64文字列値にエンコード
     String base64Image = base64Encode(imageBytes);
@@ -289,7 +296,7 @@ class _KbnArea extends StatelessWidget {
   final String kbn;
   final AppStore store;
 
-  _KbnArea({this.kbn, this.store});
+  _KbnArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -322,7 +329,7 @@ class _KbnArea extends StatelessWidget {
                         store.setEditSpotKbn(spotKbn.spot_kbn_jinja);
                       }),
                   ListTile(
-                      leading: FaIcon(FontAwesomeIcons.images),
+                      leading: StylesIcon.sonotaIcon,
                       title: Text(spotKbn.spot_text_sonota),
                       onTap: () {
                         Navigator.pop(context);
@@ -404,7 +411,7 @@ class _PrefecturesArea extends StatelessWidget {
   final String kbn;
   final AppStore store;
 
-  _PrefecturesArea({this.kbn, this.store});
+  _PrefecturesArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -492,7 +499,7 @@ class _NameArea extends StatefulWidget {
   final String kbn;
   final AppStore store;
 
-  _NameArea({this.kbn, this.store});
+  _NameArea({required this.kbn, required this.store});
 
   @override
   _NameAreaState createState() => _NameAreaState(kbn: kbn, store: store);
@@ -502,7 +509,20 @@ class _NameAreaState extends State<_NameArea> {
   final String kbn;
   final AppStore store;
 
-  _NameAreaState({this.kbn, this.store});
+  _NameAreaState({required this.kbn, required this.store});
+
+  late TextEditingController _controller;
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: store.editSpotName ?? '');
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -531,7 +551,8 @@ class _NameAreaState extends State<_NameArea> {
             padding: const EdgeInsets.only(top: 5.0),
             child: TextField(
               style: Styles.mainTextStyle,
-              controller: TextEditingController(text: store.editSpotName),
+              // controller: TextEditingController(text: store.editSpotName),
+              controller: _controller,
               // decoration: const InputDecoration(
               //   border: InputBorder.none,
               // ),
@@ -612,7 +633,7 @@ class _ButtonArea extends StatefulWidget {
   final String senimotokbn;
   final AppStore store;
 
-  _ButtonArea({this.kbn, this.senimotokbn, this.store});
+  _ButtonArea({required this.kbn, required this.senimotokbn, required this.store});
 
   @override
   _ButtonAreaState createState() =>
@@ -620,14 +641,14 @@ class _ButtonArea extends StatefulWidget {
 }
 
 class _ButtonAreaState extends State<_ButtonArea> {
-  var spot = SpotData();
+  var spot = SpotData(id: '', spotName: '', kbn: '', prefectures: '', prefecturesNo: '', img: '', createData: '');
 
   // 引数
   final String kbn;
   final String senimotokbn;
   final AppStore store;
 
-  _ButtonAreaState({this.kbn, this.senimotokbn, this.store});
+  _ButtonAreaState({required this.kbn, required this.senimotokbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -743,7 +764,7 @@ class _ButtonAreaState extends State<_ButtonArea> {
 
 void insertupdateSpot(
     String kbn, String senimotokbn, AppStore store, BuildContext context) {
-  var spot = SpotData();
+  var spot = SpotData(id: '', spotName: '', kbn: '', prefectures: '', prefecturesNo: '', img: '', createData: '');
 // 更新
   if (kbn == "1") {
     //神社・寺院一覧を更新する
@@ -848,7 +869,7 @@ class _ButtonDeleteArea extends StatelessWidget {
   final AppStore store;
   final String kbn;
 
-  _ButtonDeleteArea({this.kbn, this.store});
+  _ButtonDeleteArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {

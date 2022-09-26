@@ -7,7 +7,7 @@ import 'package:goshuintsuzuri/components/goshuin/goshuin.dart';
 import '../../app_store.dart';
 
 class GoshuinListList extends StatefulWidget {
-  const GoshuinListList({Key key, @required this.store}) : super(key: key);
+  const GoshuinListList({Key? key, required this.store}) : super(key: key);
 
   // 引数取得
   final AppStore store; // 引数
@@ -22,7 +22,7 @@ class GoshuinListListState extends State {
   // 引数
   final AppStore store;
 
-  GoshuinListListState({this.store});
+  GoshuinListListState({required this.store});
 
   Widget build(BuildContext context) {
     return Scaffold(

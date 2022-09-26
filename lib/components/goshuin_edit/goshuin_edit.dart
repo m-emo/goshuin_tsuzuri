@@ -12,11 +12,12 @@ import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../../app_store.dart';
 
 class GoshuinEdit extends StatelessWidget {
-  const GoshuinEdit({Key key, @required this.store, this.kbn})
+  const GoshuinEdit({Key? key, required this.store, required this.kbn})
       : super(key: key);
 
   // 引数取得
@@ -26,7 +27,7 @@ class GoshuinEdit extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: () {
+      onWillPop: () async{
         // backキー
         // 編集中かチェック
         bool check = checkGoshuinEdit(store);
@@ -36,6 +37,7 @@ class GoshuinEdit extends StatelessWidget {
           myShowDialog(context, Msglist.edit_cancel, BtnText.btn_text_close,
               BtnText.btn_text_edit_continue, 1, store, kbn);
         }
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -97,7 +99,7 @@ class Area extends StatelessWidget {
   final String kbn;
   final AppStore store;
 
-  Area({this.kbn, this.store});
+  Area({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -134,7 +136,7 @@ class _ImagePickerView extends StatefulWidget {
   final String kbn;
   final AppStore store;
 
-  _ImagePickerView({this.kbn, this.store});
+  _ImagePickerView({required this.kbn, required this.store});
 
   @override
   State createState() {
@@ -147,10 +149,10 @@ class _ImagePickerViewState extends State {
   final String kbn;
   final AppStore store;
 
-  _ImagePickerViewState({this.kbn, this.store});
+  _ImagePickerViewState({required this.kbn, required this.store});
 
-  File imageFile;
-  Uint8List bytesImage;
+  late File imageFile;
+  Uint8List? bytesImage;
 
   @override
   void initState() {
@@ -188,7 +190,7 @@ class _ImagePickerViewState extends State {
                     child: StylesIcon.insertPhotoRounded,
                   )
                 : Image.memory(
-                    bytesImage,
+                    bytesImage!,
                     height: size.width - 150,
                     width: size.width - 150,
                   ),
@@ -268,13 +270,20 @@ class _ImagePickerViewState extends State {
     }
 
     // 指定サイズ／品質に圧縮
-    List<int> imageBytes = await FlutterImageCompress.compressWithFile(
+    List<int> imageBytes = (await FlutterImageCompress.compressWithFile(
       // imageFile.absolute.path,
       imageFile.path,
       minWidth: 800,
       minHeight: 800,
       quality: 60,
-    );
+    )) as List<int>;
+    // List<int> imageBytes = await FlutterImageCompress.compressWithFile(
+    //   // imageFile.absolute.path,
+    //   imageFile.path,
+    //   minWidth: 800,
+    //   minHeight: 800,
+    //   quality: 60,
+    // );
 
     // BASE64文字列値にエンコード
     String base64Image = base64Encode(imageBytes);
@@ -302,7 +311,7 @@ class _PlaceArea extends StatelessWidget {
   final String kbn;
   final AppStore store;
 
-  _PlaceArea({this.kbn, this.store});
+  _PlaceArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -400,7 +409,7 @@ class _NameArea extends StatelessWidget {
   final String kbn;
   final AppStore store;
 
-  _NameArea({this.kbn, this.store});
+  _NameArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -448,7 +457,7 @@ class _SelectDateArea extends StatefulWidget {
   // 引数
   final AppStore store;
 
-  _SelectDateArea({this.store});
+  _SelectDateArea({required this.store});
 
   @override
   State<StatefulWidget> createState() {
@@ -460,19 +469,19 @@ class _SelectDateAreaState extends State<_SelectDateArea> {
   // 引数
   final AppStore store;
 
-  _SelectDateAreaState({this.store});
+  _SelectDateAreaState({required this.store});
 
   var _labelText = '';
   DateTime _date = new DateTime.now();
   var formatter = new DateFormat('yyyy.MM.dd');
 
   Future<Null> _selectDate(BuildContext context) async {
-    final DateTime picked = await showDatePicker(
+    final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: DateTime.now(),
         firstDate: new DateTime(1950),
         lastDate: new DateTime.now().add(new Duration(days: 360)));
-    var fmtDate = formatter.format(picked);
+    var fmtDate = formatter.format(picked!);
 
     if (picked != null) setState(() => store.setEditGoshuinSanpaiDate(fmtDate));
   }
@@ -542,7 +551,7 @@ class _MemoArea extends StatelessWidget {
   // 引数
   final AppStore store;
 
-  _MemoArea({this.store});
+  _MemoArea({required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -593,20 +602,20 @@ class _ButtonArea extends StatefulWidget {
   final String kbn;
   final AppStore store;
 
-  _ButtonArea({this.kbn, this.store});
+  _ButtonArea({required this.kbn, required this.store});
 
   @override
   _ButtonAreaState createState() => _ButtonAreaState(kbn: kbn, store: store);
 }
 
 class _ButtonAreaState extends State<_ButtonArea> {
-  var goshuin = GoshuinData();
+  var goshuin = GoshuinData(id: '', img: '', spotId: '', goshuinName: '', date: '', memo: '', createData: '');
 
   // 引数
   final String kbn;
   final AppStore store;
 
-  _ButtonAreaState({this.kbn, this.store});
+  _ButtonAreaState({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {
@@ -788,7 +797,7 @@ class _ButtonDeleteArea extends StatelessWidget {
   final AppStore store;
   final String kbn;
 
-  _ButtonDeleteArea({this.kbn, this.store});
+  _ButtonDeleteArea({required this.kbn, required this.store});
 
   @override
   Widget build(BuildContext context) {

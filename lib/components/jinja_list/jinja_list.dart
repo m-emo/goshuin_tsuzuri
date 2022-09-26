@@ -10,7 +10,7 @@ import 'package:mobx/mobx.dart';
 import '../../app_store.dart';
 
 class JinjaList extends StatelessWidget {
-  JinjaList({Key key, @required this.store}) : super(key: key);
+  JinjaList({Key? key, required this.store}) : super(key: key);
 
   // 引数取得
   final AppStore store; // 引数
@@ -91,7 +91,7 @@ class _SpotList extends StatelessWidget {
   final AppStore store;
   final List<SpotData> spotList;
 
-  _SpotList({this.store, this.spotList});
+  _SpotList({required this.store, required this.spotList});
 
   @override
   Widget build(BuildContext context) {
@@ -188,7 +188,7 @@ class _Midashi extends StatelessWidget {
   // 引数
   final String spotPrefectures;
 
-  _Midashi({this.spotPrefectures});
+  _Midashi({required this.spotPrefectures});
 
   @override
   Widget build(BuildContext context) {
