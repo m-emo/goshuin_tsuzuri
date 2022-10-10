@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:goshuintsuzuri/common/style.dart';
 import 'package:goshuintsuzuri/components/goshuin_edit/goshuin_edit.dart';
 import 'package:goshuintsuzuri/components/goshuin_list/goshuin_list.dart';
+import 'package:goshuintsuzuri/components/hukugen/hukugen.dart';
 import 'package:goshuintsuzuri/components/jinja_list/jinja_list.dart';
 import 'package:goshuintsuzuri/dao/db_goshuin_data.dart';
 import 'package:goshuintsuzuri/dao/db_spot_data.dart';
@@ -11,7 +12,6 @@ import 'package:mobx/mobx.dart';
 import '../app_store.dart';
 import '../components/backup/backup.dart';
 import 'common.dart';
-import 'drawer_content.dart';
 
 class RootWidget extends StatefulWidget {
   const RootWidget({Key? key, required this.store}) : super(key: key);
@@ -152,7 +152,11 @@ class _RootWidgetState extends State<RootWidget> {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => GoshuinEdit(store: store, kbn: '0',)),
+          MaterialPageRoute(
+              builder: (context) => GoshuinEdit(
+                    store: store,
+                    kbn: '0',
+                  )),
         );
       } else {
         _bottomNavigationBarItems[_selectedIndex] =
@@ -168,12 +172,15 @@ class _RootWidgetState extends State<RootWidget> {
     var _routes = [
       GoshuinList(store: store),
       JinjaList(store: store),
-      GoshuinEdit(kbn: "0", store: store,),
+      GoshuinEdit(
+        kbn: "0",
+        store: store,
+      ),
     ];
-    final GlobalKey<ScaffoldState> _key = GlobalKey<ScaffoldState>();
+    final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
     return Scaffold(
-      key: _key,
+      key: _scaffoldKey,
       appBar: AppBar(
         elevation: 0.0,
         // 影
@@ -188,8 +195,8 @@ class _RootWidgetState extends State<RootWidget> {
           color: Color(0xFF707070),
           padding: new EdgeInsets.all(15.0),
           onPressed: () {
-            // _key.currentState.openDrawer();
-            Scaffold.of(context).openDrawer();
+            _scaffoldKey.currentState!.openDrawer();
+            // Scaffold.of(context).openDrawer();
           },
         ),
         centerTitle: true,
@@ -199,41 +206,59 @@ class _RootWidgetState extends State<RootWidget> {
       drawer: Drawer(
         child: ListView(
           children: <Widget>[
-            DrawerHeader(
-              child: Text('Drawer Header'),
-              decoration: BoxDecoration(
-                color: Colors.blue,
+            SizedBox(
+              height: 60,
+              child: DrawerHeader(
+                padding: EdgeInsets.only(top: 10.0, left: 15.0),
+                child: Text(
+                  '設定',
+                  style: Styles.mainTextStyleLarge,
+                ),
               ),
             ),
             ListTile(
-              title: Text("バックアップ・機種変更"),
-              trailing: Icon(Icons.arrow_forward),
+              title: Text(
+                "バックアップ・機種変更",
+                style: Styles.mainTextStyle,
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
+              onTap: () {
+                // バックアップ用のメルアド初期化
+                store.setMailaddress("");
+                // 画面遷移
+                Navigator.of(context).pop();
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => Backup(
+                            store: store,
+                          )),
+                );
+              },
+            ),
+            ListTile(
+              title: Text(
+                "データ復元",
+                style: Styles.mainTextStyle,
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
               onTap: () {
                 Navigator.of(context).pop();
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                      builder: (context) =>
-                          Backup(store: store,)),
+                      builder: (context) => Hukugen(
+                            store: store,
+                          )),
                 );
               },
             ),
             ListTile(
-              title: Text("データ復元"),
-              trailing: Icon(Icons.arrow_forward),
-              onTap: () {
-                Navigator.of(context).pop();
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          Backup(store: store,)),
-                );
-              },
-            ),
-            ListTile(
-              title: Text("プライバシーポリシー"),
-              trailing: Icon(Icons.arrow_forward),
+              title: Text(
+                "プライバシーポリシー",
+                style: Styles.mainTextStyle,
+              ),
+              trailing: Icon(Icons.arrow_forward_ios),
             ),
           ],
         ),

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_archive/flutter_archive.dart';
 import 'package:flutter_email_sender/flutter_email_sender.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:sqflite/sqflite.dart';
 import '../../app_store.dart';
 import '../../common/common.dart';
@@ -27,97 +28,98 @@ class Backup extends StatelessWidget {
           "バックアップ・機種変更",
           style: Styles.appBarTextStyle,
         ),
-        // actions: <Widget>[
-        //   IconButton(
-        //     // 編集画面へ移動
-        //     icon: StylesIcon.editIcon,
-        //     onPressed: () {
-        //       // 登録時・更新の御朱印データeditの保持
-        //       editSetGoshuin(store, "1");
-        //
-        //
-        //       // 更新前のデータを保持（比較チェック用）
-        //       // store.setBeforeGoshuinData(goshuinData);
-        //
-        //       Navigator.push(
-        //         context,
-        //         MaterialPageRoute(
-        //             builder: (context) =>
-        //                 GoshuinEdit(store: store, kbn: "1")),
-        //       );
-        //     },
-        //   ),
-        // ],
         backgroundColor: Colors.white,
         centerTitle: true,
       ),
       body: Container(
-        // padding: EdgeInsets.only(top: 10, right: 10, bottom: 10, left: 10),
+        height: MediaQuery.of(context).size.height,
         color: StylesColor.bgEditcolor,
-        child: Column(
-          children: <Widget>[
-            Container(
-              color: Colors.white,
-              padding: EdgeInsets.only(top: 30.0, right: 10.0, bottom: 30.0, left: 10.0),
-              child: Text("宛先に機種変更後の端末で受け取れるメールアドレスを入力した状態で、バックアップボタンを押してください"),
-            ),
-            _EmailArea(
-              store: store,
-            ),
-            TextButton(
-              // style: ElevatedButton.styleFrom(
-              //   primary: StylesColor.maincolor,
-              //   shape: RoundedRectangleBorder(
-              //     borderRadius: BorderRadius.circular(5),
-              //   ),
-              //   padding:
-              //       EdgeInsets.only(top: 10, right: 20, bottom: 10, left: 20),
-              // ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: StylesColor.maincolor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5),
-                ),
-                padding: EdgeInsets.all(15.0),
-              ),
-              child: Text(
-                'データをバックアップする',
-                style: Styles.mainButtonTextStyle,
-              ),
-              onPressed: () async {
-                print("★" + store.mailaddress);
-                if (store.mailaddress == "") {
-                  // チェックNGのためメッセージウィンドウを表示
-                  var msg = "メールアドレスを入力してください";
-                  showMsgArea(msg, store);
-                }else{
-                  String dataDirPath = await getDatabasesPath();
-                  final dataDir = Directory(dataDirPath);
-                  // try {
-                  //   final zipFile = File(dataDirPath + "/backup_goshuin_db.zip");
-                  //   ZipFile.createFromDirectory(
-                  //       sourceDir: dataDir,
-                  //       zipFile: zipFile,
-                  //       recurseSubDirs: true);
-                  //
-                  //   final email = Email(
-                  //     body: 'content',
-                  //     subject: '御朱印綴バックアップデータ',
-                  //     recipients: ['email'],
-                  //     cc: ['email'],
-                  //     attachmentPaths: ['exportPath'],
-                  //     isHTML: false,
-                  //   );
-                  //   await FlutterEmailSender.send(email);
-                  // } catch (e) {
-                  //   print(e);
-                  // }
-                  print(dataDirPath); // ★テスト用です。書き換えてください
-                }
+        child: SingleChildScrollView(
+          child: Stack(
+            alignment: Alignment.topCenter,
+            children: [
+              Column(
+                children: <Widget>[
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.only(top: 30.0),
+                    child: Center(
+                      child: Image(
+                        image: AssetImage(
+                          'assets/img/upload.png',
+                        ),
+                        height: 100,
+                      ),
+                    ),
+                  ),
+                  Container(
+                    color: Colors.white,
+                    padding: EdgeInsets.only(
+                        top: 30.0, right: 10.0, bottom: 30.0, left: 10.0),
+                    child: Text(
+                        "宛先に機種変更後の端末で受け取れるメールアドレスを入力した状態で、バックアップボタンを押してください。\n\n"
+                        "メールアプリが表示されるので、そのまま送信してください。対象のメールアドレスにデータが送信されます。\n\n"
+                        "※送信後はデータが届いていることを確認してください"),
+                  ),
+                  _EmailArea(
+                    store: store,
+                  ),
+                  Container(
+                    padding: EdgeInsets.only(
+                        top: 50.0, right: 10.0, bottom: 30.0, left: 10.0),
+                    child: TextButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: StylesColor.maincolor,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        padding: EdgeInsets.all(15.0),
+                      ),
+                      child: Text(
+                        'データをバックアップする',
+                        style: Styles.mainButtonTextStyle,
+                      ),
+                      onPressed: () async {
+                        if (store.mailaddress == "") {
+                          // チェックNGのためメッセージウィンドウを表示
+                          var msg = "メールアドレスを入力してください";
+                          showMsgArea(msg, store);
+                        } else {
+                          // データ保存先を指定
+                          final dataDir = await getApplicationDocumentsDirectory();
+                          String dataDirPath = dataDir.path;
+                          // String dataDirPath = await getDatabasesPath();
+                          // final dataDir = Directory(dataDirPath);
 
-              },
-            ),
-          ],
+                          try {
+                            var filename = "backup_goshuin_db.zip";
+                            final zipFile = File(dataDirPath + "/" + filename);
+                            ZipFile.createFromDirectory(
+                                sourceDir: dataDir,
+                                zipFile: zipFile,
+                                recurseSubDirs: true);
+                            print(dataDirPath);
+                            final email = Email(
+                              body: '御朱印綴のバックアップデータです',
+                              subject: '御朱印綴バックアップデータ',
+                              recipients: [store.mailaddress],
+                              attachmentPaths: [dataDirPath + "/" + filename],
+                              isHTML: false,
+                            );
+                            await FlutterEmailSender.send(email);
+                          } catch (e) {
+                            print(e);
+                          }
+                          print(dataDirPath); // ★テスト用です。書き換えてください
+                        }
+                      },
+                    ),
+                  ),
+                ],
+              ),
+              MsgArea(store: store),
+            ],
+          ),
         ),
       ),
     );
@@ -140,7 +142,7 @@ class _EmailArea extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       color: Colors.white,
-      margin: const EdgeInsets.only(top: 4.0, bottom: 50.0),
+      margin: const EdgeInsets.only(top: 4.0),
       padding: const EdgeInsets.only(
           top: 15.0, right: 20.0, bottom: 15.0, left: 20.0),
       child: Column(
@@ -156,7 +158,6 @@ class _EmailArea extends StatelessWidget {
             padding: const EdgeInsets.only(top: 5.0),
             child: TextField(
               style: Styles.mainTextStyle,
-              // controller: TextEditingController(text: store.editGoshuinName),
               decoration: new InputDecoration.collapsed(
                 border: InputBorder.none,
                 hintText: '入力してください',
